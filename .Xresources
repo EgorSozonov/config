@@ -1,0 +1,14 @@
+xterm*background: black
+xterm*foreground: white
+xterm*faceName: Monospace
+xterm*faceSize: 14
+xterm*selectToClipboard: true
+! prevent jumping back to the last line with new output
+xterm*scrollTtyOutput: false
+ 
+! add keyboard shortcuts to jump to beginning/end
+xterm*vt100.translations: #override \n\
+    Shift <Key>Home: scroll-forw(10000000000) \n\
+    Shift <Key>End: scroll-back(10000000000) \n\
+    Shift Ctrl <Key> C: copy-selection(CLIPBOARD) \n\
+    Shift Ctrl <Key> V: insert-selection(CLIPBOARD)

@@ -1,0 +1,7 @@
+cp -rf ~/.config/awesome/* .config/awesome
+
+cp -rf ~/.config/nvim/* .config/nvim
+
+cp -f ~/.Xmodmap .Xmodmap
+
+cp -f ~/.Xresources .Xresources
