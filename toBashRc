@@ -1,0 +1,10 @@
+alias sys="sudo systemctl"
+alias sus="systemctl suspend"
+alias running="systemctl --state=running --type=service"
+alias flash="sudo mount -o umask=000 --mkdir /dev/sdc1 /mnt/flash"
+alias unflash="sudo umount /mnt/flash"
+alias fixKb="setxkbmap -layout us,ru -option grp:caps_toggle"
+alias cl="clear"
+alias u="cd .."
+
+export PS1="\W % "
