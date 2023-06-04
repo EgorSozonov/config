@@ -1,9 +1,9 @@
 cp .Xmodmap ~/.Xmodmap
 xmodmap ~/.Xmodmap
 
-cp -r .config/awesome ~/.config/awesome
+cp -r .config/awesome/* ~/.config/awesome
 
-cp -r .config/nvim ~/.config/nvim
+cp -r .config/nvim/* ~/.config/nvim
 
 cp .Xresources ~/.Xresources
 xrdb -merge ~/.Xresources
