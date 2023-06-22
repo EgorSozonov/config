@@ -1,5 +1,6 @@
 -- Key mapping
 local map = require("utils").map
+local plugins = require("plugins")
 
 local g = vim.g -- global variables
 local o = vim.o -- get or set options
@@ -7,6 +8,10 @@ local go = vim.go -- get or set global options
 local wo = vim.wo -- window-scoped options
 local bo = vim.bo -- buffer-scoped options
 vim.opt.foldmethod = "marker"
+vim.opt.wrap = true
+vim.opt.linebreak = true -- Stop words from being broken on wrap
+vim.opt.showmode = false -- Don't display current mode
+
 vim.o.shada = nil -- turn off the useless saving of every piece of state
 
 o.tabstop = 4
@@ -31,4 +36,6 @@ map("n", "<C-k>", "<C-b>", { silent = true })
 map("n", "<C-n>", ":bn<CR>", { silent = true }) -- next buffer in order
 map("n", "<C-p>", ":bp<CR>", { silent = true }) -- previous buffer in order
 map("n", "<C-3>", ":b#<CR>", { silent = true }) -- previous buffer you were in
+map("n", "<M-e>", ":Explore<CR>", { silent = true })
 
+--plugins.require("leap").add_default_mappings()
