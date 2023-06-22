@@ -7,6 +7,7 @@ local go = vim.go -- get or set global options
 local wo = vim.wo -- window-scoped options
 local bo = vim.bo -- buffer-scoped options
 vim.opt.foldmethod = "marker"
+vim.o.shada = nil -- turn off the useless saving of every piece of state
 
 o.tabstop = 4
 o.softtabstop = 0
@@ -14,7 +15,7 @@ o.shiftwidth = 4
 o.smarttab = true
 o.expandtab = true
 o.smartindent = true
-vim.opt.clipboard = "unnamedplus"
+vim.opt.clipboard = "unnamedplus" -- normal copy and paste via X clipboard
 
 g.mapleader=' '
 g.maplocalleader = ' '
