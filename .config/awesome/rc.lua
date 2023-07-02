@@ -89,57 +89,35 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
+-- {{{ Wibar
 -- Keyboard map indicator and switcher
 mykeyboardlayout = awful.widget.keyboardlayout()
 
--- {{{ Wibar
 -- Create a textclock widget
-mytextclock = wibox.widget.textclock()
+theClock = wibox.widget.textclock('%d %b\n%H:%M')
 
 -- Create a wibox for each screen and add it
-local taglist_buttons = gears.table.join(
-                    awful.button({ }, 1, function(t) t:view_only() end),
-                    awful.button({ modkey }, 1, function(t)
-                                              if client.focus then
-                                                  client.focus:move_to_tag(t)
-                                              end
-                                          end),
-                    awful.button({ }, 3, awful.tag.viewtoggle),
-                    awful.button({ modkey }, 3, function(t)
-                                              if client.focus then
-                                                  client.focus:toggle_tag(t)
-                                              end
-                                          end),
-                    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
-                    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
-                )
-
-local tasklist_buttons = gears.table.join(
-                     awful.button({ }, 1, function (c)
-                                              if c == client.focus then
-                                                  c.minimized = true
-                                              else
-                                                  c:emit_signal(
-                                                      "request::activate",
-                                                      "tasklist",
-                                                      {raise = true}
-                                                  )
-                                              end
-                                          end),
-                     awful.button({ }, 3, function()
-                                              awful.menu.client_list({ theme = { width = 250 } })
-                                          end),
-                     awful.button({ }, 4, function ()
-                                              awful.client.focus.byidx(1)
-                                          end),
-                     awful.button({ }, 5, function ()
-                                              awful.client.focus.byidx(-1)
-                                          end))
+local taglistButtons = gears.table.join(
+    -- awful.button(modKey, mouseButton, onPress, onRelease)
+    awful.button({ }, 1, function(t) t:view_only() end),
+    awful.button({ modkey }, 1, 
+        function(t)
+            if client.focus then
+                client.focus:move_to_tag(t)
+            end
+        end),
+    awful.button({ }, 3, awful.tag.viewtoggle),
+    awful.button({ modkey }, 3, 
+        function(t)
+            if client.focus then
+                client.focus:toggle_tag(t)
+            end
+        end),
+    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
+    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
+)
 
 awful.screen.connect_for_each_screen(function(s)
-    -- Wallpaper
-    --set_wallpaper(s)
-
     -- Each screen has its own tag table.
     awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
 
@@ -149,48 +127,61 @@ awful.screen.connect_for_each_screen(function(s)
     -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
     s.mylayoutbox:buttons(gears.table.join(
-                           awful.button({ }, 1, function () awful.layout.inc( 1) end),
-                           awful.button({ }, 3, function () awful.layout.inc(-1) end),
-                           awful.button({ }, 4, function () awful.layout.inc( 1) end),
-                           awful.button({ }, 5, function () awful.layout.inc(-1) end)))
+        awful.button({ }, 1, function () awful.layout.inc( 1) end),
+        awful.button({ }, 3, function () awful.layout.inc(-1) end),
+        awful.button({ }, 4, function () awful.layout.inc( 1) end),
+        awful.button({ }, 5, function () awful.layout.inc(-1) end)))
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist {
         screen  = s,
         filter  = awful.widget.taglist.filter.all,
-        buttons = taglist_buttons
-    }
-
-    -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist {
-        screen  = s,
-        filter  = awful.widget.tasklist.filter.focused,--awful.widget.tasklist.filter.currenttags,
-        --buttons = tasklist_buttons,
+        layout = {
+            spacing = 8,
+            layout = wibox.layout.fixed.vertical
+        },
         style = {
-            bg_normal = "#000000",
-            bg_focus = "#000000",
-        }
+            align = 'center',
+            shape = gears.shape.rounded_bar,
+            shape_border_color = beautiful.fg_normal,
+            shape_border_width = 1
+        },
+        buttons = taglistButtons
     }
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s })
+    s.leftBar = awful.wibar({ position = "left", screen = s, width = 55})
 
     -- Add widgets to the wibox
-    s.mywibox:setup {
-        layout = wibox.layout.align.horizontal,
-        { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
-            mylauncher,
-            s.mytaglist,
-            s.mypromptbox,
-        },
+    --s.mywibox:setup {
+    --    layout = wibox.layout.align.horizontal,
+    --    { -- Left widgets
+    --        layout = wibox.layout.fixed.horizontal,
+    --        mylauncher,
+    --        s.mytaglist,
+    --        s.mypromptbox,
+    --    },
 
-        s.mytasklist, -- Middle widget with window title
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
+    --    s.mytasklist, -- Middle widget with window title
+    --    { -- Right widgets
+    --        layout = wibox.layout.fixed.horizontal,
+    --        mykeyboardlayout,
+    --        wibox.widget.systray(),
+    --        mytextclock,
+    --        s.mylayoutbox,
+    --    },
+    --}
+    s.leftBar:setup {
+        layout = wibox.layout.align.vertical,
+        {
+            layout = wibox.layout.fixed.vertical,
+            mylauncher,
+            s.mytaglist
+        },
+        { -- Bottom widgets
+            layout = wibox.layout.fixed.vertical,
             mykeyboardlayout,
             wibox.widget.systray(),
-            mytextclock,
-            s.mylayoutbox,
+            theClock,
         },
     }
 end)
