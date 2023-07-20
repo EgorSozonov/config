@@ -27,7 +27,8 @@ g.maplocalleader = ' '
 
 wo.nu = true -- line numbers
 vim.cmd(":hi LineNr guibg=#000000 guifg=#ffffff")
-map("i", "<C-q>", "<Esc>", { silent = true })
+map("i", "jk", "<Esc>", { silent = true })
+map("i", "kj", "<Esc>", { silent = true })
 map("i", "<C-s>", "<C-o>:Update<CR>", { silent = true })
 map("v", "<C-c>", "\"+y", { silent = true })
 map("n", "<C-v>", "\"*p", { silent = true })

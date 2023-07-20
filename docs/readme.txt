@@ -9,3 +9,5 @@ Copy configs from the system into this folder:
 
     . updateRepo.txt
 
+WARNING: do not run ". deploy.txt" if you have made uncommited changes
+to your local configs!
