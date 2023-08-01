@@ -36,7 +36,7 @@ wo.nu = true -- line numbers
 vim.cmd(":hi LineNr guibg=#000000 guifg=#ffffff")
 --}}}
 
---{{{ Keybindings
+--{{{ Core keybindings
 map("i", "jk", "<Esc>", { silent = true })
 map("i", "kj", "<Esc>", { silent = true })
 map("i", "<C-s>", "<C-o>:Update<CR>", { silent = true })
@@ -62,4 +62,7 @@ require "paq" {
 require("leap").add_default_mappings()
 local telescope = require("telescope.builtin")
 vim.keymap.set("n", "<leader>ff", telescope.find_files, {silent = true})
+vim.keymap.set("n", "<leader>fg", telescope.live_grep, {silent = true})
+vim.keymap.set("n", "<leader>fb", telescope.buffers, {silent = true})
+vim.keymap.set("n", "<leader>fh", telescope.help_tags, {silent = true})
 --}}}

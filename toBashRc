@@ -7,5 +7,9 @@ alias fixKb="setxkbmap -layout us,ru -option 'ctrl:nocaps,grp:lctrl_toggle'"
 alias cl="clear"
 alias u="cd .."
 alias l='ls -alhA | grep "^d" && ls -alhA | grep -v "^[dt]"'
+alias nvimConfig="nvim ~/.config/nvim/init.lua"
+alias myGroups="groups"
+alias allGroups="cat /etc/group"
+alias gitTags="git tag | xargs -n1 git rev-list -n 1"
 
-export PS1="\W % "
+export PS1="\e[0;32m\W % \e[m"
