@@ -21,6 +21,7 @@ vim.opt.showmode = false -- Don't display current mode
 
 vim.o.shada = nil -- turn off the useless saving of every piece of state
 
+-- Tab stuff
 o.tabstop = 4
 o.softtabstop = 0
 o.shiftwidth = 4
@@ -33,7 +34,10 @@ g.mapleader=','
 g.maplocalleader = ','
 
 wo.nu = true -- line numbers
-vim.cmd(":hi LineNr guibg=#000000 guifg=#ffffff")
+wo.rnu = true -- relative line numbers
+vim.cmd(":hi LineNr guibg=#000000 guifg=#ffffff") -- gutter colors ?
+vim.api.nvim_set_hl(0, "NormalFloat", {link = "Normal"}) -- Fix hideous pink menus
+vim.o.runtimepath = "~/.config/nvim,~/.local/share/nvim/site,~/.local/share/nvim/site/pack/*/start/*,/usr/share/nvim/site,/usr/share/nvim/runtime"
 --}}}
 
 --{{{ Core keybindings
@@ -45,8 +49,8 @@ map("n", "<C-v>", "\"*p", { silent = true })
 map("n", "<C-j>", "<C-f>", { silent = true })
 map("n", "<C-k>", "<C-b>", { silent = true })
 map("n", "<C-n>", ":bn<CR>", { silent = true }) -- next buffer in order
-map("n", "<C-p>", ":bp<CR>", { silent = true }) -- previous buffer in order
-map("n", "<C-3>", ":b#<CR>", { silent = true }) -- previous buffer you were in
+map("n", "<C-p>", ":bp<CR>", { silent = true }) -- preceding buffer in order
+map("n", "<C-3>", ":b#<CR>", { silent = true }) -- previous visited buffer
 map("n", "<M-e>", ":Explore<CR>", { silent = true })
 --}}}
 
@@ -55,7 +59,6 @@ map("n", "<M-e>", ":Explore<CR>", { silent = true })
 require "paq" {
     "savq/paq-nvim", -- Let Paq manage itself
     "nvim-lua/plenary.nvim",
-    "neovim/nvim-lspconfig",
     { "ggandor/leap.nvim" },
     "nvim-telescope/telescope.nvim"
 }
@@ -66,3 +69,17 @@ vim.keymap.set("n", "<leader>fg", telescope.live_grep, {silent = true})
 vim.keymap.set("n", "<leader>fb", telescope.buffers, {silent = true})
 vim.keymap.set("n", "<leader>fh", telescope.help_tags, {silent = true})
 --}}}
+--{{{ My custom functions
+vim.keymap.set("n", "o",
+    function()
+        vim.fn.append(vim.fn.line("."), "")
+    end,
+    { silent = true })
+vim.keymap.set("n", "O",
+    function()
+        vim.fn.append(vim.fn.line(".") - 1, "")
+    end,
+    { silent = true })
+
+--}}}
+

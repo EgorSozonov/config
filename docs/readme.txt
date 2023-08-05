@@ -11,3 +11,6 @@ Copy configs from the system into this folder:
 
 WARNING: do not run ". deploy.txt" if you have made uncommited changes
 to your local configs!
+
+Addendum: install ripgrep via your package manager in order to use the ",fg" shortcut in
+Neovim
