@@ -2,6 +2,8 @@ cp -rf ~/.config/awesome/* .config/awesome
 
 cp -rf ~/.config/nvim/* .config/nvim
 
+cp -rf ~/.config/ctags/* .config/ctags
+
 cp -f ~/.Xmodmap .Xmodmap
 
 cp -f ~/.Xresources .Xresources
