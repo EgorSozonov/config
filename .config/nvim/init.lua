@@ -1,9 +1,7 @@
 --{{{ Utils
-function map(mode, lhs, rhs, opts)
+function map(mode, lhs, rhs)
     local options = { noremap = true }
-    if opts then
-        options = vim.tbl_extend("force", options, opts)
-    end
+    options = vim.tbl_extend("force", options, {silent = true})
     vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 local g = vim.g -- global variables
@@ -41,17 +39,20 @@ vim.o.runtimepath = "~/.config/nvim,~/.local/share/nvim/site,~/.local/share/nvim
 --}}}
 
 --{{{ Core keybindings
-map("i", "jk", "<Esc>", { silent = true })
-map("i", "kj", "<Esc>", { silent = true })
-map("i", "<C-s>", "<C-o>:Update<CR>", { silent = true })
-map("v", "<C-c>", "\"+y", { silent = true })
-map("n", "<C-v>", "\"*p", { silent = true })
-map("n", "<C-j>", "<C-f>", { silent = true })
-map("n", "<C-k>", "<C-b>", { silent = true })
-map("n", "<C-n>", ":bn<CR>", { silent = true }) -- next buffer in order
-map("n", "<C-p>", ":bp<CR>", { silent = true }) -- preceding buffer in order
-map("n", "<C-3>", ":b#<CR>", { silent = true }) -- previous visited buffer
-map("n", "<M-e>", ":Explore<CR>", { silent = true })
+map("i", "jk", "<Esc>")
+map("i", "kj", "<Esc>")
+map("i", "<C-w>", "<C-o>:Update<CR>")
+map("v", "<C-c>", "\"+y")
+map("n", "<C-v>", "\"*p")
+map("n", "<C-j>", "<C-f>") -- movement by 
+map("n", "<C-k>", "<C-b>")
+map("n", "<C-n>", ":bn<CR>") -- next buffer in order
+map("n", "<C-p>", ":bp<CR>") -- preceding buffer in order
+map("n", "<C-3>", ":b#<CR>") -- previous visited buffer
+map("n", "<M-e>", ":Explore<CR>") -- open file navigator
+vim.keymap.set("n", "<leader>r", 'viw"0p') -- replace word from clipboard
+map("n", "gl", "22l")
+map("n", "gh", "22h")
 --}}}
 
 --{{{ Packages
@@ -73,13 +74,30 @@ vim.keymap.set("n", "<leader>fh", telescope.help_tags, {silent = true})
 vim.keymap.set("n", "o",
     function()
         vim.fn.append(vim.fn.line("."), "")
+        vim.cmd("norm! j")
     end,
     { silent = true })
 vim.keymap.set("n", "O",
     function()
         vim.fn.append(vim.fn.line(".") - 1, "")
+        vim.cmd("norm! k")
+    end,
+    { silent = true })
+vim.keymap.set("n", "<C-/>",
+    function()
+        local rw, cl = unpack(vim.api.nvim_win_get_cursor(0))
+        rw = rw - 1
+        while (vim.api.nvim_buf_get_text(0, rw, cl, rw, cl + 3, {})[1] == "///") do
+            vim.api.nvim_buf_set_text(0, rw, cl, rw, cl + 3, {}) -- deleting the chars
+            rw = rw + 1
+        end
     end,
     { silent = true })
 
+
+---vim.keymap.set("n", "<C-/>",
+---    function()
+---    end,
+---    { silent = true })
 --}}}
 
