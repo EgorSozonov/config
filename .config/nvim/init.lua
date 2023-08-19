@@ -10,7 +10,6 @@ local go = vim.go -- get or set global options
 local wo = vim.wo -- window-scoped options
 local bo = vim.bo -- buffer-scoped options
 --}}}
-
 --{{{Settings
 vim.opt.foldmethod = "marker"
 vim.opt.wrap = true
@@ -37,33 +36,31 @@ vim.cmd(":hi LineNr guibg=#000000 guifg=#ffffff") -- gutter colors ?
 vim.api.nvim_set_hl(0, "NormalFloat", {link = "Normal"}) -- Fix hideous pink menus
 vim.o.runtimepath = "~/.config/nvim,~/.local/share/nvim/site,~/.local/share/nvim/site/pack/*/start/*,/usr/share/nvim/site,/usr/share/nvim/runtime"
 --}}}
-
 --{{{ Core keybindings
-map("i", "jk", "<Esc>")
-map("i", "kj", "<Esc>")
-map("i", "<C-w>", "<C-o>:Update<CR>")
+map("i", "<C-;>", "<Esc>")
+map("i", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
+map("n", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("v", "<C-c>", "\"+y")
 map("n", "<C-v>", "\"*p")
-map("n", "<C-j>", "<C-f>") -- movement by 
-map("n", "<C-k>", "<C-b>")
+map("n", "<C-8>", "*")
+map("n", "w", "W")
+map("n", "b", "B")
 map("n", "<C-n>", ":bn<CR>") -- next buffer in order
 map("n", "<C-p>", ":bp<CR>") -- preceding buffer in order
 map("n", "<C-3>", ":b#<CR>") -- previous visited buffer
 map("n", "<M-e>", ":Explore<CR>") -- open file navigator
 vim.keymap.set("n", "<leader>r", 'viw"0p') -- replace word from clipboard
-map("n", "gl", "22l")
-map("n", "gh", "22h")
+map("n", "L", "21l")
+map("n", "H", "21h")
 --}}}
-
 --{{{ Packages
 
 require "paq" {
     "savq/paq-nvim", -- Let Paq manage itself
     "nvim-lua/plenary.nvim",
-    { "ggandor/leap.nvim" },
-    "nvim-telescope/telescope.nvim"
+    "nvim-telescope/telescope.nvim",
+    "kylechui/nvim-surround"
 }
-require("leap").add_default_mappings()
 local telescope = require("telescope.builtin")
 vim.keymap.set("n", "<leader>ff", telescope.find_files, {silent = true})
 vim.keymap.set("n", "<leader>fg", telescope.live_grep, {silent = true})
@@ -73,23 +70,55 @@ vim.keymap.set("n", "<leader>fh", telescope.help_tags, {silent = true})
 --{{{ My custom functions
 vim.keymap.set("n", "o",
     function()
-        vim.fn.append(vim.fn.line("."), "")
-        vim.cmd("norm! j")
+        vim.fn.append(vim.fn.line("."), "    ")
+        vim.cmd("norm! j$")
     end,
     { silent = true })
 vim.keymap.set("n", "O",
     function()
-        vim.fn.append(vim.fn.line(".") - 1, "")
+        vim.fn.append(vim.fn.line(".") - 1, "    ")
         vim.cmd("norm! k")
     end,
     { silent = true })
+
+function toNormalMode()
+    local ky = vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true)
+    vim.api.nvim_feedkeys(ky, 'n', false)
+end
+
+vim.keymap.set("v", "<C-/>",
+    function()
+        local line1 = vim.fn.line('v') -- current visual line 
+        local line2 = vim.api.nvim_win_get_cursor(0)[1] -- current line 
+        print("filetype = " .. vim.bo.filetype)
+        local lineStart
+        local lineEnd
+        if (line1 < line2) then
+            lineStart = line1
+            lineEnd = line2
+        else
+            lineStart = line2
+            lineEnd = line1
+        end
+        local i = lineStart
+        while (i <= lineEnd) do
+            local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+            vim.api.nvim_buf_set_lines(0, i - 1, i, false, {"//~" .. existingLine})
+            i = i + 1
+        end
+        toNormalMode()
+    end,
+    { silent = true })
+
 vim.keymap.set("n", "<C-/>",
     function()
         local rw, cl = unpack(vim.api.nvim_win_get_cursor(0))
         rw = rw - 1
-        while (vim.api.nvim_buf_get_text(0, rw, cl, rw, cl + 3, {})[1] == "///") do
-            vim.api.nvim_buf_set_text(0, rw, cl, rw, cl + 3, {}) -- deleting the chars
+        local linePref = vim.api.nvim_buf_get_text(0, rw, 0, rw, 3, {})[1] 
+        while (linePref == "//~" or linePref == "--~") do
+            vim.api.nvim_buf_set_text(0, rw, 0, rw, 3, {}) -- deleting the chars
             rw = rw + 1
+            linePref = vim.api.nvim_buf_get_text(0, rw, 0, rw, 3, {})[1] 
         end
     end,
     { silent = true })
