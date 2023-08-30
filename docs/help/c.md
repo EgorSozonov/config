@@ -143,3 +143,123 @@ int addNums(...){
     return result;
 }
 ```
+    
+    
+## Wrapping Sepples code   
+    
+Suppose that I have a C++ class named AAA, defined in files aaa.h, aaa.cpp, and that the class AAA has a method named `sayHi(const char *name)`, that I want to enable for C code.
+The C++ code of class AAA - Pure C++, I don't modify it:
+
+aaa.h
+
+    #ifndef AAA_H
+    #define AAA_H
+
+    class AAA {
+        public:
+            AAA();
+            void sayHi(const char *name);
+    };
+
+    #endif
+
+aaa.cpp
+
+    #include <iostream>
+    #include "aaa.h"
+
+    AAA::AAA() {
+    }
+
+    void AAA::sayHi(const char *name) {
+        std::cout << "Hi " << name << std::endl;
+    }
+
+Compiling this class as regularly done for C++. This code "does not know" that it is going to be used by C code. Using the command:
+
+    g++ -fpic -shared aaa.cpp -o libaaa.so
+
+Now, also in C++, creating a C connector:
+
+Defining it in files aaa_c_connector.h, aaa_c_connector.cpp. This connector is going to define a C function, named `AAA_sayHi(const char *name)`, that will use an instance of AAA and will call its method:
+
+aaa_c_connector.h
+
+    #ifndef AAA_C_CONNECTOR_H 
+    #define AAA_C_CONNECTOR_H 
+
+    #ifdef __cplusplus
+    extern "C" {
+    #endif
+ 
+    void AAA_sayHi(const char *name);
+
+    #ifdef __cplusplus
+    }
+    #endif
+
+    #endif
+
+aaa_c_connector.cpp
+
+    #include <cstdlib>
+
+    #include "aaa_c_connector.h"
+    #include "aaa.h"
+
+    #ifdef __cplusplus
+    extern "C" {
+    #endif
+
+    // Inside this "extern C" block, I can implement functions in C++, which will externally 
+    //   appear as C functions (which means that the function IDs will be their names, unlike
+    //   the regular C++ behavior, which allows defining multiple functions with the same name
+    //   (overloading) and hence uses function signature hashing to enforce unique IDs),
+
+
+    static AAA *AAA_instance = NULL;
+
+    void lazyAAA() {
+        if (AAA_instance == NULL) {
+            AAA_instance = new AAA();
+        }
+    }
+
+    void AAA_sayHi(const char *name) {
+        lazyAAA();
+        AAA_instance->sayHi(name);
+    }
+
+    #ifdef __cplusplus
+    }
+    #endif
+
+Compiling it, again, using a regular C++ compilation command:
+
+    g++ -fpic -shared aaa_c_connector.cpp -L. -laaa -o libaaa_c_connector.so
+
+Now I have a shared library (libaaa_c_connector.so), that implements the C function `AAA_sayHi(const char *name)`. I can now create a C main file and compile it all together:
+
+main.c
+
+    #include "aaa_c_connector.h"
+
+    int main() {
+        AAA_sayHi("David");
+        AAA_sayHi("James");
+
+        return 0;
+    }
+
+Compiling it using a C compilation command:
+
+    gcc main.c -L. -laaa_c_connector -o c_aaa
+
+I will need to set LD_LIBRARY_PATH to contain $PWD, and if I run the executable ./c_aaa, I will get the output I expect:
+
+Hi David
+Hi James
+
+EDIT:
+
+On some Linux distributions, -laaa and -lstdc++ may also be required for the last compilation command.    

@@ -45,6 +45,7 @@ map("n", "<C-v>", "\"*p")
 map("n", "<C-8>", "*")
 map("n", "w", "W")
 map("n", "b", "B")
+map("n", "<space>", "i<space><esc>") -- space in normal mode
 map("n", "<C-n>", ":bn<CR>") -- next buffer in order
 map("n", "<C-p>", ":bp<CR>") -- preceding buffer in order
 map("n", "<C-3>", ":b#<CR>") -- previous visited buffer
