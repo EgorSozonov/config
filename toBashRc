@@ -11,9 +11,12 @@ alias l='ls -alhA | grep "^d" && ls -alhA | grep -v "^[dt]"'
 alias bashrc="nvim ~/.bashrc"
 alias nvimConfig="nvim ~/.config/nvim/init.lua"
 alias aweConfig="nvim ~/.config/awesome/rc.lua"
+alias n="nvim" 
 alias myGroups="groups"
 alias allGroups="cat /etc/group"
 alias gitTags="git tag | xargs -n1 git rev-list -n 1"
 alias genTags="ctags-universal $(cat ~/.config/ctags/ctags.conf)"
+alias sqlite="sqlite3"    
+alias trailingSpaces="sed -i 's/[ ]*$//'"    
 
 export PS1="\e[0;32m\W %\e[m "

@@ -53,6 +53,7 @@ map("n", "<M-e>", ":Explore<CR>") -- open file navigator
 vim.keymap.set("n", "<leader>r", 'viw"0p') -- replace word from clipboard
 map("n", "L", "21l")
 map("n", "H", "21h")
+map("n", "<M-c>", ":q<CR>")
 --}}}
 --{{{ Packages
 
@@ -69,12 +70,14 @@ vim.keymap.set("n", "<leader>fb", telescope.buffers, {silent = true})
 vim.keymap.set("n", "<leader>fh", telescope.help_tags, {silent = true})
 --}}}
 --{{{ My custom functions
+    
+local sil = { silent = true }    
 vim.keymap.set("n", "o",
     function()
         vim.fn.append(vim.fn.line("."), "    ")
         vim.cmd("norm! j$")
     end,
-    { silent = true })
+    sil)
 vim.keymap.set("n", "O",
     function()
         vim.fn.append(vim.fn.line(".") - 1, "    ")
@@ -87,11 +90,10 @@ function toNormalMode()
     vim.api.nvim_feedkeys(ky, 'n', false)
 end
 
-vim.keymap.set("v", "<C-/>",
+vim.keymap.set("v", "<C-e>",
     function()
         local line1 = vim.fn.line('v') -- current visual line 
         local line2 = vim.api.nvim_win_get_cursor(0)[1] -- current line 
-        print("filetype = " .. vim.bo.filetype)
         local lineStart
         local lineEnd
         if (line1 < line2) then
@@ -111,7 +113,7 @@ vim.keymap.set("v", "<C-/>",
     end,
     { silent = true })
 
-vim.keymap.set("n", "<C-/>",
+vim.keymap.set("n", "<C-e>",
     function()
         local rw, cl = unpack(vim.api.nvim_win_get_cursor(0))
         rw = rw - 1
@@ -123,11 +125,26 @@ vim.keymap.set("n", "<C-/>",
         end
     end,
     { silent = true })
+    
+-- Move to a window (one of hjkl) or create a split if a window does not exist in the direction
+-- Example keybinding: vim.keymap("n", "<C-h>", function() moveOrCreateWin("h") end)
+-- @arg key: One of h, j, k, l, a direction to move or create a split
+local function moveOrCreateWindow(key)
+    local fn = vim.fn
+    local curr_win = fn.winnr()
+    vim.cmd("wincmd " .. key)        -- attempt to move
 
+    if (curr_win == fn.winnr()) then -- didn't move, so create a split
+        if key == "h" or key == "l" then
+            vim.cmd("wincmd v")
+        else
+            vim.cmd("wincmd s")
+        end
 
----vim.keymap.set("n", "<C-/>",
----    function()
----    end,
----    { silent = true })
---}}}
-
+        vim.cmd("wincmd " .. key)
+    end
+end
+vim.keymap.set("n", "<M-h>", function() moveOrCreateWindow("h") end, {silent = true})
+vim.keymap.set("n", "<M-j>", function() moveOrCreateWindow("j") end, {silent = true})
+vim.keymap.set("n", "<M-k>", function() moveOrCreateWindow("k") end, {silent = true})
+vim.keymap.set("n", "<M-l>", function() moveOrCreateWindow("l") end, {silent = true})
