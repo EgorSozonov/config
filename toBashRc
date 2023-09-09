@@ -1,22 +1,2 @@
-alias sys="sudo systemctl"
-alias battery="upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage"
-alias sus="systemctl suspend"
-alias running="systemctl --state=running --type=service"
-alias flash="sudo mount -o umask=000 --mkdir /dev/sdc1 /mnt/flash"
-alias unflash="sudo umount /mnt/flash"
-alias fixKb="setxkbmap -layout us,ru -option 'ctrl:nocaps,grp:lctrl_toggle'"
-alias cl="clear"
-alias up="cd .."
-alias l='ls -alhA | grep "^d" && ls -alhA | grep -v "^[dt]"'
-alias bashrc="nvim ~/.bashrc"
-alias nvimConfig="nvim ~/.config/nvim/init.lua"
-alias aweConfig="nvim ~/.config/awesome/rc.lua"
-alias n="nvim" 
-alias myGroups="groups"
-alias allGroups="cat /etc/group"
-alias gitTags="git tag | xargs -n1 git rev-list -n 1"
-alias genTags="ctags-universal $(cat ~/.config/ctags/ctags.conf)"
-alias sqlite="sqlite3"    
-alias trailingSpaces="sed -i 's/[ ]*$//'"    
-
+source ~/.config/aliases
 export PS1="\e[0;32m\W %\e[m "

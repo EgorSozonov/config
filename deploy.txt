@@ -1,5 +1,4 @@
-cp .Xmodmap ~/.Xmodmap
-xmodmap ~/.Xmodmap
+cp .config/aliases ~/.config
 
 cp -r .config/awesome/* ~/.config/awesome
 

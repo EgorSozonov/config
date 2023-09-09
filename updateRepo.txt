@@ -1,3 +1,5 @@
+cp ~/.config/aliases .config
+    
 cp -rf ~/.config/awesome/* .config/awesome
 
 cp -rf ~/.config/nvim/* .config/nvim
