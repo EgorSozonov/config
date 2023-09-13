@@ -64,26 +64,46 @@ require "paq" {
     "kylechui/nvim-surround"
 }
 local telescope = require("telescope.builtin")
-vim.keymap.set("n", "<leader>ff", telescope.find_files, {silent = true})
-vim.keymap.set("n", "<leader>fg", telescope.live_grep, {silent = true})
-vim.keymap.set("n", "<leader>fb", telescope.buffers, {silent = true})
-vim.keymap.set("n", "<leader>fh", telescope.help_tags, {silent = true})
+local sil = { silent = true }
+vim.keymap.set("n", "<leader>ff", telescope.find_files, sil)
+vim.keymap.set("n", "<leader>fg", telescope.live_grep, sil)
+vim.keymap.set("n", "<leader>fb", telescope.buffers, sil)
+vim.keymap.set("n", "<leader>fh", telescope.help_tags, sil)
 --}}}
 --{{{ My custom functions
-    
-local sil = { silent = true }    
+
+function countIndentation(currentLine)
+    local numSpaces = 0
+    for i = 1, #currentLine do
+        local char = currentLine:sub(i, i)
+        if char == ' ' then
+            numSpaces = numSpaces + 1
+        end
+    end
+    return numSpaces
+end
+
+
 vim.keymap.set("n", "o",
     function()
-        vim.fn.append(vim.fn.line("."), "    ")
+        local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
+        local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+        local numSpaces = countIndentation(currentLine)
+        vim.fn.append(vim.fn.line("."), string.sub(currentLine, 1, numSpaces))
         vim.cmd("norm! j$")
     end,
     sil)
+
 vim.keymap.set("n", "O",
     function()
-        vim.fn.append(vim.fn.line(".") - 1, "    ")
+        local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
+        local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+        local numSpaces = countIndentation(currentLine)
+        vim.fn.append(vim.fn.line(".") - 1, string.sub(currentLine, 1, numSpaces))
         vim.cmd("norm! k")
     end,
-    { silent = true })
+    sil )
+
 
 function toNormalMode()
     local ky = vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true)
@@ -92,8 +112,8 @@ end
 
 vim.keymap.set("v", "<C-e>",
     function()
-        local line1 = vim.fn.line('v') -- current visual line 
-        local line2 = vim.api.nvim_win_get_cursor(0)[1] -- current line 
+        local line1 = vim.fn.line('v') -- current visual line
+        local line2 = vim.api.nvim_win_get_cursor(0)[1] -- current line
         local lineStart
         local lineEnd
         if (line1 < line2) then
@@ -111,21 +131,24 @@ vim.keymap.set("v", "<C-e>",
         end
         toNormalMode()
     end,
-    { silent = true })
+    sil)
 
 vim.keymap.set("n", "<C-e>",
     function()
         local rw, cl = unpack(vim.api.nvim_win_get_cursor(0))
         rw = rw - 1
-        local linePref = vim.api.nvim_buf_get_text(0, rw, 0, rw, 3, {})[1] 
-        while (linePref == "//~" or linePref == "--~") do
+        local countLines = vim.api.nvim_buf_line_count(0)
+        while (rw < countLines) do
+            local linePref = vim.api.nvim_buf_get_text(0, rw, 0, rw, 3, {})[1]
+            if (linePref ~= "//~" and linePref ~= "--~") then
+                return
+            end
             vim.api.nvim_buf_set_text(0, rw, 0, rw, 3, {}) -- deleting the chars
             rw = rw + 1
-            linePref = vim.api.nvim_buf_get_text(0, rw, 0, rw, 3, {})[1] 
         end
     end,
-    { silent = true })
-    
+    sil)
+
 -- Move to a window (one of hjkl) or create a split if a window does not exist in the direction
 -- Example keybinding: vim.keymap("n", "<C-h>", function() moveOrCreateWin("h") end)
 -- @arg key: One of h, j, k, l, a direction to move or create a split
@@ -144,7 +167,7 @@ local function moveOrCreateWindow(key)
         vim.cmd("wincmd " .. key)
     end
 end
-vim.keymap.set("n", "<M-h>", function() moveOrCreateWindow("h") end, {silent = true})
-vim.keymap.set("n", "<M-j>", function() moveOrCreateWindow("j") end, {silent = true})
-vim.keymap.set("n", "<M-k>", function() moveOrCreateWindow("k") end, {silent = true})
-vim.keymap.set("n", "<M-l>", function() moveOrCreateWindow("l") end, {silent = true})
+vim.keymap.set("n", "<M-h>", function() moveOrCreateWindow("h") end, sil)
+vim.keymap.set("n", "<M-j>", function() moveOrCreateWindow("j") end, sil)
+vim.keymap.set("n", "<M-k>", function() moveOrCreateWindow("k") end, sil)
+vim.keymap.set("n", "<M-l>", function() moveOrCreateWindow("l") end, sil)
