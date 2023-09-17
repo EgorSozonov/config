@@ -71,6 +71,7 @@ vim.keymap.set("n", "<leader>fb", telescope.buffers, sil)
 vim.keymap.set("n", "<leader>fh", telescope.help_tags, sil)
 --}}}
 --{{{ My custom functions
+
 function countIndentation(currentLine)
     local numSpaces = 0
     for i = 1, #currentLine do
@@ -84,12 +85,16 @@ function countIndentation(currentLine)
     return numSpaces
 end
 
+
 local function isLineEmpty(line)
     local stripped = string.gsub(line, "%s+", "")
     return #stripped == 0
 end
 
-local function appendCommas()
+
+local function getLimitsOfCurrentBlock()
+    -- returns start and end line of the current block of lines (delimited by empty lines)
+
     local currLine = vim.api.nvim_win_get_cursor(0)[1] -- current line
     local i = currLine
     while i > 0 do
@@ -103,37 +108,47 @@ local function appendCommas()
 
     local countLines = vim.api.nvim_buf_line_count(0)
     i = currLine
-    while i < countLines do
+    while i <= countLines do
         local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
         if not currLine or isLineEmpty(currLine) then
             break
         end
         i = i + 1
     end
-    local lineEnd = i - 1
+    return {start = lineStart, endd = i}
+end
 
-    i = lineStart
-    while i <= lineEnd do
+
+local function appendCommas()
+    local limits = getLimitsOfCurrentBlock()
+
+    i = limits.start
+    print(limits.endd)
+    while i < limits.endd do
         local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
         vim.api.nvim_buf_set_lines(0, i - 1, i, false, {existingLine .. ","})
         i = i + 1
     end
 end
 
+
 vim.keymap.set("n", "<C-,>",
     appendCommas,
-    sil)
+    sil
+)
+
 
 vim.keymap.set("n", "o",
     function()
         local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
         local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
         local numSpaces = countIndentation(currentLine)
-        print(numSpaces)
         vim.fn.append(vim.fn.line("."), string.sub(currentLine, 1, numSpaces))
         vim.cmd("norm! j$")
     end,
-    sil)
+    sil
+)
+
 
 vim.keymap.set("n", "O",
     function()
@@ -143,13 +158,15 @@ vim.keymap.set("n", "O",
         vim.fn.append(vim.fn.line(".") - 1, string.sub(currentLine, 1, numSpaces))
         vim.cmd("norm! k")
     end,
-    sil )
+    sil
+)
 
 
 function toNormalMode()
     local ky = vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true)
     vim.api.nvim_feedkeys(ky, 'n', false)
 end
+
 
 vim.keymap.set("v", "<C-e>",
     function()
@@ -172,28 +189,79 @@ vim.keymap.set("v", "<C-e>",
         end
         toNormalMode()
     end,
-    sil)
+    sil
+)
+
+
+local function commentBlock(comm)
+    local limits = getLimitsOfCurrentBlock()
+    local i = limits.start
+    while i < limits.endd do
+        local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+        vim.api.nvim_buf_set_lines(0, i - 1, i, false, {comm .. existingLine})
+        i = i + 1
+    end
+end
+
+
+local function uncommentBlock(comm)
+    -- implying the comment length is 3
+
+    local currLine = vim.api.nvim_win_get_cursor(0)[1] -- current line
+    local i = currLine
+    while i > 0 do
+        local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+        if not currLine or currLine:sub(0, 3) ~= comm then
+            break
+        end
+        i = i - 1
+    end
+    local lineStart = i + 1
+
+    local countLines = vim.api.nvim_buf_line_count(0)
+    i = currLine
+    while i <= countLines do
+        local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+        print(currLine:sub(0, 3))
+        if not currLine or currLine:sub(0, 3) ~= comm then
+            break
+        end
+        i = i + 1
+    end
+    local lineEnd = i
+    i = lineStart
+    while i < lineEnd do
+        local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+        vim.api.nvim_buf_set_lines(0, i - 1, i, false, {existingLine:sub(4)})
+        i = i + 1
+    end
+end
+
 
 vim.keymap.set("n", "<C-e>",
     function()
-        local rw, cl = unpack(vim.api.nvim_win_get_cursor(0))
-        rw = rw - 1
-        local countLines = vim.api.nvim_buf_line_count(0)
-        while (rw < countLines) do
-            local linePref = vim.api.nvim_buf_get_text(0, rw, 0, rw, 3, {})[1]
-            if (linePref ~= "//~" and linePref ~= "--~") then
-                return
-            end
-            vim.api.nvim_buf_set_text(0, rw, 0, rw, 3, {}) -- deleting the chars
-            rw = rw + 1
+        local commFromVim = vim.api.nvim_buf_get_option(0, "commentstring")
+        local comm = "//~"
+        if commFromVim and #commFromVim > 0 then
+            comm = commFromVim:sub(0, 2) .. "~"
+        end
+
+        local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
+        local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+        local alreadyCommented = currentLine:sub(0, 3) == comm
+
+        if alreadyCommented then
+            uncommentBlock(comm)
+        else
+            commentBlock(comm)
         end
     end,
     sil)
 
--- Move to a window (one of hjkl) or create a split if a window does not exist in the direction
--- Example keybinding: vim.keymap("n", "<C-h>", function() moveOrCreateWin("h") end)
--- @arg key: One of h, j, k, l, a direction to move or create a split
+
 local function moveOrCreateWindow(key)
+    -- Move to a window (one of hjkl) or create a split if none exist in the direction
+    -- @arg key: One of h, j, k, l, a direction to move or create a split
     local currWin = vim.fn.winnr()
     vim.cmd("wincmd " .. key)        -- attempt to move
 
@@ -209,8 +277,8 @@ local function moveOrCreateWindow(key)
 end
 
 
-
 vim.keymap.set("n", "<M-h>", function() moveOrCreateWindow("h") end, sil)
 vim.keymap.set("n", "<M-j>", function() moveOrCreateWindow("j") end, sil)
 vim.keymap.set("n", "<M-k>", function() moveOrCreateWindow("k") end, sil)
 vim.keymap.set("n", "<M-l>", function() moveOrCreateWindow("l") end, sil)
+
