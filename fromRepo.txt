@@ -4,6 +4,8 @@ cp -r .config/awesome/* ~/.config/awesome
 
 cp -r .config/nvim/* ~/.config/nvim
 
+cp -r .config/kitty/* ~/.config/kitty
+
 cp -r .config/ctags/* ~/.config/ctags
 
 cp .Xresources ~/.Xresources

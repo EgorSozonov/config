@@ -1,2 +1,5 @@
 source ~/.config/aliases
-export PS1="\e[0;32m\W %\e[m "
+
+export PS1="\[\e[0;32m\]\W |>\[\e[m\] "
+export EDITOR=nvim
+stty -ixon # Disable XON/XOFF crap (terminal freezing)
