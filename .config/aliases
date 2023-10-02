@@ -1,5 +1,4 @@
 alias sys="systemctl"    
-alias l='ls -alhA | grep "^d"; ls -alhA | grep -v "^[dt]"'
 alias sys="sudo systemctl"
 alias sus="systemctl suspend"
 alias running="systemctl --state=running --type=service"
@@ -14,16 +13,19 @@ alias bashrc="nvim ~/.bashrc"
 alias aliases="nvim ~/.config/aliases"
 alias aweConfig="nvim ~/.config/awesome/rc.lua"
 alias ptl="nvim -S ~/.config/sessions/tl.vim"
+alias pblog="nvim -S ~/.config/sessions/blog.vim"
 alias myGroups="groups"
 alias allGroups="cat /etc/group"
 alias gitTags="git tag | xargs -n1 git rev-list -n 1"
 alias genTags="ctags-universal $(cat ~/.config/ctags/ctags.conf)"    
 alias trailingSpaces="sed -i 's/[ ]*$//'"    
-alias sqlite="sqlite3" 
-alias l='(ls --color=always -alhA | grep "^d"); (ls --color=always -alhA | grep -v "^[dt]")'
+alias sql="sqlite3" 
+alias l='(ls --color=always -agohA | grep "^d"); (ls --color=always -agohA | grep -v "^[dt]")'
 alias la='ls -A'
 alias grep="grep --color"
 alias zgrep="zgrep --color"
+alias ghc="ghc-9.2"
+alias backup=". ~/scr/backupVault.txt"
 
 #Debian-specific
 alias pkInstall="sudo apt install" 

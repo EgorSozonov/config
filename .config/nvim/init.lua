@@ -35,6 +35,8 @@ wo.rnu = true -- relative line numbers
 vim.cmd(":hi LineNr guibg=#000000 guifg=#ffffff") -- gutter colors ?
 vim.api.nvim_set_hl(0, "NormalFloat", {link = "Normal"}) -- Fix hideous pink menus
 vim.o.runtimepath = "~/.config/nvim,~/.local/share/nvim/site,~/.local/share/nvim/site/pack/*/start/*,/usr/share/nvim/site,/usr/share/nvim/runtime"
+vim.o.fileencodings = "cp1251,ucs-bom,utf8" -- cp-1251 encoding, because screw Unicode
+vim.o.fileencoding = "cp1251"
 --}}}
 --{{{ Core keybindings
 map("i", "<C-;>", "<Esc>")
@@ -42,15 +44,20 @@ map("i", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("n", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("v", "<C-c>", "\"+y")
 map("n", "<C-v>", "\"*p")
+map("n", "<C-/>", ":set hlsearch!<CR>") -- toggle coloring of searches
 map("n", "<C-8>", "*")
 map("n", "w", "W")
 map("n", "b", "B")
 map("n", "<space>", "i<space><esc>") -- space in normal mode
-map("n", "<C-n>", ":bn<CR>") -- next buffer in order
-map("n", "<C-p>", ":bp<CR>") -- preceding buffer in order
+map("n", "<C-n>", ":bn<CR>") -- next buffer
+map("n", "<C-p>", ":bp<CR>") -- preceding buffer
 map("n", "<C-3>", ":b#<CR>") -- previous visited buffer
 map("n", "<M-e>", ":Explore<CR>") -- open file navigator
 vim.keymap.set("n", "<leader>r", 'viw"0p') -- replace word from clipboard
+vim.keymap.set("v", "<leader>j", ":m '<-2<CR>gv") -- move line down
+vim.keymap.set("v", "<leader>k", ":m '>+1<CR>gv") -- move line up
+vim.keymap.set("n", "<leader>j", ":m-2<CR>")
+vim.keymap.set("n", "<leader>k", ":m+<CR>")
 map("n", "L", "21l")
 map("n", "H", "21h")
 map("n", "<M-c>", ":q<CR>")
@@ -69,6 +76,7 @@ vim.keymap.set("n", "<leader>ff", telescope.find_files, sil)
 vim.keymap.set("n", "<leader>fg", telescope.live_grep, sil)
 vim.keymap.set("n", "<leader>fb", telescope.buffers, sil)
 vim.keymap.set("n", "<leader>fh", telescope.help_tags, sil)
+
 --}}}
 --{{{ My custom functions
 
@@ -276,9 +284,46 @@ local function moveOrCreateWindow(key)
     end
 end
 
+local function getCurrentIndentation()
+    -- returns string with the same # of spaces as current line has at start
+    local lineNum = vim.api.nvim_win_get_cursor(0)[1]
+    local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+    local numSpaces = countIndentation(currentLine)
+    return string.sub(currentLine, 1, numSpaces)
+end
+
+local function insertBlock(delimiter, closingDelimiter)
+    -- inserts a block, with indentation and closing delimiter
+    local spaces = getCurrentIndentation()
+    local lineNum = vim.api.nvim_win_get_cursor(0)[1]
+    local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+    vim.api.nvim_buf_set_lines(0, lineNum - 1, lineNum, false, { currentLine .. " " .. delimiter})
+    vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. closingDelimiter})
+    vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. "    "})
+    vim.api.nvim_win_set_cursor(0, { lineNum + 1, #spaces + 4 })
+end
+
+vim.keymap.set("i", "<C-[>", function() insertBlock("{", "}") end, sil)
+vim.keymap.set("i", "<C-9>", function() insertBlock("(", ")") end, sil)
 
 vim.keymap.set("n", "<M-h>", function() moveOrCreateWindow("h") end, sil)
 vim.keymap.set("n", "<M-j>", function() moveOrCreateWindow("j") end, sil)
 vim.keymap.set("n", "<M-k>", function() moveOrCreateWindow("k") end, sil)
 vim.keymap.set("n", "<M-l>", function() moveOrCreateWindow("l") end, sil)
 
+--~ vim.v.this_session - the filename of the session
+
+--~ nvim_create_buf()
+--~ nvim_open_win()
+--~ nvim_open_term()
+--~ nvim_chan_send()
+
+--~local job = vim.fn.jobstart(
+--~    'echo hello',
+--~    {
+--~        cwd = '/path/to/working/dir',
+--~        on_exit = someFunction,
+--~        on_stdout = someOtherFunction,
+--~        on_stderr = someThirdFunction
+--~    }
+--~)
