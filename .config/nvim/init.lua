@@ -33,10 +33,12 @@ g.maplocalleader = ','
 wo.nu = true -- line numbers
 wo.rnu = true -- relative line numbers
 vim.cmd(":hi LineNr guibg=#000000 guifg=#ffffff") -- gutter colors ?
-vim.api.nvim_set_hl(0, "NormalFloat", {link = "Normal"}) -- Fix hideous pink menus
+vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" }) -- Fix hideous pink menus
 vim.o.runtimepath = "~/.config/nvim,~/.local/share/nvim/site,~/.local/share/nvim/site/pack/*/start/*,/usr/share/nvim/site,/usr/share/nvim/runtime"
-vim.o.fileencodings = "cp1251,ucs-bom,utf8" -- cp-1251 encoding, because screw Unicode
-vim.o.fileencoding = "cp1251"
+
+vim.api.nvim_set_hl(0, "Search", { ctermbg = 8 })
+vim.api.nvim_set_hl(0, "Statement", { ctermfg = 14 })
+
 --}}}
 --{{{ Core keybindings
 map("i", "<C-;>", "<Esc>")
