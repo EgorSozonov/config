@@ -37,7 +37,10 @@ vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" }) -- Fix hideous pink m
 vim.o.runtimepath = "~/.config/nvim,~/.local/share/nvim/site,~/.local/share/nvim/site/pack/*/start/*,/usr/share/nvim/site,/usr/share/nvim/runtime"
 
 vim.api.nvim_set_hl(0, "Search", { ctermbg = 8 })
-vim.api.nvim_set_hl(0, "Statement", { ctermfg = 14 })
+vim.api.nvim_set_hl(0, "Statement", { ctermfg = 11 })
+vim.api.nvim_set_hl(0, "String", { ctermfg = "Green" })
+vim.api.nvim_set_hl(0, "Comment", { ctermfg = "Green" })
+vim.api.nvim_set_hl(0, "Folded", { ctermfg = "Green" })
 
 --}}}
 --{{{ Core keybindings
