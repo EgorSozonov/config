@@ -137,9 +137,15 @@ local function toNormalMode()
     vim.api.nvim_feedkeys(ky, 'n', false)
 end
 
+
+local function getLineContent(lineNum)
+    return vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+end
+
+
 local function getCurrLineContent()
     local lineNum = vim.api.nvim_win_get_cursor(0)[1]
-    return vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+    return getLineContent(lineNum)
 end
 
 
@@ -207,6 +213,7 @@ vim.keymap.set("n", "O",
 )
 --}}}
 --{{{ Comments
+
 vim.keymap.set("v", "<C-e>",
     function()
         local line1 = vim.fn.line('v') -- current visual line
@@ -279,11 +286,7 @@ end
 
 vim.keymap.set("n", "<C-e>",
     function()
-        local commFromVim = vim.api.nvim_buf_get_option(0, "commentstring")
         local comm = "//~"
-        if commFromVim and #commFromVim > 0 then
-            comm = commFromVim:sub(0, 2) .. "~"
-        end
 
         local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
         local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
@@ -296,8 +299,10 @@ vim.keymap.set("n", "<C-e>",
         end
     end,
     sil)
+    
 --}}}
 --{{{ "Windows" (What Vim calls views)
+
 local function moveOrCreateWindow(key)
     -- Move to a window (one of hjkl) or create a split if none exist in the direction
     -- @arg key: One of h, j, k, l, a direction to move or create a split
@@ -314,34 +319,34 @@ local function moveOrCreateWindow(key)
         vim.cmd("wincmd " .. key)
     end
 end
+
 --}}}
 
 vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
 vim.keymap.set("i", "<C-9>", function() insertBlock("(", ")") end, sil)
-
 vim.keymap.set("n", "<M-h>", function() moveOrCreateWindow("h") end, sil)
 vim.keymap.set("n", "<M-j>", function() moveOrCreateWindow("j") end, sil)
 vim.keymap.set("n", "<M-k>", function() moveOrCreateWindow("k") end, sil)
 vim.keymap.set("n", "<M-l>", function() moveOrCreateWindow("l") end, sil)
 
 --{{{ The anything text object
+
 ---@return boolean
 local function isVisualMode()
 	local modeWithV = vim.fn.mode():find("v")
 	return modeWithV ~= nil
 end
 
----runs a command string in normal mode
 function runInNormal(cmdStr)
+    ---runs a command string in normal mode
     vim.cmd.normal { cmdStr, bang = true }
 end
 
----@alias pos {integer, integer}
-
----sets the selection for the textobj (characterwise)
----@param startPos pos
----@param endPos pos
 local function setSelection(startPos, endPos)
+    ---@alias pos {integer, integer}
+    ---sets the selection for the textobj (characterwise)
+    ---@param startPos pos
+    ---@param endPos pos
 	vim.api.nvim_win_set_cursor(0, startPos)
 	if isVisualMode() then
 	    runInNormal("o")
@@ -352,34 +357,165 @@ local function setSelection(startPos, endPos)
 end
 
 
+local function anyTextObjectFindLeftEnd(pos)
+    ---Goes rightward and properly handles opening+closing (), [] and {}, as well as `` and ""
+    ---Stops at the first space/newline outside of those delimiters. Is multiline
+    
+    local levelPar = 0 -- ()
+    local levelBra = 0 -- []
+    local levelCurl = 0 -- {}
+    local inQuo = false -- "
+    local inBack = false -- `
+
+    local countLines = vim.api.nvim_buf_line_count(0)
+    local i = pos[1]
+    local startCol = pos[2]
+    while i >= 1 do
+        local currentLine = getLineContent(i)
+        for j = startCol, 1, -1 do
+            local char = currentLine:sub(j, j)
+            if inQuo == true then
+                if char == "\"" and j - 1 >= 1
+                        and currentLine:sub(j - 1, j - 1) == "\\" then
+                    j = j - 1
+                elseif char == "\"" then
+                    inQuo = false
+                end
+            elseif inBack == true then
+                if char == "`" then
+                    inBack = false 
+                end
+            else
+                if char == "\"" then
+                    inQuo = true 
+                elseif char == "`" then
+                    inBack = true
+                elseif char == "(" then
+                    if levelPar == 0 then 
+                        return {i, j}
+                    end
+                    levelPar = levelPar - 1
+                elseif char == ")" then
+                    levelPar = levelPar + 1
+                elseif char == "{" then
+                    if levelCurl == 0 then 
+                        return {i, j}
+                    end
+                    levelCurl = levelCurl - 1
+                elseif char == "}" then
+                    levelCurl = levelCurl + 1
+                elseif char == "[" then
+                    if levelBra == 0 then 
+                        return {i, j}
+                    end
+                    levelBra = levelBra - 1
+                elseif char == "]" then
+                    levelBra = levelBra + 1
+                elseif char == " " then
+                    if levelPar == 0 and levelBra == 0 and levelCurl == 0 then
+                        return {i, j} 
+                    end
+                end
+            end
+        end
+        startCol = #currentLine
+    end 
+    return {1, 1} 
+end 
+
+local function anyTextObjectFindRightEnd(pos)
+    ---Goes rightward and properly handles opening+closing (), [] and {}, as well as `` and ""
+    ---Stops at the first space/newline outside of those delimiters. Is multiline
+    
+    local levelPar = 0 -- ()
+    local levelBra = 0 -- []
+    local levelCurl = 0 -- {}
+    local inQuo = false -- "
+    local inBack = false -- `
+
+    local countLines = vim.api.nvim_buf_line_count(0)
+    local i = pos[1]
+    local startCol = pos[2]
+    local currentLine 
+    while i <= countLines do
+        currentLine = getLineContent(i)
+        for j = startCol, #currentLine do
+            local char = currentLine:sub(j, j)
+            if inQuo == true then
+                if char == "\\" and j + 1 <= #currentLine
+                        and currentLine:sub(j + 1, j + 1) == "\"" then
+                    j = j + 1
+                elseif char == "\"" then
+                    inQuo = false
+                end
+            elseif inBack == true then
+                if char == "`" then
+                    inBack = false 
+                end
+            else
+                if char == "\"" then
+                    inQuo = true 
+                elseif char == "`" then
+                    inBack = true
+                elseif char == "(" then
+                    levelPar = levelPar + 1
+                elseif char == ")" then
+                    if levelPar == 0 then 
+                        return {i, j - 2}
+                    end
+                    levelPar = levelPar - 1
+                elseif char == "{" then
+                    levelCurl = levelCurl + 1
+                elseif char == "}" then
+                    if levelCurl == 0 then 
+                        return {i, j - 2}
+                    end
+                    levelCurl = levelCurl - 1
+                elseif char == "[" then
+                    levelBra = levelBra + 1
+                elseif char == "]" then
+                    if levelBra == 0 then 
+                        return {i, j - 2}
+                    end
+                    levelBra = levelBra - 1
+                elseif char == "/" and j + 1 <= currentLine
+                        and currentLine:sum(j + 1, j + 1) == "/" then
+                    break
+                elseif char == " " then
+                    if levelPar == 0 and levelBra == 0 and levelCurl == 0 then
+                        return {i, j - 2} 
+                    end
+                end
+            end
+        end
+        startCol = 1
+    end 
+    return {countLines, #currentLine}
+
+--//~    for i = j, #currentLine do
+--//~        local char = currentLine:sub(i, i)
+--//~        if char == ' ' then
+--//~            endInd = i - 2 -- don't ask why -2...
+--//~            break
+--//~        end
+--//~    end
+end
+
 local function anyTextObject()
     local currentLine = getCurrLineContent()
     local lineN = vim.api.nvim_win_get_cursor(0)[1]
     local j = vim.api.nvim_win_get_cursor(0)[2] + 1 -- +1 because the Neovim API is stupid
-    local startInd
-    local endInd
-    for i = j, #currentLine do
-        local char = currentLine:sub(i, i)
-        if char == ' ' then
-            endInd = i - 2 -- don't ask why -2...
-            break
-        end
-    end
-    for i = j, 1, -1 do
-        local char = currentLine:sub(i, i)
-        if char == ' ' then
-            startInd = i
-            break
-        end
-    end
-    print("row = ", lineN, " col = ", startInd, "to  col = ", endInd) 
-    setSelection({lineN, startInd}, {lineN, endInd})
+    
+    local startPos = anyTextObjectFindLeftEnd({lineN, j})
+    local endPos = anyTextObjectFindRightEnd({lineN, j})
+    print("row = ", lineN, " col = ", startInd, "to  row = ", endPos[1], " col = ", endPos[2]) 
+    setSelection(startPos, endPos)
 end
 
 vim.keymap.set("o", "iu", function() anyTextObject() end, sil)
 
 --}}}
-
+--{{{ Snippets
 --~ vim.v.this_session - the filename of the session
 
 --~ nvim_create_buf()
@@ -396,3 +532,4 @@ vim.keymap.set("o", "iu", function() anyTextObject() end, sil)
 --~        on_stderr = someThirdFunction
 --~    }
 --~)
+--}}}
