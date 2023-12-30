@@ -17,14 +17,18 @@ alias pblog="nvim -S ~/.config/sessions/blog.vim"
 alias myGroups="groups"
 alias allGroups="cat /etc/group"
 alias gitTags="git tag | xargs -n1 git rev-list -n 1"
-alias genTags="ctags-universal $(cat ~/.config/ctags/ctags.conf)"    
+alias genTags="ctags-universal --exclude=node_modules $(cat ~/.config/ctags/ctags.conf)"    
 alias trailingSpaces="sed -i 's/[ ]*$//'"    
 alias sql="sqlite3" 
 alias l='(ls --color=always -agohA | grep "^d"); (ls --color=always -agohA | grep -v "^[dt]")'
+alias lss='ls --color=always -agohA'
 alias la='ls -A'
 alias grep="grep --color"
 alias zgrep="zgrep --color"
 alias backup=". ~/scr/backupVault.txt"
+alias compress="tar -cz"
+alias decompress="tar -xf"
+alias btest="tsc --outdir _bin/test --strict true --esModuleInterop true --module ES2020 test/test.ts"
 
 #Debian-specific
 alias pkInstall="sudo apt install" 

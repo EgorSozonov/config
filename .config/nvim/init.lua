@@ -25,6 +25,7 @@ o.shiftwidth = 4
 o.smarttab = true
 o.expandtab = true
 o.smartindent = true
+o.ignorecase = true
 vim.opt.clipboard = "unnamedplus" -- normal copy and paste via X clipboard
 
 g.mapleader=','
@@ -40,7 +41,7 @@ vim.api.nvim_set_hl(0, "Search", { ctermbg = 8 })
 vim.api.nvim_set_hl(0, "Statement", { ctermfg = 11 })
 vim.api.nvim_set_hl(0, "String", { ctermfg = "Green" })
 vim.api.nvim_set_hl(0, "Comment", { ctermfg = "Green" })
-vim.api.nvim_set_hl(0, "Folded", { ctermfg = "Green" })
+vim.api.nvim_set_hl(0, "Folded", { ctermbg = "DarkGray" })
 
 --}}}
 --{{{ Core keybindings
@@ -51,8 +52,6 @@ map("v", "<C-c>", "\"+y")
 map("n", "<C-v>", "\"*p")
 map("n", "<C-/>", ":set hlsearch!<CR>") -- toggle coloring of searches
 map("n", "<C-8>", "*")
-map("n", "w", "W")
-map("n", "b", "B")
 map("n", "<space>", "i<space><esc>") -- space in normal mode
 map("n", "<C-n>", ":bn<CR>") -- next buffer
 map("n", "<C-p>", ":bp<CR>") -- preceding buffer
@@ -84,6 +83,7 @@ vim.keymap.set("n", "<leader>fh", telescope.help_tags, sil)
 
 --}}}
 --{{{ My custom functions
+--{{{ Utils
 
 function countIndentation(currentLine)
     local numSpaces = 0
@@ -108,7 +108,7 @@ end
 local function getLimitsOfCurrentBlock()
     -- returns start and end line of the current block of lines (delimited by empty lines)
 
-    local currLine = vim.api.nvim_win_get_cursor(0)[1] -- current line
+    local currLine = vim.api.nvim_win_get_cursor(0)[1] -- current line number
     local i = currLine
     while i > 0 do
         local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
@@ -132,6 +132,38 @@ local function getLimitsOfCurrentBlock()
 end
 
 
+local function toNormalMode()
+    local ky = vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true)
+    vim.api.nvim_feedkeys(ky, 'n', false)
+end
+
+local function getCurrLineContent()
+    local lineNum = vim.api.nvim_win_get_cursor(0)[1]
+    return vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+end
+
+
+local function getCurrentIndentation()
+    -- returns string with the same # of spaces as current line has at start
+    local currentLine = getCurrLineContent()
+    local numSpaces = countIndentation(currentLine)
+    return string.sub(currentLine, 1, numSpaces)
+end
+
+
+local function insertBlock(delimiter, closingDelimiter)
+    -- inserts a block, with indentation and closing delimiter
+    local spaces = getCurrentIndentation()
+    local lineNum = vim.api.nvim_win_get_cursor(0)[1]
+    local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+    vim.api.nvim_buf_set_lines(0, lineNum - 1, lineNum, false, { currentLine .. " " .. delimiter})
+    vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. closingDelimiter})
+    vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. "    "})
+    vim.api.nvim_win_set_cursor(0, { lineNum + 1, #spaces + 4 })
+end
+
+--}}}
+--{{{ Commas
 local function appendCommas()
     local limits = getLimitsOfCurrentBlock()
 
@@ -149,8 +181,8 @@ vim.keymap.set("n", "<C-,>",
     appendCommas,
     sil
 )
-
-
+--}}}
+--{{{ o
 vim.keymap.set("n", "o",
     function()
         local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
@@ -173,14 +205,8 @@ vim.keymap.set("n", "O",
     end,
     sil
 )
-
-
-function toNormalMode()
-    local ky = vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true)
-    vim.api.nvim_feedkeys(ky, 'n', false)
-end
-
-
+--}}}
+--{{{ Comments
 vim.keymap.set("v", "<C-e>",
     function()
         local line1 = vim.fn.line('v') -- current visual line
@@ -270,8 +296,8 @@ vim.keymap.set("n", "<C-e>",
         end
     end,
     sil)
-
-
+--}}}
+--{{{ "Windows" (What Vim calls views)
 local function moveOrCreateWindow(key)
     -- Move to a window (one of hjkl) or create a split if none exist in the direction
     -- @arg key: One of h, j, k, l, a direction to move or create a split
@@ -288,33 +314,71 @@ local function moveOrCreateWindow(key)
         vim.cmd("wincmd " .. key)
     end
 end
+--}}}
 
-local function getCurrentIndentation()
-    -- returns string with the same # of spaces as current line has at start
-    local lineNum = vim.api.nvim_win_get_cursor(0)[1]
-    local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
-    local numSpaces = countIndentation(currentLine)
-    return string.sub(currentLine, 1, numSpaces)
-end
-
-local function insertBlock(delimiter, closingDelimiter)
-    -- inserts a block, with indentation and closing delimiter
-    local spaces = getCurrentIndentation()
-    local lineNum = vim.api.nvim_win_get_cursor(0)[1]
-    local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
-    vim.api.nvim_buf_set_lines(0, lineNum - 1, lineNum, false, { currentLine .. " " .. delimiter})
-    vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. closingDelimiter})
-    vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. "    "})
-    vim.api.nvim_win_set_cursor(0, { lineNum + 1, #spaces + 4 })
-end
-
-vim.keymap.set("i", "<C-[>", function() insertBlock("{", "}") end, sil)
+vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
 vim.keymap.set("i", "<C-9>", function() insertBlock("(", ")") end, sil)
 
 vim.keymap.set("n", "<M-h>", function() moveOrCreateWindow("h") end, sil)
 vim.keymap.set("n", "<M-j>", function() moveOrCreateWindow("j") end, sil)
 vim.keymap.set("n", "<M-k>", function() moveOrCreateWindow("k") end, sil)
 vim.keymap.set("n", "<M-l>", function() moveOrCreateWindow("l") end, sil)
+
+--{{{ The anything text object
+---@return boolean
+local function isVisualMode()
+	local modeWithV = vim.fn.mode():find("v")
+	return modeWithV ~= nil
+end
+
+---runs a command string in normal mode
+function runInNormal(cmdStr)
+    vim.cmd.normal { cmdStr, bang = true }
+end
+
+---@alias pos {integer, integer}
+
+---sets the selection for the textobj (characterwise)
+---@param startPos pos
+---@param endPos pos
+local function setSelection(startPos, endPos)
+	vim.api.nvim_win_set_cursor(0, startPos)
+	if isVisualMode() then
+	    runInNormal("o")
+	else
+		runInNormal("v")
+	end
+	vim.api.nvim_win_set_cursor(0, endPos)
+end
+
+
+local function anyTextObject()
+    local currentLine = getCurrLineContent()
+    local lineN = vim.api.nvim_win_get_cursor(0)[1]
+    local j = vim.api.nvim_win_get_cursor(0)[2] + 1 -- +1 because the Neovim API is stupid
+    local startInd
+    local endInd
+    for i = j, #currentLine do
+        local char = currentLine:sub(i, i)
+        if char == ' ' then
+            endInd = i - 2 -- don't ask why -2...
+            break
+        end
+    end
+    for i = j, 1, -1 do
+        local char = currentLine:sub(i, i)
+        if char == ' ' then
+            startInd = i
+            break
+        end
+    end
+    print("row = ", lineN, " col = ", startInd, "to  col = ", endInd) 
+    setSelection({lineN, startInd}, {lineN, endInd})
+end
+
+vim.keymap.set("o", "iu", function() anyTextObject() end, sil)
+
+--}}}
 
 --~ vim.v.this_session - the filename of the session
 
