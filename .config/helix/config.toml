@@ -10,7 +10,10 @@ select = "underline"
 
 [keys.insert]
 tab = "normal_mode"
+C-w = ":write-all"
 
 [keys.normal]
 C-p = ":buffer-next"
 C-n = ":buffer-previous"
+#";" = "space_mode"
+
