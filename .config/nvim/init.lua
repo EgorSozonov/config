@@ -10,7 +10,8 @@ local go = vim.go -- get or set global options
 local wo = vim.wo -- window-scoped options
 local bo = vim.bo -- buffer-scoped options
 --}}}
---{{{Settings
+--{{{ Settings
+
 vim.opt.foldmethod = "marker"
 vim.opt.wrap = true
 vim.opt.linebreak = true -- Stop words from being broken on wrap
@@ -35,7 +36,7 @@ wo.nu = true -- line numbers
 wo.rnu = true -- relative line numbers
 vim.cmd(":hi LineNr guibg=#000000 guifg=#ffffff") -- gutter colors ?
 vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" }) -- Fix hideous pink menus
-vim.o.runtimepath = "~/.config/nvim,~/.local/share/nvim/site,~/.local/share/nvim/site/pack/*/start/*,/usr/share/nvim/site,/usr/share/nvim/runtime"
+vim.o.runtimepath = "~/.config/nvim,~/.local/share/nvim/site,/usr/local/share/nvim/nvim/runtime/pack/*/start/*,/usr/local/share/nvim/site,/usr/local/share/nvim/nvim/runtime"
 
 vim.api.nvim_set_hl(0, "Search", { ctermbg = 8 })
 vim.api.nvim_set_hl(0, "Statement", { ctermfg = 11 })
@@ -45,11 +46,13 @@ vim.api.nvim_set_hl(0, "Folded", { ctermbg = "DarkGray" })
 
 --}}}
 --{{{ Core keybindings
+
 map("i", "<C-;>", "<Esc>")
 map("i", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("n", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("v", "<C-c>", "\"+y")
 map("n", "<C-v>", "\"*p")
+map("i", "<C-v>", "\"*p")
 map("n", "<C-/>", ":set hlsearch!<CR>") -- toggle coloring of searches
 map("n", "<C-8>", "*")
 map("n", "<space>", "i<space><esc>") -- space in normal mode
@@ -65,6 +68,7 @@ vim.keymap.set("n", "<leader>k", ":m+<CR>")
 map("n", "L", "21l")
 map("n", "H", "21h")
 map("n", "<M-c>", ":q<CR>")
+
 --}}}
 --{{{ Packages
 
@@ -72,6 +76,7 @@ require "paq" {
     "savq/paq-nvim", -- Let Paq manage itself
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope.nvim",
+    "L3MON4D3/LuaSnip", 
     "kylechui/nvim-surround"
 }
 local telescope = require("telescope.builtin")
@@ -81,6 +86,20 @@ vim.keymap.set("n", "<leader>fg", telescope.live_grep, sil)
 vim.keymap.set("n", "<leader>fb", telescope.buffers, sil)
 vim.keymap.set("n", "<leader>fh", telescope.help_tags, sil)
 
+local ls = require("luasnip")
+ls.snippets = require("snippets")
+vim.keymap.set({"i"}, "<C-k>", function() ls.expand() end, sil)
+vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump(1) end, sil)
+vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, sil)
+
+vim.keymap.set({"i", "s"}, "<C-E>", 
+    function() 
+        if ls.choice_active() then
+            ls.change_choice(1)
+        end
+    end,
+    sil)
+    
 --}}}
 --{{{ My custom functions
 --{{{ Utils

@@ -4,10 +4,7 @@ cp -rf ~/.config/awesome/* .config/awesome
 
 cp -rf ~/.config/nvim/* .config/nvim
 
+cp -rf ~/.config/helix/* .config/helix
+
 cp -rf ~/.config/kitty/* .config/kitty
 
-cp -rf ~/.config/ctags/* .config/ctags
-
-cp -f ~/.Xmodmap .Xmodmap
-
-cp -f ~/.Xresources .Xresources
