@@ -12,6 +12,7 @@ local bo = vim.bo -- buffer-scoped options
 --}}}
 --{{{ Settings
 
+vim.o.runtimepath = "~/.local/share/nvim/site,~/.config/nvim"
 vim.opt.foldmethod = "marker"
 vim.opt.wrap = true
 vim.opt.linebreak = true -- Stop words from being broken on wrap
@@ -35,19 +36,22 @@ g.maplocalleader = ','
 wo.nu = true -- line numbers
 wo.rnu = true -- relative line numbers
 vim.cmd(":hi LineNr guibg=#000000 guifg=#ffffff") -- gutter colors ?
-vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" }) -- Fix hideous pink menus
-vim.o.runtimepath = "~/.config/nvim,~/.local/share/nvim/site,/usr/local/share/nvim/nvim/runtime/pack/*/start/*,/usr/local/share/nvim/site,/usr/local/share/nvim/nvim/runtime"
 
+vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" }) -- Fix hideous pink menus
+
+-- Syntax coloring: run ":syntax" to see which ones are active, edit syntax/..vim to change them
 vim.api.nvim_set_hl(0, "Search", { ctermbg = 8 })
-vim.api.nvim_set_hl(0, "Statement", { ctermfg = 11 })
-vim.api.nvim_set_hl(0, "String", { ctermfg = "Green" })
-vim.api.nvim_set_hl(0, "Comment", { ctermfg = "Green" })
-vim.api.nvim_set_hl(0, "Folded", { ctermbg = "DarkGray" })
+vim.api.nvim_set_hl(0, "String", { fg = "#00FF00" })
+vim.api.nvim_set_hl(0, "cStatement", { fg = "Yellow" })
+vim.api.nvim_set_hl(0, "Comment", { fg = "#00FF00" })
+vim.api.nvim_set_hl(0, "Folded", { bg = "#303030" })
 
 --}}}
 --{{{ Core keybindings
 
 map("i", "<C-;>", "<Esc>")
+map("i", "<Tab>", "<Esc>")
+map("i", "<C-space>", "<space><space><space><space>") -- indentation insert
 map("i", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("n", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("v", "<C-c>", "\"+y")

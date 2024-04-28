@@ -4,7 +4,5 @@ cp -rf ~/.config/awesome/* .config/awesome
 
 cp -rf ~/.config/nvim/* .config/nvim
 
-cp -f ~/.config/emacs/init.el .config/emacs
-
 cp -rf ~/.config/kitty/* .config/kitty
 
