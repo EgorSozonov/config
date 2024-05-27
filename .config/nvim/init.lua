@@ -80,7 +80,7 @@ require "paq" {
     "savq/paq-nvim", -- Let Paq manage itself
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope.nvim",
-    "L3MON4D3/LuaSnip", 
+    "L3MON4D3/LuaSnip",
     "kylechui/nvim-surround"
 }
 local telescope = require("telescope.builtin")
@@ -96,14 +96,14 @@ vim.keymap.set({"i"}, "<C-k>", function() ls.expand() end, sil)
 vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump(1) end, sil)
 vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, sil)
 
-vim.keymap.set({"i", "s"}, "<C-E>", 
-    function() 
+vim.keymap.set({"i", "s"}, "<C-E>",
+    function()
         if ls.choice_active() then
             ls.change_choice(1)
         end
     end,
     sil)
-    
+
 --}}}
 --{{{ My custom functions
 --{{{ Utils
@@ -322,13 +322,13 @@ vim.keymap.set("n", "<C-e>",
         end
     end,
     sil)
-    
+
 --}}}
 --{{{ "Windows" (What Vim calls views)
 
 local function moveOrCreateWindow(key)
-    -- Move to a window (one of hjkl) or create a split if none exist in the direction
-    -- @arg key: One of h, j, k, l, a direction to move or create a split
+-- Move to a window (one of hjkl) or create a split if none exist in the direction
+-- @arg key: One of h, j, k, l, a direction to move or create a split
     local currWin = vim.fn.winnr()
     vim.cmd("wincmd " .. key)        -- attempt to move
 
@@ -342,6 +342,42 @@ local function moveOrCreateWindow(key)
         vim.cmd("wincmd " .. key)
     end
 end
+
+
+local function createOutputView()
+-- Create a window for output if it doesn't exist yet
+    local outputH = vim.g.outputView
+    if outputH == nil then
+        local origView = vim.api.nvim_get_current_win()
+        local buffer = vim.api.nvim_create_buf(true, true) -- false = not scratch
+        outputH = vim.api.nvim_open_win(buffer, true, {
+            split = "right",
+            win = 0,
+            focusable = false,
+            anchor = "NE"
+        })
+        vim.api.nvim_set_var("outputView", outputH)
+
+        vim.cmd(":term")
+        local channel = vim.bo.channel
+        vim.api.nvim_set_var("outputChannel", channel)
+        vim.api.nvim_set_current_win(origView)
+    end
+end
+
+
+local function runTestShowOutput()
+    createOutputView()
+
+
+    local outputH = vim.g.outputView
+    local terminalChan = vim.g.outputChannel
+    vim.api.nvim_chan_send(terminalChan, "clear\n")
+    vim.api.nvim_chan_send(terminalChan, "(cd ~/projects/tl && . scripts/parserTest.txt)\n")
+end
+
+
+vim.keymap.set("n", "<leader>t", runTestShowOutput, sil)
 
 --}}}
 
@@ -383,7 +419,7 @@ end
 local function anyTextObjectFindLeftEnd(pos)
     ---Goes rightward and properly handles opening+closing (), [] and {}, as well as `` and ""
     ---Stops at the first space/newline outside of those delimiters. Is multiline
-    
+
     local levelPar = 0 -- ()
     local levelBra = 0 -- []
     local levelCurl = 0 -- {}
@@ -406,29 +442,29 @@ local function anyTextObjectFindLeftEnd(pos)
                 end
             elseif inBack == true then
                 if char == "`" then
-                    inBack = false 
+                    inBack = false
                 end
             else
                 if char == "\"" then
-                    inQuo = true 
+                    inQuo = true
                 elseif char == "`" then
                     inBack = true
                 elseif char == "(" then
-                    if levelPar == 0 then 
+                    if levelPar == 0 then
                         return {i, j}
                     end
                     levelPar = levelPar - 1
                 elseif char == ")" then
                     levelPar = levelPar + 1
                 elseif char == "{" then
-                    if levelCurl == 0 then 
+                    if levelCurl == 0 then
                         return {i, j}
                     end
                     levelCurl = levelCurl - 1
                 elseif char == "}" then
                     levelCurl = levelCurl + 1
                 elseif char == "[" then
-                    if levelBra == 0 then 
+                    if levelBra == 0 then
                         return {i, j}
                     end
                     levelBra = levelBra - 1
@@ -436,20 +472,20 @@ local function anyTextObjectFindLeftEnd(pos)
                     levelBra = levelBra + 1
                 elseif char == " " then
                     if levelPar == 0 and levelBra == 0 and levelCurl == 0 then
-                        return {i, j} 
+                        return {i, j}
                     end
                 end
             end
         end
         startCol = #currentLine
-    end 
-    return {1, 1} 
-end 
+    end
+    return {1, 1}
+end
 
 local function anyTextObjectFindRightEnd(pos)
     ---Goes rightward and properly handles opening+closing (), [] and {}, as well as `` and ""
     ---Stops at the first space/newline outside of those delimiters. Is multiline
-    
+
     local levelPar = 0 -- ()
     local levelBra = 0 -- []
     local levelCurl = 0 -- {}
@@ -459,7 +495,7 @@ local function anyTextObjectFindRightEnd(pos)
     local countLines = vim.api.nvim_buf_line_count(0)
     local i = pos[1]
     local startCol = pos[2]
-    local currentLine 
+    local currentLine
     while i <= countLines do
         currentLine = getLineContent(i)
         for j = startCol, #currentLine do
@@ -473,31 +509,31 @@ local function anyTextObjectFindRightEnd(pos)
                 end
             elseif inBack == true then
                 if char == "`" then
-                    inBack = false 
+                    inBack = false
                 end
             else
                 if char == "\"" then
-                    inQuo = true 
+                    inQuo = true
                 elseif char == "`" then
                     inBack = true
                 elseif char == "(" then
                     levelPar = levelPar + 1
                 elseif char == ")" then
-                    if levelPar == 0 then 
+                    if levelPar == 0 then
                         return {i, j - 2}
                     end
                     levelPar = levelPar - 1
                 elseif char == "{" then
                     levelCurl = levelCurl + 1
                 elseif char == "}" then
-                    if levelCurl == 0 then 
+                    if levelCurl == 0 then
                         return {i, j - 2}
                     end
                     levelCurl = levelCurl - 1
                 elseif char == "[" then
                     levelBra = levelBra + 1
                 elseif char == "]" then
-                    if levelBra == 0 then 
+                    if levelBra == 0 then
                         return {i, j - 2}
                     end
                     levelBra = levelBra - 1
@@ -506,13 +542,13 @@ local function anyTextObjectFindRightEnd(pos)
                     break
                 elseif char == " " then
                     if levelPar == 0 and levelBra == 0 and levelCurl == 0 then
-                        return {i, j - 2} 
+                        return {i, j - 2}
                     end
                 end
             end
         end
         startCol = 1
-    end 
+    end
     return {countLines, #currentLine}
 
 --//~    for i = j, #currentLine do
@@ -528,10 +564,10 @@ local function anyTextObject()
     local currentLine = getCurrLineContent()
     local lineN = vim.api.nvim_win_get_cursor(0)[1]
     local j = vim.api.nvim_win_get_cursor(0)[2] + 1 -- +1 because the Neovim API is stupid
-    
+
     local startPos = anyTextObjectFindLeftEnd({lineN, j})
     local endPos = anyTextObjectFindRightEnd({lineN, j})
-    print("row = ", lineN, " col = ", startInd, "to  row = ", endPos[1], " col = ", endPos[2]) 
+    print("row = ", lineN, " col = ", startInd, "to  row = ", endPos[1], " col = ", endPos[2])
     setSelection(startPos, endPos)
 end
 
