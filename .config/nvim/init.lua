@@ -212,6 +212,7 @@ vim.keymap.set("n", "<C-,>",
 )
 --}}}
 --{{{ o
+
 vim.keymap.set("n", "o",
     function()
         local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
@@ -234,6 +235,7 @@ vim.keymap.set("n", "O",
     end,
     sil
 )
+
 --}}}
 --{{{ Comments
 
@@ -354,7 +356,8 @@ local function createOutputView()
             split = "right",
             win = 0,
             focusable = false,
-            anchor = "NE"
+            anchor = "NE",
+            style = "minimal"
         })
         vim.api.nvim_set_var("outputView", outputH)
 
@@ -370,14 +373,17 @@ local function runTestShowOutput()
     createOutputView()
 
 
+    vim.cmd(":wa")
+
     local outputH = vim.g.outputView
     local terminalChan = vim.g.outputChannel
     vim.api.nvim_chan_send(terminalChan, "clear\n")
-    vim.api.nvim_chan_send(terminalChan, "(cd ~/projects/tl && . scripts/parserTest.txt)\n")
+    vim.api.nvim_chan_send(terminalChan, ". scripts/parserTest.txt\n")
 end
 
 
 vim.keymap.set("n", "<leader>t", runTestShowOutput, sil)
+vim.keymap.set("i", "<C-t>", runTestShowOutput, sil)
 
 --}}}
 
