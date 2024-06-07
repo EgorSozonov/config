@@ -6,3 +6,5 @@ cp -rf ~/.config/nvim/* .config/nvim
 
 cp -rf ~/.config/kitty/* .config/kitty
 
+cp -rf ~/.config/gdb/* .config/gdb
+

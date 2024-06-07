@@ -33,3 +33,7 @@ alias compress="tar -I 'zstd -19' --exclude .git -c"
 alias decompress="tar -xf"
 alias backup=". ~/scr/backupVault.txt"
 alias btest="tsc --outdir _bin/test --strict true --esModuleInterop true --module ES2020 test/test.ts"
+alias pgCtl="sudo -u postgres /usr/local/bin/pg_ctl -l /var/local/log/postgres/log -D /usr/local/postgres/data -o '-p 6789'"
+alias pg="psql -U postgres -p 6789"
+alias gdb="gdb --command=~/.config/gdb/gdb.py --eval-command='set auto-load python-scripts on; set filename-display absolute
+'"

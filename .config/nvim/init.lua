@@ -326,74 +326,27 @@ vim.keymap.set("n", "<C-e>",
     sil)
 
 --}}}
---{{{ "Windows" (What Vim calls views)
-
-local function moveOrCreateWindow(key)
--- Move to a window (one of hjkl) or create a split if none exist in the direction
--- @arg key: One of h, j, k, l, a direction to move or create a split
-    local currWin = vim.fn.winnr()
-    vim.cmd("wincmd " .. key)        -- attempt to move
-
-    if (currWin == vim.fn.winnr()) then -- didn't move, so create a split
-        if key == "h" or key == "l" then
-            vim.cmd("wincmd v")
-        else
-            vim.cmd("wincmd s")
-        end
-
-        vim.cmd("wincmd " .. key)
-    end
-end
-
-
-local function createOutputView()
--- Create a window for output if it doesn't exist yet
-    local outputH = vim.g.outputView
-    if outputH == nil then
-        local origView = vim.api.nvim_get_current_win()
-        local buffer = vim.api.nvim_create_buf(true, true) -- false = not scratch
-        outputH = vim.api.nvim_open_win(buffer, true, {
-            split = "right",
-            win = 0,
-            focusable = false,
-            anchor = "NE",
-            style = "minimal"
-        })
-        vim.api.nvim_set_var("outputView", outputH)
-
-        vim.cmd(":term")
-        local channel = vim.bo.channel
-        vim.api.nvim_set_var("outputChannel", channel)
-        vim.api.nvim_set_current_win(origView)
-    end
-end
-
-
-local function runTestShowOutput()
-    createOutputView()
-
-
-    vim.cmd(":wa")
-
-    local outputH = vim.g.outputView
-    local terminalChan = vim.g.outputChannel
-    vim.api.nvim_chan_send(terminalChan, "clear\n")
-    vim.api.nvim_chan_send(terminalChan, ". scripts/parserTest.txt\n")
-end
-
-
-vim.keymap.set("n", "<leader>t", runTestShowOutput, sil)
-vim.keymap.set("i", "<C-t>", runTestShowOutput, sil)
-
---}}}
 
 vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
 vim.keymap.set("i", "<C-9>", function() insertBlock("(", ")") end, sil)
-vim.keymap.set("n", "<M-h>", function() moveOrCreateWindow("h") end, sil)
-vim.keymap.set("n", "<M-j>", function() moveOrCreateWindow("j") end, sil)
-vim.keymap.set("n", "<M-k>", function() moveOrCreateWindow("k") end, sil)
-vim.keymap.set("n", "<M-l>", function() moveOrCreateWindow("l") end, sil)
 
+function goto(fN, lineNum)
+    local cwd = vim.fn.getcwd()
+    local searchFor = cwd .. "/" .. fN
+    print(searchFor)
+    for i, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if searchFor == vim.api.nvim_buf_get_name(buf) then
+            vim.api.nvim_win_set_buf(0, buf)
+            if vim.api.nvim_win_get_height(0) >= lineNum then
+                vim.api.nvim_win_set_cursor(0, {lineNum, 4})
+            else 
+                vim.api.nvim_win_set_cursor(0, {1, 4})
+            end 
+        end
+    end
+end
+
+--}}}
 --{{{ The anything text object
 
 ---@return boolean

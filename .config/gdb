@@ -1,0 +1,16 @@
+import gdb
+
+class GetBpSourceCommand(gdb.Command):
+    def __init__(self):
+        gdb.Command.__init__(self, "foo", gdb.COMMAND_USER)
+
+    def invoke(self, arg, from_tty):
+        mainPc = gdb.selected_frame().pc()
+        for bp in gdb.breakpoints():
+            for loc in bp.locations:
+                if loc.address == mainPc:
+                    print(loc.source)
+                    return 
+        return None 
+        
+GetBpSourceCommand()
