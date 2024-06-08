@@ -108,7 +108,7 @@ vim.keymap.set({"i", "s"}, "<C-E>",
 --{{{ My custom functions
 --{{{ Utils
 
-function countIndentation(currentLine)
+local function countIndentation(currentLine)
     local numSpaces = 0
     for i = 1, #currentLine do
         local char = currentLine:sub(i, i)
@@ -211,7 +211,7 @@ vim.keymap.set("n", "<C-,>",
     sil
 )
 --}}}
---{{{ o
+--{{{ o improvement
 
 vim.keymap.set("n", "o",
     function()
@@ -330,6 +330,8 @@ vim.keymap.set("n", "<C-e>",
 vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
 vim.keymap.set("i", "<C-9>", function() insertBlock("(", ")") end, sil)
 
+--{{{ Goto (for navigating to source lines from GDB)
+
 function goto(fN, lineNum)
     local cwd = vim.fn.getcwd()
     local searchFor = cwd .. "/" .. fN
@@ -339,13 +341,24 @@ function goto(fN, lineNum)
             vim.api.nvim_win_set_buf(0, buf)
             if vim.api.nvim_win_get_height(0) >= lineNum then
                 vim.api.nvim_win_set_cursor(0, {lineNum, 4})
-            else 
+            else
                 vim.api.nvim_win_set_cursor(0, {1, 4})
-            end 
+            end
         end
     end
 end
 
+--}}}
+--{{{ Running tests in the right tmux pane
+
+
+vim.keymap.set("n", "<leader>t",
+    function()
+        os.execute("tmux selectp -R")
+    end,
+    sil)
+
+--}}}
 --}}}
 --{{{ The anything text object
 

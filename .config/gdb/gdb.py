@@ -2,7 +2,7 @@ import gdb
 
 class GetBpSourceCommand(gdb.Command):
     def __init__(self):
-        gdb.Command.__init__(self, "foo", gdb.COMMAND_USER)
+        gdb.Command.__init__(self, "g", gdb.COMMAND_USER)
 
     def getBpSource(self):
         mainPc = gdb.selected_frame().pc()
@@ -16,7 +16,7 @@ class GetBpSourceCommand(gdb.Command):
         bpSource = self.getBpSource()
         tmuxCommand = ("tmux send-keys -t 0 ':lua goto(\""
             + bpSource[0] + "\", " + str(bpSource[1]) + ")' Enter")
-        print(tmuxCommand)
         gdb.execute("shell " + tmuxCommand)
+        gdb.execute("shell tmux selectp -L")
 
 GetBpSourceCommand()
