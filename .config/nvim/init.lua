@@ -351,12 +351,17 @@ end
 --}}}
 --{{{ Running tests in the right tmux pane
 
+local function runTestShowOutput()
+    vim.cmd(":wa")
+    os.execute("tmux send-keys -t 1 '. scripts/parserTest.txt'")
+    os.execute("tmux send-keys -t 1 Enter")
+end
 
-vim.keymap.set("n", "<leader>t",
-    function()
-        os.execute("tmux selectp -R")
-    end,
-    sil)
+
+vim.keymap.set("n", "<leader>t", runTestShowOutput, sil)
+vim.keymap.set("i", "<C-t>", runTestShowOutput, sil)
+
+
 
 --}}}
 --}}}

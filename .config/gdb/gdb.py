@@ -14,6 +14,8 @@ class GetBpSourceCommand(gdb.Command):
 
     def invoke(self, arg, fromTty):
         bpSource = self.getBpSource()
+        if bpSource is None
+            return
         tmuxCommand = ("tmux send-keys -t 0 ':lua goto(\""
             + bpSource[0] + "\", " + str(bpSource[1]) + ")' Enter")
         gdb.execute("shell " + tmuxCommand)
