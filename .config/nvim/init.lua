@@ -353,7 +353,7 @@ end
 
 local function runTestShowOutput()
     vim.cmd(":wa")
-    os.execute("tmux send-keys -t 1 '. scripts/parserTest.txt'")
+    os.execute("tmux send-keys -t 1 'make all'")
     os.execute("tmux send-keys -t 1 Enter")
 end
 
