@@ -569,3 +569,33 @@ vim.keymap.set("o", "iu", function() anyTextObject() end, sil)
 --~    }
 --~)
 --}}}
+--{{{ Language server protocol
+
+vim.api.nvim_create_autocmd('FileType', {
+    -- This handler will fire when the buffer's 'filetype' is "python"
+    pattern = "c",
+    callback = function(args)
+        vim.lsp.start({
+            name = "clangd",
+            cmd = {"clangd"},
+            -- Set the "root directory" to the parent directory of the file in the
+            -- current buffer (`args.buf`) that contains either a "setup.py" or a
+            -- "pyproject.toml" file. Files that share a root directory will reuse
+            -- the connection to the same LSP server.
+            root_dir = vim.fs.root(args.buf, {"Makefile"}),
+        })
+        
+        map('n','gd','<cmd>lua vim.lsp.buf.definition()<CR>')
+        map('n','gc','<cmd>lua vim.lsp.buf.incoming_calls()<CR>')
+        map('n','<leader>r','<cmd>lua vim.lsp.buf.rename()<CR>')
+    end
+})
+
+vim.api.nvim_create_autocmd('LspAttach', {
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        client.server_capabilities.semanticTokensProvider = nil
+    end
+})
+
+--}}}
