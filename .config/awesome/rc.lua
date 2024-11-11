@@ -17,8 +17,8 @@ local hotkeysPopup = require("awful.hotkeys_popup")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
-
 -- {{{ Error handling
+
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
@@ -41,9 +41,10 @@ do
         in_error = false
     end)
 end
--- }}}
 
+-- }}}
 -- {{{ Variable definitions
+
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_configuration_dir() .. "theme.lua")
 
@@ -65,9 +66,10 @@ awful.layout.layouts = {
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
 }
--- }}}
 
+-- }}}
 -- {{{ Menu
+
 -- Create a launcher widget and a main menu
 myawesomemenu = {
    { "hotkeys", function() hotkeysPopup.show_help(nil, awful.screen.focused()) end },
@@ -87,9 +89,10 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
--- }}}
 
+-- }}}
 -- {{{ Wibar
+
 -- Keyboard map indicator and switcher
 mykeyboardlayout = awful.widget.keyboardlayout()
 
@@ -169,16 +172,17 @@ awful.screen.connect_for_each_screen(function(s)
         },
     }
 end)
--- }}}
 
+-- }}}
 -- {{{ Mouse bindings
+
 root.buttons(gears.table.join(
     awful.button({ }, 3, function () mymainmenu:toggle() end),
     awful.button({ }, 4, awful.tag.viewnext),
     awful.button({ }, 5, awful.tag.viewprev)
 ))
--- }}}
 
+-- }}}
 -- {{{ Key bindings
 
 globalkeys = gears.table.join(
@@ -368,8 +372,8 @@ clientbuttons = gears.table.join(
 -- Set keys
 root.keys(globalkeys)
 -- }}}
-
 -- {{{ Rules
+
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
     -- All clients will match this rule.
@@ -429,9 +433,10 @@ awful.rules.rules = {
     -- { rule = { class = "Firefox" },
     --   properties = { screen = 1, tag = "2" } },
 }
--- }}}
 
+-- }}}
 -- {{{ Signals
+
 -- Signal function to execute when a new client appears.
 
 client.connect_signal("manage", function (c)
@@ -493,4 +498,5 @@ client.connect_signal("mouse::enter", function(c)
 end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+
 -- }}}

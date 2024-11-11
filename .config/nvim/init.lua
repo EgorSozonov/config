@@ -21,9 +21,9 @@ vim.opt.showmode = false -- Don't display current mode
 vim.o.shada = nil -- turn off the useless saving of every piece of state
 
 -- Tab stuff
-o.tabstop = 4
+o.tabstop = 3
 o.softtabstop = 0
-o.shiftwidth = 4
+o.shiftwidth = 3
 o.smarttab = true
 o.expandtab = true
 o.smartindent = true
@@ -51,14 +51,13 @@ vim.api.nvim_set_hl(0, "Folded", { bg = "#303030" })
 
 map("i", "<C-;>", "<Esc>")
 map("i", "<Tab>", "<Esc>")
-map("i", "<C-space>", "<space><space><space><space>") -- indentation insert
+map("i", "<C-space>", "<space><space><space>") -- indentation insert
 map("i", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("n", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("v", "<C-c>", "\"+y")
 map("n", "<C-v>", "\"*p")
 map("i", "<C-v>", "\"*p")
 map("n", "<C-/>", ":set hlsearch!<CR>") -- toggle coloring of searches
-map("n", "<C-8>", "*")
 map("n", "<space>", "i<space><esc>") -- space in normal mode
 map("n", "<C-n>", ":bn<CR>") -- next buffer
 map("n", "<C-p>", ":bp<CR>") -- preceding buffer
@@ -69,8 +68,10 @@ vim.keymap.set("v", "<leader>j", ":m '<-2<CR>gv") -- move line down
 vim.keymap.set("v", "<leader>k", ":m '>+1<CR>gv") -- move line up
 vim.keymap.set("n", "<leader>j", ":m-2<CR>")
 vim.keymap.set("n", "<leader>k", ":m+<CR>")
-map("n", "L", "21l")
 map("n", "H", "21h")
+map("n", "L", "21l")
+map("n", "<C-h>", "21h")
+map("n", "<C-l>", "21l")
 map("n", "<M-c>", ":q<CR>")
 
 --}}}
@@ -328,7 +329,9 @@ vim.keymap.set("n", "<C-e>",
 --}}}
 
 vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
-vim.keymap.set("i", "<C-9>", function() insertBlock("(", ")") end, sil)
+vim.keymap.set("i", "<C-9>", "()", sil)
+vim.keymap.set("i", "<C-[>", "()", sil)
+vim.keymap.set("i", "<C-l>", "<Esc>la<space>", sil) --Move beyond the adjacent ")"
 
 --{{{ Goto (for navigating to source lines from GDB)
 
