@@ -188,7 +188,7 @@ local function insertBlock(delimiter, closingDelimiter)
     local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
     vim.api.nvim_buf_set_lines(0, lineNum - 1, lineNum, false, { currentLine .. " " .. delimiter})
     vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. closingDelimiter})
-    vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. "    "})
+    vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. "   "})
     vim.api.nvim_win_set_cursor(0, { lineNum + 1, #spaces + 4 })
 end
 
@@ -575,7 +575,7 @@ vim.keymap.set("o", "iu", function() anyTextObject() end, sil)
 --{{{ Language server protocol
 
 vim.api.nvim_create_autocmd('FileType', {
-    -- This handler will fire when the buffer's 'filetype' is "python"
+    -- This handler will fire when the buffer's 'filetype' is C
     pattern = "c",
     callback = function(args)
         vim.lsp.start({
