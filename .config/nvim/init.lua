@@ -1,4 +1,8 @@
 --{{{ Utils
+
+vim.treesitter.language.add('lua', { path = "/usr/lib/libtree-sitter-lua.so" })
+vim.treesitter.language.add('vimdoc', { path = "/usr/lib/libtree-sitter-vimdoc.so" })
+
 function map(mode, lhs, rhs)
     local options = { noremap = true }
     options = vim.tbl_extend("force", options, {silent = true})
@@ -12,11 +16,14 @@ local bo = vim.bo -- buffer-scoped options
 --}}}
 --{{{ Settings
 
-vim.o.runtimepath = "~/.local/share/nvim/site,~/.config/nvim"
+vim.o.runtimepath = "~/.local/share/nvim/site,~/.config/nvim,/usr/lib/tree_sitter"
 vim.opt.foldmethod = "marker"
 vim.opt.wrap = true
 vim.opt.linebreak = true -- Stop words from being broken on wrap
 vim.opt.showmode = false -- Don't display current mode
+vim.g.loaded_matchparen = true
+vim.g.loaded_matchparen = true
+vim.g.loaded_matchbracket = true 
 
 vim.o.shada = nil -- turn off the useless saving of every piece of state
 
@@ -81,22 +88,16 @@ require "paq" {
     "savq/paq-nvim", -- Let Paq manage itself
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope.nvim",
+    "nvim-telescope/telescope-file-browser.nvim",
     "L3MON4D3/LuaSnip",
     "kylechui/nvim-surround"
 }
-local telescope = require("telescope.builtin")
 local sil = { silent = true }
-vim.keymap.set("n", "<leader>ff", telescope.find_files, sil)
-vim.keymap.set("n", "<leader>fg", telescope.live_grep, sil)
-vim.keymap.set("n", "<leader>fb", telescope.buffers, sil)
-vim.keymap.set("n", "<leader>fh", telescope.help_tags, sil)
-
 local ls = require("luasnip")
 ls.snippets = require("snippets")
 vim.keymap.set({"i"}, "<C-k>", function() ls.expand() end, sil)
 vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump(1) end, sil)
 vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, sil)
-
 vim.keymap.set({"i", "s"}, "<C-E>",
     function()
         if ls.choice_active() then
@@ -104,6 +105,38 @@ vim.keymap.set({"i", "s"}, "<C-E>",
         end
     end,
     sil)
+
+--}}}
+--{{{ Telescope
+
+local telescope = require("telescope")
+local telescopeBuiltin = require("telescope.builtin")
+telescope.setup {
+   extensions = {
+      file_browser = {
+        theme = "ivy",
+        -- disables netrw and use telescope-file-browser in its place
+        hijack_netrw = true,
+        previewer = false,
+        mappings = {
+           ["i"] = {
+             -- your custom insert mode mappings
+           },
+           ["n"] = {
+             -- your custom normal mode mappings
+           },
+        },
+     },
+  },
+}
+telescope.load_extension("file_browser")
+vim.keymap.set("n", "<leader>ff", telescopeBuiltin.find_files, sil)
+vim.keymap.set("n", "<leader>fg", telescopeBuiltin.live_grep, sil)
+vim.keymap.set("n", "<leader>fb", telescopeBuiltin.buffers, sil)
+vim.keymap.set("n", "<leader>fh", telescopeBuiltin.help_tags, sil)
+vim.keymap.set("n", "<leader>e", function()
+	telescope.extensions.file_browser.file_browser()
+end)
 
 --}}}
 --{{{ My custom functions
@@ -330,7 +363,6 @@ vim.keymap.set("n", "<C-e>",
 
 vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
 vim.keymap.set("i", "<C-9>", "()", sil)
-vim.keymap.set("i", "<C-[>", "()", sil)
 vim.keymap.set("i", "<C-l>", "<Esc>la<space>", sil) --Move beyond the adjacent ")"
 
 --{{{ Goto (for navigating to source lines from GDB)
@@ -552,6 +584,17 @@ local function anyTextObject()
 end
 
 vim.keymap.set("o", "iu", function() anyTextObject() end, sil)
+
+--}}}
+--{{{ File browsin'
+
+vim.api.nvim_create_user_command(
+  'Browse',
+  function (opts)
+    vim.fn.system { 'xdg-open', opts.fargs[1] }
+  end,
+  { nargs = 1 }
+)
 
 --}}}
 --{{{ Snippets
