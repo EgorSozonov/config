@@ -45,3 +45,14 @@ alias serve="busybox httpd -f"
 alias runCsv="sql :memory: '.read script'"
 alias img="feh -g 640x480 -d -S filename"
 alias devDb="psql -U dev -d devdb -p 6789"
+
+# replaces text in this dir and subdirs
+# Examples:
+# replaceText 's/ddd/eee/g' '*.txt'
+# replaceText 's/ddd/eee/g'
+function replaceText() {
+   local nameFilter="${2:-'*.*'}"
+   local command="find . -type f -name '${nameFilter}' -exec sed -i '$1' {} +"
+   eval "$command"
+}
+
