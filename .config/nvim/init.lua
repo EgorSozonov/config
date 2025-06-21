@@ -1,7 +1,7 @@
 --{{{ Utils
 
-vim.treesitter.language.add('lua', { path = "/usr/lib/libtree-sitter-lua.so" })
-vim.treesitter.language.add('vimdoc', { path = "/usr/lib/libtree-sitter-vimdoc.so" })
+--vim.treesitter.language.add('lua', { path = "/usr/lib/libtree-sitter-lua.so" })
+--vim.treesitter.language.add('vimdoc', { path = "/usr/lib/libtree-sitter-vimdoc.so" })
 
 function map(mode, lhs, rhs)
     local options = { noremap = true }
@@ -16,7 +16,7 @@ local bo = vim.bo -- buffer-scoped options
 --}}}
 --{{{ Settings
 
-vim.o.runtimepath = "~/.local/share/nvim/site,~/.config/nvim,/usr/lib/tree_sitter"
+vim.o.runtimepath = "~/.local/share/nvim/site,~/.config/nvim"
 vim.opt.foldmethod = "marker"
 vim.opt.wrap = true
 vim.opt.linebreak = true -- Stop words from being broken on wrap
@@ -81,6 +81,8 @@ map("n", "<C-h>", "21h")
 map("n", "<C-l>", "21l")
 map("n", "<M-c>", ":q<CR>")
 
+map("n", "x", '"_x') -- don't clobber the register
+
 --}}}
 --{{{ Packages
 
@@ -89,22 +91,22 @@ require "paq" {
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope.nvim",
     "nvim-telescope/telescope-file-browser.nvim",
-    "L3MON4D3/LuaSnip",
-    "kylechui/nvim-surround"
+--    "L3MON4D3/LuaSnip",
+--    "kylechui/nvim-surround"
 }
 local sil = { silent = true }
-local ls = require("luasnip")
-ls.snippets = require("snippets")
-vim.keymap.set({"i"}, "<C-k>", function() ls.expand() end, sil)
-vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump(1) end, sil)
-vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, sil)
-vim.keymap.set({"i", "s"}, "<C-E>",
-    function()
-        if ls.choice_active() then
-            ls.change_choice(1)
-        end
-    end,
-    sil)
+--	local ls = require("luasnip")
+--	ls.snippets = require("snippets")
+--	vim.keymap.set({"i"}, "<C-k>", function() ls.expand() end, sil)
+--	vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump(1) end, sil)
+--	vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, sil)
+--	vim.keymap.set({"i", "s"}, "<C-E>",
+--	    function()
+--	        if ls.choice_active() then
+--	            ls.change_choice(1)
+--	        end
+--	    end,
+--	    sil)
 
 --}}}
 --{{{ Telescope
@@ -360,6 +362,106 @@ vim.keymap.set("n", "<C-e>",
     sil)
 
 --}}}
+--{{{ Views (what Vim calls "windows")
+
+local function openTerminalAndCleanUpWindows()
+   -- Opens up a window for the terminal if there isn't one, and 
+   -- leaves only two windows (the current and the terminal). All other windows are closed
+   
+   local mainWin = vim.api.nvim_get_current_win()
+   local windowType = vim.w.windowType
+   if windowType ~= "mainWindow" then
+      vim.api.nvim_win_set_var(mainWin, "windowType", "mainWindow")
+   end
+   
+   
+   -- close extra windows
+   local windows = vim.api.nvim_tabpage_list_wins(0)
+   local metTerminal = false
+   for _, window in ipairs(windows) do
+      if window ~= currWin then
+         windowType = vim.api.nvim_win_get_var(window, "windowType")
+         if windowType == "termWindow" then
+            if metTerminal then
+               vim.api.nvim_win_hide(window)
+            else 
+               metTerminal = true
+            end
+         else
+            vim.api.nvim_win_hide(window)
+         end 
+      end
+   end
+   if not metTerminal then
+      local termBuf = vim.api.nvim_create_buf(false, false)
+      local termWin = vim.api.nvim_open_win(termBuf, false, {})
+      vim.api.nvim_win_set_buf(termWin, termBuf)
+      local chanId = vim.api.nvim_open_term(termBuf, {})
+      vim.api.nvim_win_set_var(termWin, "windowType", "termWindow")
+      vim.api.nvim_win_set_var(currWin, "termChanId", chanId)
+   end
+end
+
+local function moveWindow(key)
+   -- Move to a window (one of hjkl) or create a split if none exist in the direction
+   -- @arg key: One of h, j, k, l. A direction to move or create a split
+   vim.cmd("wincmd " .. key) -- attempt to move
+end
+
+local function moveOrCreateWindow(key)
+   -- Move to a window (one of hjkl) or create a split if none exist in the direction
+   -- @arg key: One of h, j, k, l. A direction to move or create a split
+   local currWin = vim.fn.winnr()
+   vim.cmd("wincmd " .. key) -- attempt to move
+   if (currWin == vim.fn.winnr()) then
+      if key == "h" or key == "l" then
+         vim.cmd("wincmd v")
+      else
+         vim.cmd("wincmd s")
+      end
+
+      vim.cmd("wincmd " .. key)
+   end
+end
+
+local function newTerminal()
+   local currWin = vim.api.nvim_get_current_win()
+   
+   vim.cmd("wincmd v")
+   vim.api.nvim_tabpage_set_win(0, currWin)
+
+   local termWin
+   local windows = vim.api.nvim_tabpage_list_wins(0)
+   for _, window in ipairs(windows) do
+      if window ~= currWin then
+         termWin = window
+         break
+      end
+   end
+   if not termWin then
+      return
+   end
+   local termBuf = vim.api.nvim_create_buf(false, false)
+   vim.api.nvim_win_set_buf(termWin, termBuf)
+   local chanId = vim.api.nvim_open_term(termBuf, {})
+   vim.api.nvim_win_set_var(currWin, "termChanId", chanId)
+end
+
+local function sendSmth()
+   local currWin = vim.api.nvim_get_current_win()
+   local chanId = vim.api.nvim_win_get_var(currWin, "termChanId")
+   vim.api.nvim_chan_send(chanId, "echo 'hw!'\n")
+end
+
+
+vim.keymap.set("n", "<M-a>", function() openTerminalAndCleanUpWindows() end, sil)
+vim.keymap.set("n", "<M-r>", function() sendSmth() end, sil)
+vim.keymap.set("n", "<M-h>", function() moveWindow("h") end, sil)
+vim.keymap.set("n", "<M-j>", function() moveWindow("j") end, sil)
+vim.keymap.set("n", "<M-k>", function() moveWindow("k") end, sil)
+vim.keymap.set("n", "<M-l>", function() moveWindow("l") end, sil)
+
+--}}}
 
 vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
 vim.keymap.set("i", "<C-9>", "()", sil)
@@ -610,7 +712,7 @@ vim.api.nvim_create_user_command(
 --~    {
 --~        cwd = '/path/to/working/dir',
 --~        on_exit = someFunction,
---~        on_stdout = someOtherFunction,
+--~        on_stdout = function(j, d, e) output = output .. vim.fn.join(d)  end,
 --~        on_stderr = someThirdFunction
 --~    }
 --~)

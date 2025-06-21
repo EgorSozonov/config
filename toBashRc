@@ -5,6 +5,15 @@ export EDITOR=nvim
 
 stty -ixon # Disable XON/XOFF crap (terminal freezing)
 
+HISTCONTROL=ignoreboth
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+
+shopt -s histappend
+# append to the history file, don't overwrite it
+
+shopt -s globstar # the /**/ pattern to select files from all depths
+
 export DEBUGDIR=~/debug
 export EXEDIR=~/exes
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin"
