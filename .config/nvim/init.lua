@@ -88,9 +88,9 @@ map("n", "x", '"_x') -- don't clobber the register
 
 require "paq" {
     "savq/paq-nvim", -- Let Paq manage itself
-    "nvim-lua/plenary.nvim",
-    "nvim-telescope/telescope.nvim",
-    "nvim-telescope/telescope-file-browser.nvim",
+--    "nvim-lua/plenary.nvim",
+--    "nvim-telescope/telescope.nvim",
+--    "nvim-telescope/telescope-file-browser.nvim",
 --    "L3MON4D3/LuaSnip",
 --    "kylechui/nvim-surround"
 }
@@ -227,13 +227,54 @@ local function insertBlock(delimiter, closingDelimiter)
     vim.api.nvim_win_set_cursor(0, { lineNum + 1, #spaces + 4 })
 end
 
+local function setLine(ind, content)
+    vim.api.nvim_buf_set_lines(0, ind - 1, ind, false, {content})
+end 
+
+
 --}}}
 --{{{ Commas
+
+local function formatCommas()
+-- Add commas to every line (if it doesn't end in a comma yet) and arranges them
+-- in groups so that lines are no more than 100 symbols
+    local limits = getLimitsOfCurrentBlock()
+
+    local i = limits.start
+    local j = i
+    local currLen = 0
+    local lineBuilder = ""
+    while i < limits.endd do
+       local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+       existingLine = string.gsub(existingLine, "%s+", "")
+       if existingLine[-1] ~= "," then
+          existingLine = existingLine .. ","
+       end
+       print(existingLine)
+       currLen = currLen + existingLine:len()
+       lineBuilder = lineBuilder .. existingLine
+       if currLen >= 100 then
+          vim.api.nvim_buf_set_lines(0, j - 1, j, false, {lineBuilder})
+          j = j + 1
+          currLen = 0
+          lineBuilder = ""
+       end   
+       i = i + 1
+    end
+    if lineBuilder:len() > 0 then
+       vim.api.nvim_buf_set_lines(0, j - 1, j, false, {lineBuilder})
+       j = j + 1
+   end 
+   while j < limits.endd do
+      vim.api.nvim_buf_set_lines(0, j - 1, j, false, {""})
+      j = j + 1
+   end
+end
+
 local function appendCommas()
     local limits = getLimitsOfCurrentBlock()
 
     i = limits.start
-    print(limits.endd)
     while i < limits.endd do
         local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
         vim.api.nvim_buf_set_lines(0, i - 1, i, false, {existingLine .. ","})
@@ -242,10 +283,8 @@ local function appendCommas()
 end
 
 
-vim.keymap.set("n", "<C-,>",
-    appendCommas,
-    sil
-)
+vim.keymap.set("n", "<C-,>", formatCommas, sil)
+
 --}}}
 --{{{ o improvement
 
@@ -364,43 +403,109 @@ vim.keymap.set("n", "<C-e>",
 --}}}
 --{{{ Views (what Vim calls "windows")
 
+local function safeGetTabVar(tabpage, varName)
+   s, v = pcall(function() return vim.api.nvim_tab_get_var(tabpage, varName) end)
+   if s then return v else return nil end
+end
+
+local function safeGetVar(window, varName)
+   s, v = pcall(function() return vim.api.nvim_win_get_var(window, varName) end)
+   if s then return v else return nil end
+end
+
 local function openTerminalAndCleanUpWindows()
    -- Opens up a window for the terminal if there isn't one, and 
    -- leaves only two windows (the current and the terminal). All other windows are closed
    
-   local mainWin = vim.api.nvim_get_current_win()
-   local windowType = vim.w.windowType
-   if windowType ~= "mainWindow" then
-      vim.api.nvim_win_set_var(mainWin, "windowType", "mainWindow")
-   end
-   
-   
-   -- close extra windows
-   local windows = vim.api.nvim_tabpage_list_wins(0)
-   local metTerminal = false
-   for _, window in ipairs(windows) do
-      if window ~= currWin then
-         windowType = vim.api.nvim_win_get_var(window, "windowType")
-         if windowType == "termWindow" then
-            if metTerminal then
-               vim.api.nvim_win_hide(window)
-            else 
-               metTerminal = true
-            end
-         else
-            vim.api.nvim_win_hide(window)
-         end 
-      end
-   end
-   if not metTerminal then
+   local currentState = safeGetTabVar(0, "termState")
+   if currentState == "code" then
+      local codeWin = vim.api.nvim_get_current_win()
+      local termBuf = vim.api.nvim_tabpage_get_var(0, "termBuf")
+      local termWin = vim.api.nvim_open_win(termBuf, false, {split = 'left', win = 0})
+      
+      vim.api.nvim_tabpage_set_win(0, termWin)
+      vim.api.nvim_win_hide(codeWin)
+      vim.api.set_tabpage_var(0, "termState", "code")
+      sendSmth()
+   elseif currentState == "terminal" then
+      local codeBuf = vim.api.nvim_tabpage_get_var(0, "codeBuf")
+      local termWin = vim.api.nvim_get_current_win()
+      local codeWin = vim.api.nvim_open_win(codeBuf, false, {split = 'left', win = 0})
+      
+      vim.api.nvim_tabpage_set_win(0, codeWin)
+      vim.api.nvim_win_hide(termWin)
+      vim.api.set_tabpage_var(0, "termState", "terminal")
+   else
+      local codeWin = vim.api.nvim_get_current_win()
+      
       local termBuf = vim.api.nvim_create_buf(false, false)
-      local termWin = vim.api.nvim_open_win(termBuf, false, {})
+      local termWin = vim.api.nvim_open_win(termBuf, false, {split = 'left', win = 0})
       vim.api.nvim_win_set_buf(termWin, termBuf)
       local chanId = vim.api.nvim_open_term(termBuf, {})
-      vim.api.nvim_win_set_var(termWin, "windowType", "termWindow")
-      vim.api.nvim_win_set_var(currWin, "termChanId", chanId)
+      
+      vim.api.nvim_tabpage_set_var(0, "termState", "terminal")
+      vim.api.nvim_tabpage_set_var(0, "termChanId", chanId)
+      vim.api.nvim_tabpage_set_var(0, "termBuf", termBuf)
+      vim.api.nvim_tabpage_set_var(0, "codeBuf", vim.api.nvim_win_get_buf(codeWin))
+      vim.api.nvim_tabpage_set_win(0, termWin)
+   
+      vim.api.nvim_win_hide(codeWin)
+      vim.api.set_tabpage_var(0, "termState", "terminal")
+      sendSmth()
    end
 end
+
+
+--~local function openTerminalAndCleanUpWindows()
+--~   -- Opens up a window for the terminal if there isn't one, and 
+--~   -- leaves only two windows (the current and the terminal). All other windows are closed
+--~   
+--~   local ou = 1
+--~   
+--~   local mainWin = vim.api.nvim_get_current_win()
+--~   setLine(ou, tostring(mainWin))
+--~   ou = ou + 1
+--~   
+--~   
+--~   local windowType = safeGetVar(mainWin, "windowType")
+--~   if windowType ~= "mainWindow" then
+--~      setLine(ou, "setting var")
+--~      ou = ou + 1
+--~      vim.api.nvim_win_set_var(mainWin, "windowType", "mainWindow")
+--~   end
+--~   
+--~   
+--~   -- close extra windows
+--~   local windows = vim.api.nvim_tabpage_list_wins(0)
+--~   local metTerminal = false
+--~   for _, window in ipairs(windows) do
+--~   
+--~      setLine(ou, "encountered window  " .. tostring(window))
+--~      ou = ou + 1
+--~      
+--~      if window ~= mainWin then
+--~      
+--~         windowType = vim.api.nvim_win_get_var(window, "windowType")
+--~         if windowType == "termWindow" then
+--~            if metTerminal then
+--~               vim.api.nvim_win_hide(window)
+--~            else 
+--~               metTerminal = true
+--~            end
+--~         else
+--~            vim.api.nvim_win_close(window, true)
+--~         end 
+--~      end
+--~   end
+--~   if not metTerminal then
+--~      local termBuf = vim.api.nvim_create_buf(false, false)
+--~      local termWin = vim.api.nvim_open_win(termBuf, false, {split = 'left', win = 0})
+--~      vim.api.nvim_win_set_buf(termWin, termBuf)
+--~      local chanId = vim.api.nvim_open_term(termBuf, {})
+--~      vim.api.nvim_win_set_var(termWin, "windowType", "termWindow")
+--~      vim.api.nvim_win_set_var(mainWin, "termChanId", chanId)
+--~   end
+--~end
 
 local function moveWindow(key)
    -- Move to a window (one of hjkl) or create a split if none exist in the direction
@@ -449,8 +554,19 @@ end
 
 local function sendSmth()
    local currWin = vim.api.nvim_get_current_win()
-   local chanId = vim.api.nvim_win_get_var(currWin, "termChanId")
-   vim.api.nvim_chan_send(chanId, "echo 'hw!'\n")
+   local chanId = vim.api.nvim_tabpage_get_var(currWin, "termChanId")
+   
+   vim.fn.jobstart('ls -al', {
+        cwd = '/home/onr/proj',
+        on_exit = function(j, d, e)  end,
+        on_stdout = 
+           function(j, d, e) 
+              for i, line in ipairs(d) do
+                 vim.api.nvim_chan_send(chanId, line .. "\n")
+              end
+           end, 
+        on_stderr = someFunction
+   })
 end
 
 
@@ -528,7 +644,6 @@ local function setSelection(startPos, endPos)
 	end
 	vim.api.nvim_win_set_cursor(0, endPos)
 end
-
 
 local function anyTextObjectFindLeftEnd(pos)
     ---Goes rightward and properly handles opening+closing (), [] and {}, as well as `` and ""
