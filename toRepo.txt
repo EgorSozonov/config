@@ -10,3 +10,5 @@ cp -rf ~/.config/gdb/* .config/gdb
 
 cp -rf ~/.config/tmux/* .config/tmux
 
+cp -rf ~/.config/projector/* .config/projector
+

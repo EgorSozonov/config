@@ -1,0 +1,89 @@
+////{ Makefile
+
+#{{{ Boilerplate
+
+.RECIPEPREFIX = /
+
+ifndef VERBOSE
+.SILENT: # Silent mode unless you run it like "make all VERBOSE=1"
+endif
+
+.PHONY: all build clean test help binDir testBase testTelvane
+
+help: ## Show this help
+/ @grep -E -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {print "-- Help --";print ""; FS = ":.*?## "}; {printf "\033[32m%-10s\033[0m %s\n", $$1, $$2}'
+/ @echo
+
+#}}}
+
+APP=$$name
+MAINCLASS=$$className
+MOD=tech.sozonov.$(APP)
+
+TESTDIR=_target/$(APP)
+
+all: _target/$(MOD_BASE)  ## Build the whole project
+/ javac -proc:none --module $(MOD) \
+   --module-source-path . -d _target
+/ jar -c -f _target/$(MOD).jar -C _target/$(MOD) .
+/ @echo "============= BUILD SUCCESS ==============="
+/ @echo ""
+
+#{{{ tech.sozonov.base
+
+MOD_BASE=tech.sozonov.base
+MOD_BASE_TEST=test.base
+MOD_BASE_TEST_JAR=testBase
+
+_target/$(MOD_BASE).jar: | binDir
+/ javac -proc:none --module $(MOD_BASE) \
+   --module-source-path . \
+   -d _target
+/ jar -c -f _target/$(MOD_BASE).jar -C _target/$(MOD_BASE) .
+
+testBase: _target/$(MOD_BASE).jar | _target/tests
+/ javac -proc:none --module $(MOD_BASE_TEST) \
+   --module-source-path . -d _target/tests
+/ jar -c --main-class=$(MOD_BASE_TEST_JAR).Main -f _target/tests/$(MOD_BASE_TEST).jar \
+   -C _target/tests/$(MOD_BASE_TEST) .
+/ @echo "=========== TEST BUILD SUCCESS ============="
+/ @echo ""
+/ java --module-path _target/$(MOD_BASE).jar:_target/tests/$(MOD_BASE_TEST).jar \
+	-m $(MOD_BASE_TEST)
+
+#}}}
+#{{{ tech.sozonov.telvane
+
+MOD_TELVANE_TEST=test.telvane
+MOD_TELVANE_TEST_JAR=testTelvane
+
+_target/$(MOD).jar: $(MOD) | binDir
+/ javac -proc:none --module $(MOD) \
+   --module-source-path . \
+   -d _target
+/ jar -c -f _target/$(MOD).jar -C _target/$(MOD) .
+
+TELVANE_TEST_DEPS := _target/$(MOD_BASE).jar _target/$(MOD).jar
+testTelvane: $(TELVANE_TEST_DEPS) | _target/tests ## Test the telvane module
+/ javac -proc:none --module $(MOD_TELVANE_TEST) \
+   --module-source-path . -d _target/tests
+/ jar -c --main-class=$(MOD_TELVANE_TEST_JAR).Main -f _target/tests/$(MOD_TELVANE_TEST).jar \
+   -C _target/tests/$(MOD_TELVANE_TEST) .
+/ @echo "=========== TEST BUILD SUCCESS ============="
+/ @echo ""
+/ java --module-path _target/$(MOD).jar:_target/$(MOD_BASE).jar:_target/tests/$(MOD_TELVANE_TEST).jar \
+	-m $(MOD_TELVANE_TEST)
+
+#}}}
+
+binDir:
+/ mkdir -p _target
+
+_target/tests:
+/ mkdir -p _target/tests
+
+
+test: ## Run unit tests
+/ echo 'testing...'
+
+////}
