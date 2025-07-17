@@ -1,9 +1,8 @@
-
 alias sys="systemctl"    
 alias sys="sudo systemctl"
 alias sus="loginctl suspend"
 alias running="sudo sv s /var/service/*"
-alias flash="sudo mount -o umask=000 -t vfat --mkdir /dev/sda1 /mnt/flash"
+alias flash="sudo mount -o umask=000 -t vfat --mkdir /dev/sda /mnt/flash"
 alias unflash="sudo umount /mnt/flash"
 alias fixKb="setxkbmap -layout us,ru -option 'ctrl:nocaps,grp:lctrl_toggle'"
 alias n="nvim"
@@ -30,7 +29,7 @@ alias la='ls -A'
 alias grep="grep --color"
 alias zgrep="zgrep --color"
 alias backup=". ~/scr/backupVault.txt"
-alias compress="tar -I 'xz -9' --exclude .git --exclude _target -c"
+alias compress="tar -I 'xz -9' --exclude .git --exclude _debug --exclude bin -c"
 alias decompress="tar -xf"
 alias backup=". ~/scr/backupVault.txt"
 alias btest="tsc --outdir _bin/test --strict true --esModuleInterop true --module ES2020 test/test.ts"
@@ -45,6 +44,10 @@ alias serve="busybox httpd -f"
 alias runCsv="sql :memory: '.read script'"
 alias img="feh -g 640x480 -d -S filename"
 alias devDb="psql -U dev -d devdb -p 6789"
+
+alias gj="cd ~/repos/gcc/gcc/jit/ && n jit-recording.cc jit-recording.h"
+
+alias gj2="cd ~/repos/gcc/gcc/ && n fold-const.cc" 
 
 # replaces text in this dir and subdirs
 # Examples:
