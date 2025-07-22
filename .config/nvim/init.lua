@@ -56,6 +56,7 @@ vim.api.nvim_set_hl(0, "Folded", { bg = "#303030" })
 --}}}
 --{{{ Core keybindings
 
+
 map("i", "<C-;>", "<Esc>")
 map("i", "<Tab>", "<Esc>")
 map("i", "<C-space>", "<space><space><space>") -- indentation insert
@@ -582,6 +583,41 @@ vim.keymap.set("n", "<M-l>", function() moveWindow("l") end, sil)
 vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
 vim.keymap.set("i", "<C-9>", "()", sil)
 vim.keymap.set("i", "<C-l>", "<Esc>la<space>", sil) --Move beyond the adjacent ")"
+vim.api.nvim_create_user_command(
+   'ToAscii',
+   function ()
+      local currentLine = getCurrLineContent()
+      local lineN = vim.api.nvim_win_get_cursor(0)[1]
+      local cursorCol = vim.api.nvim_win_get_cursor(0)[2] + 1 -- +1 because the Neovim API is stupid
+      local startCol
+      local endCol
+      for j = cursorCol, 1, -1 do
+         local charCode = string.byte(currentLine:sub(j, j))
+         if charCode < 48 or charCode > 57 then
+            startCol = j + 1
+            break
+         end
+      end
+      
+      for j = cursorCol, #currentLine, 1 do
+         local charCode = string.byte(currentLine:sub(j, j))
+         if charCode < 48 or charCode > 57 then
+            endCol = j
+            break
+         end
+      end
+      if startCol == endCol then
+         return
+      end
+      local fullAsciiNumber = currentLine:sub(startCol, endCol)
+      local newLine = currentLine:sub(1, startCol - 1) 
+         .. string.char(tonumber(fullAsciiNumber)) 
+         .. currentLine:sub(endCol, #currentLine)
+      vim.api.nvim_buf_set_lines(0, lineN - 1, lineN, false, { newLine})
+   end,
+   { nargs = 0 }
+)
+
 
 --{{{ Goto (for navigating to source lines from GDB)
 

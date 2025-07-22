@@ -43,6 +43,7 @@ alias a="alsamixer"
 alias serve="busybox httpd -f"
 alias runCsv="sql :memory: '.read script'"
 alias img="feh -g 640x480 -d -S filename"
+alias tech="n ~/vault/techInfo.txt"
 alias devDb="psql -U dev -d devdb -p 6789"
 
 alias gj="cd ~/repos/gcc/gcc/jit/ && n jit-recording.cc jit-recording.h"
