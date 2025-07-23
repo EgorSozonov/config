@@ -583,14 +583,16 @@ vim.keymap.set("n", "<M-l>", function() moveWindow("l") end, sil)
 vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
 vim.keymap.set("i", "<C-9>", "()", sil)
 vim.keymap.set("i", "<C-l>", "<Esc>la<space>", sil) --Move beyond the adjacent ")"
+
+--number to an Ascii char
 vim.api.nvim_create_user_command(
    'ToAscii',
    function ()
       local currentLine = getCurrLineContent()
       local lineN = vim.api.nvim_win_get_cursor(0)[1]
       local cursorCol = vim.api.nvim_win_get_cursor(0)[2] + 1 -- +1 because the Neovim API is stupid
-      local startCol
-      local endCol
+      local startCol = -1
+      local endCol = -1
       for j = cursorCol, 1, -1 do
          local charCode = string.byte(currentLine:sub(j, j))
          if charCode < 48 or charCode > 57 then
@@ -598,21 +600,29 @@ vim.api.nvim_create_user_command(
             break
          end
       end
+      if startCol == -1 then
+         startCol = 1
+      end
       
       for j = cursorCol, #currentLine, 1 do
          local charCode = string.byte(currentLine:sub(j, j))
          if charCode < 48 or charCode > 57 then
-            endCol = j
+            endCol = j - 1
             break
          end
       end
+      if endCol == -1 then
+         endCol = #currentLine
+      end
+      
       if startCol == endCol then
          return
       end
       local fullAsciiNumber = currentLine:sub(startCol, endCol)
+      print(fullAsciiNumber)
       local newLine = currentLine:sub(1, startCol - 1) 
          .. string.char(tonumber(fullAsciiNumber)) 
-         .. currentLine:sub(endCol, #currentLine)
+         .. currentLine:sub(endCol + 1, #currentLine)
       vim.api.nvim_buf_set_lines(0, lineN - 1, lineN, false, { newLine})
    end,
    { nargs = 0 }
