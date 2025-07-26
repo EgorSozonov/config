@@ -260,7 +260,6 @@ local function formatCommas()
        if existingLine[-1] ~= "," then
           existingLine = existingLine .. ","
        end
-       print(existingLine)
        currLen = currLen + existingLine:len()
        lineBuilder = lineBuilder .. existingLine
        if currLen >= 100 then
@@ -279,13 +278,15 @@ local function formatCommas()
       vim.api.nvim_buf_set_lines(0, j - 1, j, false, {""})
       j = j + 1
    end
+   
+   vim.api.nvim_win_set_cursor(0, {limits.start, 1})
 end
 
 local function appendCommas()
     local limits = getLimitsOfCurrentBlock()
 
     i = limits.start
-    while i < limits.endd do
+    while i < (limits.endd - 1) do
         local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
         vim.api.nvim_buf_set_lines(0, i - 1, i, false, {existingLine .. ","})
         i = i + 1
@@ -329,9 +330,7 @@ local function asciiCodeToSymbol()
       .. string.char(tonumber(fullAsciiNumber)) 
       .. currentLine:sub(endCol + 1, #currentLine)
    vim.api.nvim_buf_set_lines(0, lineN - 1, lineN, false, { newLine})
-end,
-
-vim.keymap.set("n", "<C-,>", formatCommas, sil)
+end
 
 --}}}
 --{{{ o improvement
@@ -640,7 +639,6 @@ function floatingSelect(title, choiceLines, choiceCallbacks)
    else
       width = 80
    end
-   
 
 	local winConfig = {
 		focusable = true,
@@ -660,13 +658,10 @@ function floatingSelect(title, choiceLines, choiceCallbacks)
    vim.api.nvim_set_option_value("readonly", true, {buf = selectBuffer, scope = "local"})
 	local window = vim.api.nvim_open_win(selectBuffer, true, winConfig)
 
-	-- Put cursor at the end of the default value
-
 	-- Enter to confirm
 	vim.keymap.set({ "n" }, "<cr>", function()
       local lineN = vim.api.nvim_win_get_cursor(0)[1]
 		vim.api.nvim_win_close(window, true)
-      print(lineN)
 		choiceCallbacks[lineN]()
 	end, { buffer = buffer })
 
@@ -683,16 +678,13 @@ end
 
 vim.keymap.set("n", "<C-a>",
    function() 
-      local mint = function()
-         print("mint")
-      end
-      local cheddar = function()
-         print("cheddar")
-      end
-      local ginseng = function()
-         print("ginseng")
-      end
-      floatingSelect("Choose taste", {"mint", "cheddar", "ginseng"}, {mint, cheddar, ginseng})
+      floatingSelect("Choose action", 
+         {"Append commas to all lines in block", 
+          "Append commas and rectangularize text", 
+          "Convert ASCII code under cursor to symbol"
+         },
+         {appendCommas, formatCommas, asciiCodeToSymbol}
+      )
    end 
 , sil)
 
@@ -710,9 +702,9 @@ function goto(fN, lineNum)
         if searchFor == vim.api.nvim_buf_get_name(buf) then
             vim.api.nvim_win_set_buf(0, buf)
             if vim.api.nvim_win_get_height(0) >= lineNum then
-                vim.api.nvim_win_set_cursor(0, {lineNum, 4})
+                vim.api.nvim_win_set_cursor(0, {lineNum, 3})
             else
-                vim.api.nvim_win_set_cursor(0, {1, 4})
+                vim.api.nvim_win_set_cursor(0, {1, 3})
             end
         end
     end
