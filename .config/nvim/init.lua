@@ -232,6 +232,15 @@ local function setLine(ind, content)
     vim.api.nvim_buf_set_lines(0, ind - 1, ind, false, {content})
 end 
 
+function windowAtCenter(inputWidth)
+	return {
+		relative = "win",
+		row = vim.api.nvim_win_get_height(0) / 2 - 1,
+		col = vim.api.nvim_win_get_width(0) / 2 - inputWidth / 2,
+	}
+end
+
+
 
 --}}}
 --{{{ Commas
@@ -283,6 +292,44 @@ local function appendCommas()
     end
 end
 
+local function asciiCodeToSymbol()
+   local currentLine = getCurrLineContent()
+   local lineN = vim.api.nvim_win_get_cursor(0)[1]
+   local cursorCol = vim.api.nvim_win_get_cursor(0)[2] + 1 -- +1 because the Neovim API is stupid
+   local startCol = -1
+   local endCol = -1
+   for j = cursorCol, 1, -1 do
+      local charCode = string.byte(currentLine:sub(j, j))
+      if charCode < 48 or charCode > 57 then
+         startCol = j + 1
+         break
+      end
+   end
+   if startCol == -1 then
+      startCol = 1
+   end
+   
+   for j = cursorCol, #currentLine, 1 do
+      local charCode = string.byte(currentLine:sub(j, j))
+      if charCode < 48 or charCode > 57 then
+         endCol = j - 1
+         break
+      end
+   end
+   if endCol == -1 then
+      endCol = #currentLine
+   end
+   
+   if startCol == endCol then
+      return
+   end
+   local fullAsciiNumber = currentLine:sub(startCol, endCol)
+   print(fullAsciiNumber)
+   local newLine = currentLine:sub(1, startCol - 1) 
+      .. string.char(tonumber(fullAsciiNumber)) 
+      .. currentLine:sub(endCol + 1, #currentLine)
+   vim.api.nvim_buf_set_lines(0, lineN - 1, lineN, false, { newLine})
+end,
 
 vim.keymap.set("n", "<C-,>", formatCommas, sil)
 
@@ -579,55 +626,79 @@ vim.keymap.set("n", "<M-k>", function() moveWindow("k") end, sil)
 vim.keymap.set("n", "<M-l>", function() moveWindow("l") end, sil)
 
 --}}}
+--{{{ Floating select
+
+function floatingSelect(title, choiceLines, choiceCallbacks)
+   local width = 10;
+   for i, choice in ipairs(choiceLines) do
+      if #choice > width then
+         width = #choice
+      end
+   end
+   if width < 70 then
+      width = width + 10
+   else
+      width = 80
+   end
+   
+
+	local winConfig = {
+		focusable = true,
+		style = "minimal",
+		border = "rounded",
+		width = width,
+		height = #choiceLines,
+		title = title,
+		relative = "win",
+		row = vim.api.nvim_win_get_height(0) / 2 - 1,
+		col = vim.api.nvim_win_get_width(0) / 2 - width / 2
+	}
+
+	-- Create floating window.
+	local selectBuffer = vim.api.nvim_create_buf(false, true)
+   vim.api.nvim_buf_set_lines(selectBuffer, 0, 0, false, choiceLines)
+   vim.api.nvim_set_option_value("readonly", true, {buf = selectBuffer, scope = "local"})
+	local window = vim.api.nvim_open_win(selectBuffer, true, winConfig)
+
+	-- Put cursor at the end of the default value
+
+	-- Enter to confirm
+	vim.keymap.set({ "n" }, "<cr>", function()
+      local lineN = vim.api.nvim_win_get_cursor(0)[1]
+		vim.api.nvim_win_close(window, true)
+      print(lineN)
+		choiceCallbacks[lineN]()
+	end, { buffer = buffer })
+
+	-- Esc or q to close
+	vim.keymap.set("n", "<esc>", function()
+		vim.api.nvim_win_close(window, true)
+	end, { buffer = buffer })
+	vim.keymap.set("n", "q", function()
+		vim.api.nvim_win_close(window, true)
+	end, { buffer = buffer })
+end
+
+--}}}
+
+vim.keymap.set("n", "<C-a>",
+   function() 
+      local mint = function()
+         print("mint")
+      end
+      local cheddar = function()
+         print("cheddar")
+      end
+      local ginseng = function()
+         print("ginseng")
+      end
+      floatingSelect("Choose taste", {"mint", "cheddar", "ginseng"}, {mint, cheddar, ginseng})
+   end 
+, sil)
 
 vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
 vim.keymap.set("i", "<C-9>", "()", sil)
 vim.keymap.set("i", "<C-l>", "<Esc>la<space>", sil) --Move beyond the adjacent ")"
-
---number to an Ascii char
-vim.api.nvim_create_user_command(
-   'ToAscii',
-   function ()
-      local currentLine = getCurrLineContent()
-      local lineN = vim.api.nvim_win_get_cursor(0)[1]
-      local cursorCol = vim.api.nvim_win_get_cursor(0)[2] + 1 -- +1 because the Neovim API is stupid
-      local startCol = -1
-      local endCol = -1
-      for j = cursorCol, 1, -1 do
-         local charCode = string.byte(currentLine:sub(j, j))
-         if charCode < 48 or charCode > 57 then
-            startCol = j + 1
-            break
-         end
-      end
-      if startCol == -1 then
-         startCol = 1
-      end
-      
-      for j = cursorCol, #currentLine, 1 do
-         local charCode = string.byte(currentLine:sub(j, j))
-         if charCode < 48 or charCode > 57 then
-            endCol = j - 1
-            break
-         end
-      end
-      if endCol == -1 then
-         endCol = #currentLine
-      end
-      
-      if startCol == endCol then
-         return
-      end
-      local fullAsciiNumber = currentLine:sub(startCol, endCol)
-      print(fullAsciiNumber)
-      local newLine = currentLine:sub(1, startCol - 1) 
-         .. string.char(tonumber(fullAsciiNumber)) 
-         .. currentLine:sub(endCol + 1, #currentLine)
-      vim.api.nvim_buf_set_lines(0, lineN - 1, lineN, false, { newLine})
-   end,
-   { nargs = 0 }
-)
-
 
 --{{{ Goto (for navigating to source lines from GDB)
 
