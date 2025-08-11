@@ -1,8 +1,5 @@
 --{{{ Utils
 
---vim.treesitter.language.add('lua', { path = "/usr/lib/libtree-sitter-lua.so" })
---vim.treesitter.language.add('vimdoc', { path = "/usr/lib/libtree-sitter-vimdoc.so" })
-
 function map(mode, lhs, rhs)
     local options = { noremap = true }
     options = vim.tbl_extend("force", options, {silent = true})
@@ -48,6 +45,7 @@ vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" }) -- Fix hideous pink m
 
 -- Syntax coloring: run ":syntax" to see which ones are active, edit syntax/..vim to change them
 vim.api.nvim_set_hl(0, "Search", { ctermbg = 8 })
+vim.api.nvim_set_hl(0, "Normal", { ctermbg = 0 })
 vim.api.nvim_set_hl(0, "String", { fg = "#00FF00" })
 vim.api.nvim_set_hl(0, "cStatement", { fg = "Yellow" })
 vim.api.nvim_set_hl(0, "Comment", { fg = "#00FF00" })
@@ -676,9 +674,9 @@ end
 
 --}}}
 
-vim.keymap.set("n", "<C-a>",
+vim.keymap.set("n", "<C-,>",
    function() 
-      floatingSelect("Choose action", 
+      floatingSelect("Choose action (`q` to quit)", 
          {"Append commas to all lines in block", 
           "Append commas and rectangularize text", 
           "Convert ASCII code under cursor to symbol"
