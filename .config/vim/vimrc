@@ -1,0 +1,72 @@
+vim9script
+
+:set foldmethod=marker
+:set tabstop=3
+:set softtabstop=0
+:set smarttab
+:set expandtab
+:set smartindent
+:set ignorecase
+:set clipboard="unnamedplus"
+:set shiftwidth=3
+:set wrap
+:set linebreak
+g:mapleader = ","
+:set nu
+:set rnu
+# allow having inactive buffers in the same window as the active
+:set hidden
+:hi LineNr guibg=#000000 guifg=#ffffff
+:hi Search ctermbg=8
+:hi Normal ctermbg=0
+:hi Folded ctermbg=8 ctermfg=15
+
+#{{{ Core keybindings
+
+inoremap <silent> <Tab> <Esc>
+inoremap <silent> <C-space> <space><space><space>
+# space in normal mode
+nnoremap <silent> <space> i<space><Esc> 
+# buffers (next, previous)
+nnoremap <silent> <C-n> :bn<CR>
+nnoremap <silent> <C-p> :bp<CR>
+
+
+#}}}
+
+g:wiki_root = "~/Wiki"
+g:wiki_filetypes = ["md"]
+g:wiki_link_extension = ".md"
+g:wiki_link_target_type = "md"
+
+def FrontmatterTagParser(str: string): list<string>
+   return str
+      -> substitute('"\|''', '', 'g')
+      -> matchstr('^tags:\s*\[\zs.*\ze]')
+      -> split('[ , ]\+')
+enddef
+
+# parse tags in lines that match "tags: keyword1, keyword2" in addition to the default parser:
+g:wiki_tag_parsers = [
+   {
+      'match': (x) => x =~ '^tags: \?[',
+      'parse': (x) => FrontmatterTagParser(x)
+   }
+]
+
+def FormatJournalTitle(isodate: string, path: string): string
+   const time = strptime("%Y-%m-%d", isodate)
+   return strftime("%b %d", time) .. ": " .. wiki#toc#get_page_title(path)
+enddef
+
+def FormatJournalLink(path: string): string
+   return wiki#paths#relative(wiki#get_root() .. path, expand('#:p:h'))
+enddef
+
+g:wiki_journal_index = {
+  'link_text_parser': (_basename, date, path) => FormatJournalTitle(date, path),
+  'link_url_parser': (_basename, _date, path) => FormatJournalLink(path)
+}
+
+nmap <silent> <leader>fwp :WikiPages<CR>
+nmap <silent> <leader>fwt :WikiTags<CR>
