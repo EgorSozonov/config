@@ -1,4 +1,5 @@
 vim9script
+#{{{ core settings
 
 :set foldmethod=marker
 :set tabstop=3
@@ -7,7 +8,7 @@ vim9script
 :set expandtab
 :set smartindent
 :set ignorecase
-:set clipboard="unnamedplus"
+#:set clipboard="unnamed"
 :set shiftwidth=3
 :set wrap
 :set linebreak
@@ -19,17 +20,38 @@ g:mapleader = ","
 :hi LineNr guibg=#000000 guifg=#ffffff
 :hi Search ctermbg=8
 :hi Normal ctermbg=0
+:hi NormalFloat ctermbg=0
 :hi Folded ctermbg=8 ctermfg=15
 
-#{{{ Core keybindings
+#}}}
+#{{{core keybindings
 
 inoremap <silent> <Tab> <Esc>
 inoremap <silent> <C-space> <space><space><space>
+
+inoremap <silent> <C-w> <Esc>:wa<CR>
+nnoremap <silent> <C-w> <Esc>:wa<CR>
+
 # space in normal mode
 nnoremap <silent> <space> i<space><Esc> 
-# buffers (next, previous)
+# buffers (next, previous, previous visited)
 nnoremap <silent> <C-n> :bn<CR>
 nnoremap <silent> <C-p> :bp<CR>
+nnoremap <silent> <C-3> :b#<CR>
+
+nnoremap <silent> L 21l
+nnoremap <silent> H 21h
+nnoremap <silent> x "_x
+
+nnoremap <silent> O O<Esc>
+nnoremap <silent> o o<Esc>
+
+# copy and paste
+vnoremap <silent> y "+y
+nnoremap <silent> Y "+Y
+vnoremap <silent> <C-c> "+y
+nnoremap <silent> <C-v> "+p
+inoremap <silent> <C-v> "+p
 
 
 #}}}
