@@ -1,27 +1,16 @@
-printf "Are you sure you want to overwrite your configs from the repo?\n"
-read answer
+read -p "Are you sure you want to overwrite your configs from the repo?" -n 1 -r
+echo
 
-if [ "$answer" != "${answer#[Yy]}" ] ;then
-    echo Yes
-else
-    return;
-fi
-
-cp .config/aliases ~/.config
-
-cp -r .config/awesome/* ~/.config/awesome
-
-cp -r .config/nvim/* ~/.config/nvim
-
-cp -r .config/vim/* ~/.config/vim
-
-cp -r .config/kitty/* ~/.config/kitty
-
-cp -r .config/gdb/* ~/.config/gdb
-
-cp -r .config/clangd/* ~/.config/clangd
-
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+   cp .config/aliases ~/.config
+   cp -r .config/awesome/* ~/.config/awesome
+   cp -r .config/nvim/* ~/.config/nvim
+   cp -r .config/vim/* ~/.config/vim
+   cp -r .config/kitty/* ~/.config/kitty
+   cp -r .config/gdb/* ~/.config/gdb
+   cp -r .config/clangd/* ~/.config/clangd
 #cp -r .config/tmux/* ~/.config/tmux
-
-cp -r .config/projector/* ~/.config/projector
+   cp -r .config/projector/* ~/.config/projector
+fi
 

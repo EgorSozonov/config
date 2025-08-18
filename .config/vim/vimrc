@@ -55,40 +55,63 @@ inoremap <silent> <C-v> "+p
 
 
 #}}}
+#{{{ utils
 
-g:wiki_root = "~/Wiki"
-g:wiki_filetypes = ["md"]
-g:wiki_link_extension = ".md"
-g:wiki_link_target_type = "md"
-
-def FrontmatterTagParser(str: string): list<string>
-   return str
-      -> substitute('"\|''', '', 'g')
-      -> matchstr('^tags:\s*\[\zs.*\ze]')
-      -> split('[ , ]\+')
+def GetCurrLineNum(): number
+   return line(".") - 1
 enddef
 
-# parse tags in lines that match "tags: keyword1, keyword2" in addition to the default parser:
-g:wiki_tag_parsers = [
-   {
-      'match': (x) => x =~ '^tags: \?[',
-      'parse': (x) => FrontmatterTagParser(x)
-   }
-]
-
-def FormatJournalTitle(isodate: string, path: string): string
-   const time = strptime("%Y-%m-%d", isodate)
-   return strftime("%b %d", time) .. ": " .. wiki#toc#get_page_title(path)
+def GetVisualLineInterval(): tuple<number, number>
+   var vstart = getpos("'<")
+   var vend = getpos("'>")
+   return (vstart[1] - 1, vend[1])
 enddef
 
-def FormatJournalLink(path: string): string
-   return wiki#paths#relative(wiki#get_root() .. path, expand('#:p:h'))
+
+def GetCurrLine(): string
+   return getline(".")
 enddef
 
-g:wiki_journal_index = {
-  'link_text_parser': (_basename, date, path) => FormatJournalTitle(date, path),
-  'link_url_parser': (_basename, _date, path) => FormatJournalLink(path)
-}
+def GetLine(i: number): string
+   return getline(i + 1)
+enddef
 
-nmap <silent> <leader>fwp :WikiPages<CR>
-nmap <silent> <leader>fwt :WikiTags<CR>
+def SetLine(i: number, newVal: string)
+   call setline(i + 1, newVal)
+enddef
+
+def GetCountLines(): number
+   return line('$')
+enddef
+
+def InsertLineAfter(afterInd: number, newLineContent: string)
+   call append(afterInd + 1, newLineContent)
+enddef
+
+
+#}}}
+#{{{custom functions
+
+def g:CommentOrUncomment()
+   var visualLineInt = GetVisualLineInterval()
+   var msg = "line " .. visualLineInt[0] .. " to " .. visualLineInt[1]
+   var i = visualLineInt[0]
+   while i < visualLineInt[1]
+      var line = GetLine(i)
+      SetLine(i, "//~" .. line)
+      i = i + 1
+   endwhile
+   
+enddef
+
+
+vnoremap <silent> <C-e> :<C-u>call CommentOrUncomment()<CR>
+
+#}}}
+#{{{snippets
+
+# Alternative way of defining a command
+#command -nargs=0 CommentOrUncomment call CommentOrUncomment() 
+#vnoremap <silent> <C-e> :<C-u>CommentOrUncomment<CR>
+
+#}}}
