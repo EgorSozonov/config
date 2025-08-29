@@ -1,6 +1,7 @@
 vim9script
 #{{{ core settings
 
+:set runtimepath=~/.config/vim
 :set foldmethod=marker
 :set tabstop=3
 :set softtabstop=0
@@ -12,16 +13,36 @@ vim9script
 :set shiftwidth=3
 :set wrap
 :set linebreak
+syntax on
 g:mapleader = ","
+# line numbers:
 :set nu
 :set rnu
+# disable startup screen
+:set shm+=I
 # allow having inactive buffers in the same window as the active
 :set hidden
+# color scheme:
+:set termguicolors
 :hi LineNr guibg=#000000 guifg=#ffffff
+:hi CursorLineNr guibg=#000000 guifg=#ffffff
+:hi Comment guibg=#000000 guifg=#00ff00
 :hi Search ctermbg=8
-:hi Normal ctermbg=0
+:hi Normal guibg=#000000 guifg=#ffffff
 :hi NormalFloat ctermbg=0
-:hi Folded ctermbg=8 ctermfg=15
+:hi Folded guibg=#242424 guifg=white
+
+# cursor line's colors
+:hi CursorLine guibg=#000000 guifg=white cterm=NONE
+:hi CursorLineNr cterm=NONE
+:set cursorline
+autocmd InsertLeave * highlight CursorLine guibg=#000000
+autocmd InsertEnter * highlight CursorLine guibg=#303030
+
+:set showcmd
+:set laststatus=2
+# see ":h statusline" for explanation
+:set statusline=%-t%m%=%c%=%P%S
 
 #}}}
 #{{{core keybindings
@@ -29,8 +50,8 @@ g:mapleader = ","
 inoremap <silent> <Tab> <Esc>
 inoremap <silent> <C-space> <space><space><space>
 
-inoremap <silent> <C-w> <Esc>:wa<CR>
-nnoremap <silent> <C-w> <Esc>:wa<CR>
+inoremap <silent> <C-s> <Esc>:wa<CR>
+nnoremap <silent> <C-s> <Esc>:wa<CR>
 
 # space in normal mode
 nnoremap <silent> <space> i<space><Esc> 
@@ -113,5 +134,12 @@ vnoremap <silent> <C-e> :<C-u>call CommentOrUncomment()<CR>
 # Alternative way of defining a command
 #command -nargs=0 CommentOrUncomment call CommentOrUncomment() 
 #vnoremap <silent> <C-e> :<C-u>CommentOrUncomment<CR>
+
+# Cursor?
+#set t_SI="\<Esc>[6 q"
+
+#set t_SI="\<Esc>]12;purple\x7"
+#set t_SR="\<Esc>]12;red\x7"
+#set t_EI="\<Esc>]12;green\x7"
 
 #}}}

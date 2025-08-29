@@ -4,7 +4,7 @@ cp -rf ~/.config/awesome/* .config/awesome
 
 cp -rf ~/.config/nvim/* .config/nvim
 
-cp -rf ~/.config/vim/* .config/vim
+cp -f ~/.config/vim/vimrc .config/vim
 
 cp -rf ~/.config/kitty/* .config/kitty
 
