@@ -2,20 +2,19 @@ alias sys="systemctl"
 alias sys="sudo systemctl"
 alias sus="loginctl suspend"
 alias running="sudo sv s /var/service/*"
-alias flash="sudo mount -o umask=000 -t vfat --mkdir /dev/sda /mnt/flash"
+alias flash="sudo mount -o umask=000 -t vfat --mkdir /dev/sda /mnt/flash || sudo mount -o umask=000 -t vfat --mkdir /dev/sda1 /mnt/flash"
 alias unflash="sudo umount /mnt/flash"
 alias fixKb="setxkbmap -layout us,ru -option 'ctrl:nocaps,grp:lctrl_toggle'"
-alias n="nvim"
-alias v="/usr/local/bin/vim"
+alias c="VIMRUNTIME=~/.config/nvim nvim"
+alias v="~/proj/cim/bin/cim"
 alias fd="find . -name"
 alias cl="clear"
 alias up="cd .."
 alias nvimConfig="nvim ~/.config/nvim/init.lua" 
-alias vimConfig="v ~/.config/vim/vimrc" 
-alias bashrc="nvim ~/.bashrc"
-alias aliases="nvim ~/.config/aliases"
-alias aweConfig="nvim ~/.config/awesome/rc.lua"
-alias emaConfig="nvim ~/.config/emacs/init.el"
+alias vimConfig="c ~/.config/vim/vimrc" 
+alias bashrc="c ~/.bashrc"
+alias aliases="c ~/.config/aliases"
+alias aweConfig="c ~/.config/awesome/rc.lua"
 alias pblog="nvim -S ~/.config/sessions/blog.vim"
 alias myGroups="groups"
 alias allGroups="cat /etc/group"
@@ -29,7 +28,7 @@ alias la='ls -A'
 alias grep="grep --color"
 alias zgrep="zgrep --color"
 alias backup=". ~/scr/backupVault.txt"
-alias compress="tar -I 'xz -9' --exclude .git --exclude _debug --exclude bin -c"
+alias compress="tar -I 'xz -9' --exclude .git --exclude _debug --exclude bin --exclude objects --exclude testdir -c"
 alias decompress="tar -xf"
 alias backup=". ~/scr/backupVault.txt"
 alias btest="tsc --outdir _bin/test --strict true --esModuleInterop true --module ES2020 test/test.ts"
@@ -43,12 +42,14 @@ alias a="alsamixer"
 alias serve="busybox httpd -f"
 alias runCsv="sql :memory: '.read script'"
 alias img="feh -g 640x480 -d -S filename"
-alias tech="v ~/vault/techInfo.txt"
+alias tech="c ~/vault/techInfo.txt"
 alias devDb="psql -U dev -d devdb -p 6789"
 
-alias gj="cd ~/repos/gcc/gcc/jit/ && n jit-recording.cc jit-recording.h"
+alias gj="cd ~/repos/gcc/gcc/jit/ && v jit-recording.cc jit-recording.h"
 
-alias gj2="cd ~/repos/gcc/gcc/ && n fold-const.cc" 
+alias gj2="cd ~/repos/gcc/gcc/ && v fold-const.cc" 
+alias ascii="c ~/backup/ascii.txt"
+alias refresh="source ~/.bashrc"
 
 # replaces text in this dir and subdirs
 # Examples:
@@ -58,5 +59,20 @@ function replaceText() {
    local nameFilter="${2:-'*.*'}"
    local command="find . -type f -name '${nameFilter}' -exec sed -i '$1' {} +"
    eval "$command"
+}
+
+# Usage: just countLoc() in a folder with C code
+function countLoc() {
+   declare -a foundFiles
+
+   # Use find with -print0 and readarray with a null delimiter
+   readarray -d '' foundFiles < <(find . -type f -name "*.[hc]" -print0)
+
+   declare -i sumLc=0
+   for f in "${foundFiles[@]}"; do
+      lineCount=$(sed -e '\|^\s*//.*$|d' -e '/^\s*\*/d' -e '\|^\s*/\*|d' -e '/^\s*$/d' $f | wc -l)
+      sumLc=$sumLc+$((lineCount))
+   done
+   echo $sumLc 
 }
 
