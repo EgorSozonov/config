@@ -1,3 +1,34 @@
+function f() {
+   local theCommand="lsblk -lntbo NAME,SIZE,MOUNTPOINT | tr -s ' '"
+   local currPrefix=""
+   local currName=""
+   local isNew="true"
+   eval $theCommand | while read -r partition; do
+      readarray -d " " -t spl <<< $partition
+      #if [[ spl[0] =~ ^sd.*$ ]] && ((spl[1] < 40000000000)); then
+      if [[ "${spl[0]}" =~ ^sd.* ]] && ((spl[1] < 40000000000)); then
+         local newPrefix="${spl[0]//[0-9]/}"
+         if [[ $newPrefix != $currPrefix ]]; then
+            currPrefix=$newPrefix
+            currName="${spl[0]}"
+            echo "currName $currName"
+            if [[ currName == "sdd" ]]; then
+               echo "SDD" 
+            fi
+            isNew="true"
+         elif [[ $isNew == "true" ]]; then
+            if (( "${#spl[2]}" == 0 )); then
+               echo $currPrefix
+            fi
+            isNew="false"
+         fi
+      fi
+   done
+   if [[ $isNew == "true" ]]; then
+      echo "last $currName"
+   fi
+}
+
 
 function help() {
    echo "Generate code projects from templates: projector"

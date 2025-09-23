@@ -125,7 +125,7 @@ local taglistButtons = gears.table.join(
 
 awful.screen.connect_for_each_screen(function(s)
     -- Each screen has its own tag table.
-    awful.tag({ "1", "2", "3", "4", "q", "w", "e", "a", "s", "d" }, s, awful.layout.layouts[1])
+    awful.tag({ "1", "2", "3", "4", "q", "w", "e", "r", "a", "s", "d" }, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -294,7 +294,7 @@ clientkeys = gears.table.join(
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it work on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
-for i = 1, 10 do
+for i = 1, 11 do
     local kN = "#" .. i + 9
     if i == 5 then
         kN = "q"
@@ -303,10 +303,12 @@ for i = 1, 10 do
     elseif i == 7 then
         kN = "e"
     elseif i == 8 then
-        kN = "a"
+        kN = "r"
     elseif i == 9 then
-        kN = "s"
+        kN = "a"
     elseif i == 10 then
+        kN = "s"
+    elseif i == 11 then
         kN = "d"
     end 
     globalkeys = gears.table.join(globalkeys,
