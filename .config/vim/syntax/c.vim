@@ -9,8 +9,6 @@ if exists("b:current_syntax")
   finish
 endif
 
-let s:cpo_save = &cpo
-set cpo&vim
 
 let s:ft = matchstr(&ft, '^\%([^.]\)\+')
 
@@ -28,6 +26,4 @@ let b:current_syntax = "c"
 
 unlet s:ft
 
-let &cpo = s:cpo_save
-unlet s:cpo_save
 " vim: ts=8

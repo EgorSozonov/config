@@ -1,4 +1,5 @@
 cp ~/.config/aliases .config
+cp ~/.config/utils .config
     
 cp -rf ~/.config/awesome/* .config/awesome
 

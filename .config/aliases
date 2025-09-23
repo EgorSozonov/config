@@ -50,29 +50,3 @@ alias gj="cd ~/repos/gcc/gcc/jit/ && v jit-recording.cc jit-recording.h"
 alias gj2="cd ~/repos/gcc/gcc/ && v fold-const.cc" 
 alias ascii="c ~/backup/ascii.txt"
 alias refresh="source ~/.bashrc"
-
-# replaces text in this dir and subdirs
-# Examples:
-# replaceText 's/ddd/eee/g' '*.txt'
-# replaceText 's/ddd/eee/g'
-function replaceText() {
-   local nameFilter="${2:-'*.*'}"
-   local command="find . -type f -name '${nameFilter}' -exec sed -i '$1' {} +"
-   eval "$command"
-}
-
-# Usage: just countLoc() in a folder with C code
-function countLoc() {
-   declare -a foundFiles
-
-   # Use find with -print0 and readarray with a null delimiter
-   readarray -d '' foundFiles < <(find . -type f -name "*.[hc]" -print0)
-
-   declare -i sumLc=0
-   for f in "${foundFiles[@]}"; do
-      lineCount=$(sed -e '\|^\s*//.*$|d' -e '/^\s*\*/d' -e '\|^\s*/\*|d' -e '/^\s*$/d' $f | wc -l)
-      sumLc=$sumLc+$((lineCount))
-   done
-   echo $sumLc 
-}
-

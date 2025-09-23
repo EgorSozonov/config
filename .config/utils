@@ -1,0 +1,49 @@
+
+function help() {
+   echo "Generate code projects from templates: projector"
+   echo "Mount all flash sticks: flasher"
+   echo "Back stuff up to mounted flash sticks: bup file.tar.gz"
+   echo "See default bash help: command help"
+}
+
+# Back a file up onto all flash sticks mounted by flasher
+function bup() {
+   local mountDir="$HOME/toys/bup/flash"
+   local today
+   printf -v today '%(%Y-%m-%d)T' -1
+   i=0
+   while [ -d "$mountDir$i" ]; do
+      echo "Found $i"
+      local backupDir="$mountDir$i/backup/$today"
+      mkdir -p "$backupDir"
+      cp $1 "$backupDir"
+      ((i++))
+   done
+}
+
+# replaces text in this dir and subdirs
+# Examples:
+# replaceText 's/ddd/eee/g' '*.txt'
+# replaceText 's/ddd/eee/g'
+function replaceText() {
+   local nameFilter="${2:-'*.*'}"
+   local command="find . -type f -name '${nameFilter}' -exec sed -i '$1' {} +"
+   eval "$command"
+}
+
+function countLoc() {
+   declare -a foundFiles
+
+   # Use find with -print0 and readarray with a null delimiter
+   readarray -d '' foundFiles < <(find . -type f -name "*.[hc]" -print0)
+
+   declare -i sumLc=0
+   # Loop through each element
+   for f in "${foundFiles[@]}"; do
+      # Apply a shell command to each item
+      lineCount=$(sed -e '\|^\s*//.*$|d' -e '/^\s*\*/d' -e '\|^\s*/\*|d' -e '/^\s*$/d' $f | wc -l)
+      sumLc=$sumLc+$((lineCount))
+   done
+   echo $sumLc 
+}
+

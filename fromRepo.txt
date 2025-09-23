@@ -4,6 +4,7 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
    cp .config/aliases ~/.config
+   cp .config/utils ~/.config
    cp -r .config/awesome/* ~/.config/awesome
    cp -r .config/nvim/* ~/.config/nvim
    cp -f .config/vim/vimrc ~/.config/vim
