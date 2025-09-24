@@ -1,32 +1,69 @@
-function f() {
+
+function unflash() {
+   local mountDir="/mnt/flash"
+   
+   i=0
+   while [ -d "$mountDir$i" ]; do
+      local backupDir="$mountDir$i"
+      sudo umount -q $backupDir
+      ((i++))
+   done
+}
+
+# mount USB flash sticks into /mnt/flash0, 1, 2 etc
+function flash() {
+   unflash
+
+   declare -a usbSticks
+   
+   # get the list of USB stick partitions
    local theCommand="lsblk -lntbo NAME,SIZE,MOUNTPOINT | tr -s ' '"
+   readarray -t partitions < <(eval $theCommand)
+   
+   # filter out unmounted, small partitions starting with "sd" like "sdb1"
    local currPrefix=""
    local currName=""
-   local isNew="true"
-   eval $theCommand | while read -r partition; do
+   local newName="" 
+   local isNew="false"
+   for partition in "${partitions[@]}"; do
+      if (( "${#partition}" == 0 )); then
+         continue
+      fi
       readarray -d " " -t spl <<< $partition
-      #if [[ spl[0] =~ ^sd.*$ ]] && ((spl[1] < 40000000000)); then
       if [[ "${spl[0]}" =~ ^sd.* ]] && ((spl[1] < 40000000000)); then
-         local newPrefix="${spl[0]//[0-9]/}"
+         newName="${spl[0]}"
+         local newPrefix="${newName//[0-9]/}"
          if [[ $newPrefix != $currPrefix ]]; then
+            if [[ $isNew == "true" ]]; then
+               usbSticks+=("/dev/$currName")
+            fi
+            
             currPrefix=$newPrefix
             currName="${spl[0]}"
-            echo "currName $currName"
-            if [[ currName == "sdd" ]]; then
-               echo "SDD" 
-            fi
             isNew="true"
          elif [[ $isNew == "true" ]]; then
-            if (( "${#spl[2]}" == 0 )); then
-               echo $currPrefix
+            if (( "${#spl[2]}" <= 1 )); then
+               usbSticks+=("/dev/$newName")
             fi
             isNew="false"
          fi
       fi
    done
    if [[ $isNew == "true" ]]; then
-      echo "last $currName"
+      usbSticks+=("/dev/$newName")
    fi
+   
+   declare -a mountCommands
+   local i=0
+   for stick in "${usbSticks[@]}"; do
+      mountCommands+=("sudo mount -o umask=000 -t vfat --mkdir $stick /mnt/flash$i")
+      ((i++))
+   done
+
+   # mount the partitions
+   for cm in "${mountCommands[@]}"; do
+      eval $cm
+   done
 }
 
 
@@ -39,18 +76,22 @@ function help() {
 
 # Back a file up onto all flash sticks mounted by flasher
 function bup() {
-   local mountDir="$HOME/toys/bup/flash"
+   local mountDir="/mnt/flash"
    local today
    printf -v today '%(%Y-%m-%d)T' -1
+   
    i=0
    while [ -d "$mountDir$i" ]; do
-      echo "Found $i"
       local backupDir="$mountDir$i/backup/$today"
       mkdir -p "$backupDir"
+      
+      echo "Backing up to $backupDir"
       cp $1 "$backupDir"
       ((i++))
    done
 }
+
+
 
 # replaces text in this dir and subdirs
 # Examples:
