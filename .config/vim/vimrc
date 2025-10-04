@@ -4,9 +4,6 @@ vim9script
 :set runtimepath=~/.config/vim
 :set backupdir=.,$HOME/.local/state/vim
 
-# Break away from Vi compatibility
-:set nocompatible
-
 :set hlsearch
 :set foldmethod=marker
 :set tabstop=3
@@ -92,6 +89,10 @@ nnoremap <silent> Y "+Y
 vnoremap <silent> <C-c> "+y
 nnoremap <silent> <C-v> "+p
 inoremap <silent> <C-v> "+p
+
+# quickfix list
+nnoremap <silent> [q :cprev<CR>
+nnoremap <silent> ]q :cnext<CR>
 
 nnoremap <f9> :make testParser<CR><CR><CR>:cwindow<CR>
 
@@ -240,6 +241,10 @@ nnoremap <silent> <leader>i :call InputForm()<CR>
 #set t_SI="\<Esc>]12;purple\x7"
 #set t_SR="\<Esc>]12;red\x7"
 #set t_EI="\<Esc>]12;green\x7"
+
+#}}}
+#{{{make command
+
 
 #}}}
 #{{{popup menus

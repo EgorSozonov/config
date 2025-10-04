@@ -58,8 +58,7 @@ vim.api.nvim_set_hl(0, "Folded", { bg = "#303030" })
 map("i", "<C-;>", "<Esc>")
 map("i", "<Tab>", "<Esc>")
 map("i", "<C-space>", "<space><space><space>") -- indentation insert
-map("i", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
-map("n", "<C-w>", "<Esc>:wa<CR>") -- save all and enter normal mode
+map("i", "<C-s>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("v", "<C-c>", "\"+y")
 map("n", "<C-v>", "\"*p")
 map("i", "<C-v>", "\"*p")
@@ -79,6 +78,9 @@ map("n", "L", "21l")
 map("n", "<C-h>", "21h")
 map("n", "<C-l>", "21l")
 map("n", "<M-c>", ":q<CR>")
+-- quickfix list navigation
+map("n", "[q", ":cprev<CR>")
+map("n", "]q", ":cnext<CR>")
 
 map("n", "x", '"_x') -- don't clobber the register
 
