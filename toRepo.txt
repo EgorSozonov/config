@@ -9,6 +9,7 @@ cp -f ~/.config/vim/vimrc .config/vim
 cp -f ~/.config/vim/syntax/c.vim .config/vim/syntax/c.vim
 
 cp -rf ~/.config/kitty/* .config/kitty
+cp -rf ~/.config/alacritty/alacritty.toml .config/alacritty
 
 cp -rf ~/.config/gdb/* .config/gdb
 

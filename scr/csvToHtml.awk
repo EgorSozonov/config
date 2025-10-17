@@ -11,11 +11,11 @@ function printRow(tag) {
     for(i=1; i<=NF; i++) print "<"tag">"$i"</"tag">";
     print "</tr>"
 }
-# If CSV file line number (NR variable) is 1, call printRow fucntion with 'th' as argument
+# If CSV file line number (NR variable) is 1, call printRow function with 'th' as argument
 NR==1 {
     printRow("th")
 }
-# If CSV file line number (NR variable) is greater than 1, call printRow fucntion with 'td' as argument
+# If CSV file line number (NR variable) is greater than 1, call printRow function with 'td' as argument
 NR>1 {
     printRow("td")
 }

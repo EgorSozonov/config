@@ -10,6 +10,7 @@ then
    cp -f .config/vim/vimrc ~/.config/vim
    cp -f .config/vim/syntax/c.vim ~/.config/syntax/c.vim
    cp -r .config/kitty/* ~/.config/kitty
+   cp -r .config/alacritty/alacritty.toml ~/.config/alacritty
    cp -r .config/gdb/* ~/.config/gdb
    cp -r .config/clangd/* ~/.config/clangd
 #cp -r .config/tmux/* ~/.config/tmux

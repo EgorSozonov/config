@@ -21,6 +21,7 @@ vim.opt.showmode = false -- Don't display current mode
 vim.g.loaded_matchparen = true
 vim.g.loaded_matchparen = true
 vim.g.loaded_matchbracket = true 
+vim.opt.termguicolors = true 
 
 vim.o.shada = nil -- turn off the useless saving of every piece of state
 
@@ -47,9 +48,9 @@ vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" }) -- Fix hideous pink m
 vim.api.nvim_set_hl(0, "Search", { ctermbg = 8 })
 vim.api.nvim_set_hl(0, "Normal", { ctermbg = 0 })
 vim.api.nvim_set_hl(0, "String", { fg = "#00FF00" })
-vim.api.nvim_set_hl(0, "cStatement", { fg = "Yellow" })
 vim.api.nvim_set_hl(0, "Comment", { fg = "#00FF00" })
 vim.api.nvim_set_hl(0, "Folded", { bg = "#303030" })
+vim.api.nvim_set_hl(0, "Statement", { fg = "#FFFF00" })
 
 --}}}
 --{{{ Core keybindings
@@ -676,17 +677,23 @@ end
 
 --}}}
 
-vim.keymap.set("n", "<C-,>",
-   function() 
-      floatingSelect("Choose action (`q` to quit)", 
-         {"Append commas to all lines in block", 
-          "Append commas and rectangularize text", 
-          "Convert ASCII code under cursor to symbol"
-         },
-         {appendCommas, formatCommas, asciiCodeToSymbol}
-      )
-   end 
-, sil)
+
+--map("n", "<C-m>", "vipk:'<,'>s/$/,/<CR>")
+map("n", "<C-,>", 
+   [[ :normal vipk<CR> <bar> :s/$/,/<CR> ]]
+ --  [[:normal! vipk<CR> <bar> :'<,'>s/$/,/<CR>]]
+)
+--//~vim.keymap.set("n", "<C-,>",
+--//~   function() 
+--//~      floatingSelect("Choose action (`q` to quit)", 
+--//~         {"Append commas to all lines in block", 
+--//~          "Append commas and rectangularize text", 
+--//~          "Convert ASCII code under cursor to symbol"
+--//~         },
+--//~         {appendCommas, formatCommas, asciiCodeToSymbol}
+--//~      )
+--//~   end 
+--//~, sil)
 
 vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
 vim.keymap.set("i", "<C-9>", "()", sil)

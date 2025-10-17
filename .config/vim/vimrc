@@ -91,12 +91,12 @@ nnoremap <silent> <C-v> "+p
 inoremap <silent> <C-v> "+p
 
 # quickfix list
-nnoremap <silent> [q :cprev<CR>
-nnoremap <silent> ]q :cnext<CR>
+nnoremap <silent> [m :mprev<CR>
+nnoremap <silent> ]m :mnext<CR>
 
-nnoremap <f9> :make testParser<CR><CR><CR>:cwindow<CR>
+nnoremap <f9> :make testParser<CR><CR><CR>:mwindow<CR>
 
-
+nnoremap <silent> <C-,> :normal vipk<CR> \| :s/$/,/<CR>
 
 #}}}
 #{{{ utils
@@ -153,7 +153,7 @@ def g:AppendCommasToParagraf()
       i += 1
    endwhile
 enddef
-:nnoremap <silent> <C-,> :call AppendCommasToParagraf()<CR>
+#:nnoremap <silent> <C-,> :call AppendCommasToParagraf()<CR>
 
 :inoremap <silent> <C-]> {<CR><CR>}<up><space><space><space>
 
