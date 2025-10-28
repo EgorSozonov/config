@@ -13,7 +13,6 @@ then
    cp -r .config/alacritty/alacritty.toml ~/.config/alacritty
    cp -r .config/gdb/* ~/.config/gdb
    cp -r .config/clangd/* ~/.config/clangd
-#cp -r .config/tmux/* ~/.config/tmux
    cp -r .config/projector/* ~/.config/projector
 fi
 
