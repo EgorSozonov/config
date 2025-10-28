@@ -1,6 +1,6 @@
-vim9script
-#{{{ core settings
+//{{{ core settings
 
+//:set runtimepath=~/.config/vim
 :set runtimepath=~/.config/vim
 :set backupdir=.,$HOME/.local/state/vim
 
@@ -11,23 +11,23 @@ vim9script
 :set shiftwidth=3
 :set softtabstop=0
 :set autoindent
-#:set smarttab
-#:set smartindent
+//:set smarttab
+//:set smartindent
 :set ignorecase
 :set clipboard=unnamedplus
 :set wrap
 :set linebreak
 :set backspace=indent,eol,start
-syntax on
-g:mapleader = ","
-# line numbers:
+:syntax on
+let g:mapleader = ","
+// line numbers:
 :set nu
 :set rnu
-# disable startup screen
+// disable startup screen
 :set shm+=I
-# allow having inactive buffers in the same window as the active
+// allow having inactive buffers in the same window as the active
 :set hidden
-# color scheme:
+// color scheme:
 :set termguicolors
 :hi LineNr guibg=#000000 guifg=#ffffff
 :hi CursorLineNr guibg=#000000 guifg=#ffffff
@@ -37,234 +37,220 @@ g:mapleader = ","
 :hi Search ctermbg=8
 :hi Normal guibg=#000000 guifg=#ffffff
 :hi NormalFloat ctermbg=0
-# The "~"  in the gutter
+// The "~"  in the gutter
 :hi NonText guifg=#707070
-# The invisible chars like tabs
+// The invisible chars like tabs
 :hi SpecialKey guifg=#707070
 :hi Folded guibg=#242424 guifg=white
 
-# cursor line's colors
+// cursor line's colors
 :hi CursorLine guibg=#000000 guifg=white cterm=NONE
 :hi CursorLineNr cterm=NONE
 :set cursorline
 autocmd InsertLeave * highlight CursorLine guibg=#000000
 autocmd InsertEnter * highlight CursorLine guibg=#303030
 
-# show the tabs
+// show the tabs
 :set list
 :set listchars=tab:--
 
 
 :set showcmd
 :set laststatus=2
-# see ":h statusline" for explanation
+// see ":h statusline" for explanation
 :set statusline=%-t%m%=%c%=%P%S
 
-#}}}
-#{{{core keybindings
+//}}}
+//{{{core keybindings
 
-inoremap <silent> <Tab> <Esc>
-inoremap <silent> <C-space> <space><space><space>
+:inoremap <silent> <Tab> <Esc>
+:inoremap <silent> <C-space> <space><space><space>
 
-inoremap <silent> <C-s> <Esc>:wa<CR>
-nnoremap <silent> <C-s> <Esc>:wa<CR>
+:inoremap <silent> <C-s> <Esc>:wa<CR>
+:nnoremap <silent> <C-s> <Esc>:wa<CR>
 
-# space in normal mode
-nnoremap <silent> <space> i<space><Esc> 
-# buffers (next, previous, previous visited)
-nnoremap <silent> <C-n> :bn<CR>
-nnoremap <silent> <C-p> :bp<CR>
-nnoremap <silent> <C-3> :b#<CR>
+// space in normal mode
+:nnoremap <silent> <space> i<space><Esc> 
+// buffers (next, previous, previous visited)
+:nnoremap <silent> <C-n> :bn<CR>
+:nnoremap <silent> <C-p> :bp<CR>
+:nnoremap <silent> <C-3> :b//<CR>
 
-nnoremap <silent> L 21l
-nnoremap <silent> H 21h
-nnoremap <silent> x "_x
-
-#nnoremap <silent> O O<Esc>
-#nnoremap <silent> o o<Esc>
-
-# copy and paste
-vnoremap <silent> y "+y
-nnoremap <silent> Y "+Y
-vnoremap <silent> <C-c> "+y
-nnoremap <silent> <C-v> "+p
-inoremap <silent> <C-v> "+p
-
-# quickfix list
-nnoremap <silent> [m :mprev<CR>
-nnoremap <silent> ]m :mnext<CR>
-
-nnoremap <f9> :make testParser<CR><CR><CR>:mwindow<CR>
-
-nnoremap <silent> <C-,> :normal vipk<CR> \| :s/$/,/<CR>
-
-#}}}
-#{{{ utils
-
-def GetCurrLineNum(): number
-   return line(".") - 1
-enddef
-
-def GetVisualLineInterval(): tuple<number, number>
-   var vstart = getpos("'<")
-   var vend = getpos("'>")
-   return (vstart[1] - 1, vend[1])
-enddef
+:nnoremap <silent> L 21l
+:nnoremap <silent> H 21h
+:nnoremap <silent> x "_x
 
 
-def GetCurrLine(): string
-   return getline(".")
-enddef
+// copy and paste
+:vnoremap <silent> y "+y
+:nnoremap <silent> Y "+Y
+:vnoremap <silent> <C-c> "+y
+:nnoremap <silent> <C-v> "+p
+:inoremap <silent> <C-v> :normal "+p
 
-def GetLine(i: number): string
-   return getline(i + 1)
-enddef
+// quickfix list
+:nnoremap <silent> [m :lprev m<CR>
+:nnoremap <silent> ]m :lnext m<CR>
 
-def SetLine(i: number, newVal: string)
-   call setline(i + 1, newVal)
-enddef
+:nnoremap <f9> :make testParser<CR><CR><CR>:mwindow<CR>
 
-def GetCountLines(): number
-   return line('$')
-enddef
+:nnoremap <silent> <C-,> :normal vipk<CR> \| :s/$/,/<CR>
 
-def InsertLineAfter(afterInd: number, newLineContent: string)
-   call append(afterInd + 1, newLineContent)
-enddef
+//}}}
+//{{{ utils
 
-def GetLimitsOfCurrentBlock(): tuple<number, number>
-   var start = line("'{")
-   if start == 1
-      start -= 1
-   endif
-   return (start, line("'}"))
-enddef
+//~ def GetCurrLineNum(): number
+//~    return line(".") - 1
+//~ enddef
+//~ 
+//~ def GetVisualLineInterval(): tuple<number, number>
+//~    var vstart = getpos("'<")
+//~    var vend = getpos("'>")
+//~    return (vstart[1] - 1, vend[1])
+//~ enddef
+//~ 
+//~ 
+//~ def GetCurrLine(): string
+//~    return getline(".")
+//~ enddef
+//~ 
+//~ def GetLine(i: number): string
+//~    return getline(i + 1)
+//~ enddef
+//~ 
+//~ def SetLine(i: number, newVal: string)
+//~    call setline(i + 1, newVal)
+//~ enddef
+//~ 
+//~ def GetCountLines(): number
+//~    return line('$')
+//~ enddef
+//~ 
+//~ def InsertLineAfter(afterInd: number, newLineContent: string)
+//~    call append(afterInd + 1, newLineContent)
+//~ enddef
+//~ 
+//~ def GetLimitsOfCurrentBlock(): tuple<number, number>
+//~    var start = line("'{")
+//~    if start == 1
+//~       start -= 1
+//~    endif
+//~    return (start, line("'}"))
+//~ enddef
 
-#}}}
-#{{{commas and formatting
-
-#Appends a comma to every but the last line of a paragraf
-def g:AppendCommasToParagraf()
-   var limits = GetLimitsOfCurrentBlock()
-   var i = limits[0]
-   while i < (limits[1] - 1)
-      var lineContents = GetLine(i)
-      SetLine(i, lineContents .. ",")
-      i += 1
-   endwhile
-enddef
-#:nnoremap <silent> <C-,> :call AppendCommasToParagraf()<CR>
+//}}}
+//{{{commas and formatting
 
 :inoremap <silent> <C-]> {<CR><CR>}<up><space><space><space>
 
-#}}}
-#{{{custom functions
+//}}}
+//{{{custom functions
 
-# Comment out multiline visual selection, or remove comments from a block
-def g:CommentOrUncomment()
-   var visualLineInt = GetVisualLineInterval()
-   var msg = "line " .. visualLineInt[0] .. " to " .. visualLineInt[1]
-   var i = visualLineInt[0]
-   while i < visualLineInt[1]
-      var line = GetLine(i)
-      SetLine(i, "//~" .. line)
-      i = i + 1
-   endwhile
-enddef
+// Comment out multiline visual selection, or remove comments from a block
+//~ def g:CommentOrUncomment()
+//~    var visualLineInt = GetVisualLineInterval()
+//~    var msg = "line " .. visualLineInt[0] .. " to " .. visualLineInt[1]
+//~    var i = visualLineInt[0]
+//~    while i < visualLineInt[1]
+//~       var line = GetLine(i)
+//~       SetLine(i, "//~" .. line)
+//~       i = i + 1
+//~    endwhile
+//~ enddef
+//~ 
+//~ vnoremap <silent> <C-e> :<C-u>call CommentOrUncomment()<CR>
+//~ 
+//~ # Go to definition of a C element
+//~ def g:GoToCDef()
+//~    var name = expand("<cword>") # word under cursor
+//~    var theCommand = ":bufdo silent! lvim /:" .. name .. "/ %"
+//~    exe theCommand
+//~ enddef
+//~ 
+//~ nnoremap <silent> <C-d> :call GoToCDef()<CR>
+//~ 
+//~ def AddLabel(ln: number, text: string)
+//~    prop_add(ln, 0, {'text': text, 'text_align': 'below', 'type': 'label'})
+//~ enddef
+//~ 
+//~ def ToggleDropDownValue()
+//~    var p = prop_find({'lnum': 1, 'type': 'label'})
+//~    var currVal = p.text
+//~    prop_clear(1)
+//~    if currVal == "row"
+//~       AddLabel(1, "col")
+//~    else
+//~       AddLabel(1, "row")
+//~    endif
+//~ enddef
+//~ 
+//~ # Buffer with input form
+//~ def g:InputForm()
+//~    if bufexists("_form")
+//~       return
+//~    endif
+//~    var theBuf = bufnr("_form", true)
+//~    setbufvar(theBuf, '&buflisted', true)
+//~    setbufvar(theBuf, '&buftype', 'nofile')
+//~    exe ":buffer _form"
+//~    append(1, "")
+//~    #:nmap <buffer> p <ScriptCmd>ToggleDropDownValue()<CR>
+//~    :nnoremap <buffer> p <ScriptCmd>ToggleDropDownValue()<CR>
+//~ 
+//~    prop_type_add('label', {'highlight': 'Comment'})
+//~    prop_add(1, 0, {'text': 'row', 'text_align': 'below', 'type': 'label'})
+//~ enddef
+//~ 
+//~ def Bar()
+//~    :echo 'bar'
+//~ enddef
+//~ 
+//~ def Foo()
+//~    :nnoremap b <ScriptCmd>Bar()<CR>
+//~    :echo 'foo'
+//~ enddef
+//~ 
+//~ :nnoremap f <ScriptCmd>Foo()<CR>
+//~ 
+//~ nnoremap <silent> <leader>i :call InputForm()<CR>
 
-vnoremap <silent> <C-e> :<C-u>call CommentOrUncomment()<CR>
+//}}}
+//{{{snippets
 
-# Go to definition of a C element
-def g:GoToCDef()
-   var name = expand("<cword>") # word under cursor
-   var theCommand = ":bufdo silent! lvim /:" .. name .. "/ %"
-   exe theCommand
-enddef
+// Alternative way of defining a command
+//command -nargs=0 CommentOrUncomment call CommentOrUncomment() 
+//vnoremap <silent> <C-e> :<C-u>CommentOrUncomment<CR>
 
-nnoremap <silent> <C-d> :call GoToCDef()<CR>
+// Cursor?
+//set t_SI="\<Esc>[6 q"
 
-def AddLabel(ln: number, text: string)
-   prop_add(ln, 0, {'text': text, 'text_align': 'below', 'type': 'label'})
-enddef
+//set t_SI="\<Esc>]12;purple\x7"
+//set t_SR="\<Esc>]12;red\x7"
+//set t_EI="\<Esc>]12;green\x7"
 
-def ToggleDropDownValue()
-   var p = prop_find({'lnum': 1, 'type': 'label'})
-   var currVal = p.text
-   prop_clear(1)
-   if currVal == "row"
-      AddLabel(1, "col")
-   else
-      AddLabel(1, "row")
-   endif
-enddef
-
-# Buffer with input form
-def g:InputForm()
-   if bufexists("_form")
-      return
-   endif
-   var theBuf = bufnr("_form", true)
-   setbufvar(theBuf, '&buflisted', true)
-   setbufvar(theBuf, '&buftype', 'nofile')
-   exe ":buffer _form"
-   append(1, "")
-   #:nmap <buffer> p <ScriptCmd>ToggleDropDownValue()<CR>
-   :nnoremap <buffer> p <ScriptCmd>ToggleDropDownValue()<CR>
-
-   prop_type_add('label', {'highlight': 'Comment'})
-   prop_add(1, 0, {'text': 'row', 'text_align': 'below', 'type': 'label'})
-enddef
-
-def Bar()
-   :echo 'bar'
-enddef
-
-def Foo()
-   :nnoremap b <ScriptCmd>Bar()<CR>
-   :echo 'foo'
-enddef
-
-:nnoremap f <ScriptCmd>Foo()<CR>
-
-nnoremap <silent> <leader>i :call InputForm()<CR>
-
-#}}}
-#{{{snippets
-
-# Alternative way of defining a command
-#command -nargs=0 CommentOrUncomment call CommentOrUncomment() 
-#vnoremap <silent> <C-e> :<C-u>CommentOrUncomment<CR>
-
-# Cursor?
-#set t_SI="\<Esc>[6 q"
-
-#set t_SI="\<Esc>]12;purple\x7"
-#set t_SR="\<Esc>]12;red\x7"
-#set t_EI="\<Esc>]12;green\x7"
-
-#}}}
-#{{{make command
+//}}}
+//{{{make command
 
 
-#}}}
-#{{{popup menus
+//}}}
+//{{{popup menus
 
-def MenuCallback(id: number, result: any)
-   if result > 0
-      :echo result
-   endif
-enddef
-
-def g:ShowMenu()
-   popup_menu(["option 0", "option 1"],
-   { callback: MenuCallback,
-     cursorline: true, title: "Foo dialog",
-     padding: [1, 2, 1, 2], borderchars: []
-   })
-enddef
+//~ def MenuCallback(id: number, result: any)
+//~   if result > 0
+//~      :echo result
+//~    endif
+//~ enddef
+//~ 
+//~ def g:ShowMenu()
+//~    popup_menu(["option 0", "option 1"],
+//~    { callback: MenuCallback,
+//~      cursorline: true, title: "Foo dialog",
+//~      padding: [1, 2, 1, 2], borderchars: []
+//~    })
+//~ enddef
 
 :hi Pmenu guibg=#505050
-#nnoremap <silent> f :call ShowMenu()<CR>
+//nnoremap <silent> f :call ShowMenu()<CR>
 
-#}}}
+//}}}
 
