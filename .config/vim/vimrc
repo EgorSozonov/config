@@ -28,27 +28,25 @@ let g:mapleader = ","
 // allow having inactive buffers in the same window as the active
 :set hidden
 // color scheme:
-:set termguicolors
-:hi LineNr guibg=#000000 guifg=#ffffff
-:hi CursorLineNr guibg=#000000 guifg=#ffffff
-:hi Comment guibg=#000000 guifg=#00ff00
-:hi Search guibg=#707070 guifg=#ffffff
-:hi Keyword guibg=#000000 guifg=#ffff00
-:hi Search ctermbg=8
-:hi Normal guibg=#000000 guifg=#ffffff
-:hi NormalFloat ctermbg=0
+:hi LineNr bg=#000000 fg=#ffffff
+:hi CursorLineNr bg=#000000 fg=#ffffff
+:hi Comment bg=#000000 fg=#00ff00
+:hi Search bg=#707070 fg=#ffffff
+:hi Keyword bg=#000000 fg=#ffff00
+:hi Normal bg=#000000 fg=#ffffff
+:hi NormalFloat bg=#000000
 // The "~"  in the gutter
-:hi NonText guifg=#707070
+:hi NonText fg=#707070
 // The invisible chars like tabs
-:hi SpecialKey guifg=#707070
-:hi Folded guibg=#242424 guifg=white
+:hi SpecialKey fg=#707070
+:hi Folded bg=#242424 fg=white
 
 // cursor line's colors
-:hi CursorLine guibg=#000000 guifg=white cterm=NONE
-:hi CursorLineNr cterm=NONE
+:hi CursorLine bg=#000000 fg=white
+:hi CursorLineNr
 :set cursorline
-autocmd InsertLeave * highlight CursorLine guibg=#000000
-autocmd InsertEnter * highlight CursorLine guibg=#303030
+autocmd InsertLeave * highlight CursorLine bg=#000000
+autocmd InsertEnter * highlight CursorLine bg=#303030
 
 // show the tabs
 :set list
@@ -249,7 +247,7 @@ autocmd InsertEnter * highlight CursorLine guibg=#303030
 //~    })
 //~ enddef
 
-:hi Pmenu guibg=#505050
+:hi Pmenu bg=#505050
 //nnoremap <silent> f :call ShowMenu()<CR>
 
 //}}}
