@@ -41,12 +41,6 @@ let g:mapleader = ","
 :hi SpecialKey fg=#707070
 :hi Folded bg=#242424 fg=white
 
-// cursor line's colors
-:hi CursorLine bg=#000000 fg=white
-:hi CursorLineNr
-:set cursorline
-autocmd InsertLeave * highlight CursorLine bg=#000000
-autocmd InsertEnter * highlight CursorLine bg=#303030
 
 // show the tabs
 :set list

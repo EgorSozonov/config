@@ -72,6 +72,12 @@ function help() {
    echo "Mount all flash sticks: flasher"
    echo "Back stuff up to mounted flash sticks: bup file.tar.gz"
    echo "See default bash help: command help"
+   echo "Postgres doesn't work: startPg"
+   echo "Top subdirectories by size on disk: spaceHogs"
+   echo "Search Man pages: mans tar extract"
+   echo "Find files: ff .pdf"
+   echo "Find directories: fdi"
+   echo "All these useful functions are defined in ~/.config/utils"
 }
 
 # Back a file up onto all flash sticks mounted by flasher
@@ -117,5 +123,47 @@ function countLoc() {
       sumLc=$sumLc+$((lineCount))
    done
    echo $sumLc 
+}
+
+function mkcd() {
+   mkdir -p "$1"
+   cd "$1"
+}
+
+function hist() {
+   history | grep -i "$1"
+}
+
+function ff() {
+   find . -type -f -iname "*$1*" 2>/dev/null
+}
+
+function fdi() {
+   find . -type d -iname "*$1*" 2>/dev/null
+}
+
+function mans() {
+   man "$1" | grep -iC 5 "$2"
+}
+
+function tre() {
+   tree -aC -I '.git|vendor' --dirsfirst "$@" | less -FRNX
+}
+
+function trash() {
+   mv "$@" ~/.local/share/trash/
+   echo "Moved to ~/.local/share/trash/"
+}
+
+function listening() {
+   lsof -iTCP -sTCP:LISTEN -P -n
+}
+
+function spaceHogs() {
+   du -hs * | sort -rh | head -10
+}
+
+function serve() {
+   busybox httpd -f
 }
 
