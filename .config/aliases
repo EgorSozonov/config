@@ -1,3 +1,10 @@
+alias pkInstall="sudo pacman -S"
+alias pkRemove="sudo pacman -R"
+alias pkRefresh="sudo pacman -Syu"
+alias pkUpdate="sudo pacman -Sy archlinux-keyring && sudo pacman -Su"
+alias pkUnused="pacman -Qqdt"
+
+
 alias sys="systemctl"    
 alias sys="sudo systemctl"
 alias sus="loginctl suspend"

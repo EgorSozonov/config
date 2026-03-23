@@ -74,6 +74,9 @@ function help() {
    echo "See default bash help: command help"
    echo "Postgres doesn't work: startPg"
    echo "Top subdirectories by size on disk: spaceHogs"
+   echo "Install package: pkInstall"
+   echo "Remove package: pkRemove"
+   echo "Top packages by size on disk: pkStats"
    echo "Search Man pages: mans tar extract"
    echo "Find files: ff .pdf"
    echo "Find directories: fdi"
@@ -166,4 +169,15 @@ function spaceHogs() {
 function serve() {
    busybox httpd -f
 }
+
+function pkStats() {
+   pacman -Qi | awk 'BEGIN {OFS=","} /^Name/{name=$3} /^Installed Size/{print $4$5,name}' \
+      | sort -h | awk 'BEGIN {FS=","; OFS=" : "} {print $2, $1}' 
+}
+
+# `exciseBlock marker file` outputs the lines between `{{{marker` and `}}}` from the file
+function exciseBlock() {
+   awk "/^{{{$1/{f=1;next} /^}}}\$/{f=0} f" $2
+}
+
 
