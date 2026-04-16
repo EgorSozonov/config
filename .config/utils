@@ -175,9 +175,13 @@ function pkStats() {
       | sort -h | awk 'BEGIN {FS=","; OFS=" : "} {print $2, $1}' 
 }
 
-# `exciseBlock marker file` outputs the lines between `{{{marker` and `}}}` from the file
+# `exciseBlock marker file` outputs the lines between `{``{{marker` and `}}``}` from the file
 function exciseBlock() {
    awk "/^{{{$1/{f=1;next} /^}}}\$/{f=0} f" $2
 }
 
+# Shared library dependencies of a binary. Use like `libraryDeps $(which nvim)`
+function libraryDeps() {
+   readelf -d $1 | grep NEEDED
+}
 
