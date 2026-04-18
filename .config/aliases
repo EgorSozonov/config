@@ -5,6 +5,12 @@ alias pkUpdate="sudo pacman -Sy archlinux-keyring && sudo pacman -Su"
 alias pkInfo="pacman -Qi"
 alias pkUnused="pacman -Qqdt"
 
+#alias c="date +'%b %d %H:%M. %a'; acpi -b;cal"
+alias c="date +'%H:%M. %a'; acpi -b;cal"
+
+alias rm="rm -i"
+alias realRm="/usr/bin/rm"
+
 
 alias sys="systemctl"    
 alias sys="sudo systemctl"

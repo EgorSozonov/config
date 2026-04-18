@@ -14,5 +14,8 @@ then
    cp -r .config/gdb/* ~/.config/gdb
    cp -r .config/clangd/* ~/.config/clangd
    cp -r .config/projector/* ~/.config/projector
+   cp -r .config/sway/* ~/.config/sway
+   cp -r .config/foot/* ~/.config/foot
+   cp -r .config/waybar/* ~/.config/waybar
 fi
 

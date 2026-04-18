@@ -21,7 +21,7 @@ set $menu wmenu-run
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+output * bg ~/pictures/roverWp.jpg fill
 #
 # Example configuration:
 #
@@ -138,8 +138,6 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
     bindsym $mod+Shift+a move container to workspace number 9
     bindsym $mod+Shift+s move container to workspace number 10
     bindsym $mod+Shift+d move container to workspace number 11
-    # Note: workspaces can have any name you want, not just numbers.
-    # We just use 1-10 as the default.
 #
 # Layout stuff:
 #
@@ -176,9 +174,13 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
     # Show the next scratchpad window or hide the focused scratchpad window.
     # If there are multiple scratchpad windows, this command cycles through them.
     bindsym $mod+minus scratchpad show
+    
 #
 # Resizing containers:
 #
+    
+    bindsym $mod+h resize shrink width 20px
+    bindsym $mod+l resize grow width 20px
 mode "resize" {
     # left will shrink the containers width
     # right will grow the containers width
@@ -212,13 +214,15 @@ mode "resize" {
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
     # Special key to take a screenshot with grim
-    bindsym Print exec grim
+    bindsym Insert exec grimshot save output ~/pictures/screenshots/scr.png
+    bindsym Shift+Insert exec grimshot copy area
     
 bar {
-   mode invisible
+   swaybar_command waybar
+   #mode invisible
 }
 
-default_border pixel 3
+default_border pixel 2
 #client.focused %border %background %text %indicator %child_border
 client.focused #80ff80 #285577 #ffffff #80ff80 #80ff80
 

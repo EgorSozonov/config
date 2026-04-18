@@ -13,7 +13,9 @@ cp -rf ~/.config/alacritty/alacritty.toml .config/alacritty
 
 cp -rf ~/.config/gdb/* .config/gdb
 
-
 cp -rf ~/.config/projector/* .config/projector
+
 cp -rf ~/.config/sway/* .config/sway
+cp -rf ~/.config/foot/* .config/foot
+cp -rf ~/.config/waybar/* .config/waybar
 

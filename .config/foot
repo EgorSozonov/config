@@ -1,0 +1,11 @@
+#font=monospace:size=22
+font=Foo-Regular:size=18
+
+[key-bindings]
+scrollback-up-page=KP_Page_Up Page_Up
+scrollback-down-page=KP_Page_Down Page_Down
+noop=Insert
+
+
+[scrollback]
+lines=2000
