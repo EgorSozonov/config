@@ -21,8 +21,7 @@ tooltip {
 
 button {
    border: 0px;
-   border-radius: 10px;
-	font-size: 40px;
+   border-radius: 8px;
 }
 
 
@@ -31,13 +30,11 @@ button:hover {
 }
 
 #workspaces button {
-    padding: 0 1px;
-    border: 0px solid rgba(0,127,84,0.0);
-    border-radius: 10px;
+    border-radius: 8px;
 }
 
 #workspaces button:hover {
-    border-radius: 10px;
+    border-radius: 8px;
     border: 0px solid rgba(0,255,167,0.0);
 }
 
@@ -45,6 +42,7 @@ button:hover {
    font-weight: bold;
    border: 1px solid white;
    border-radius: 8px;
+   padding: 0px;
 }
 
 #workspaces button.active {
@@ -56,6 +54,11 @@ button:hover {
     background-color: transparent;
     color: #ff0000;
     border-radius: 10px;
+}
+
+#workspaces button.persistent {
+    color: #555555; /* Dimmer color for idle workspaces */
+    opacity: 0.5;
 }
 
 #mode {

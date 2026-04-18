@@ -170,6 +170,10 @@ function serve() {
    busybox httpd -f
 }
 
+function printSwayHotkeys() {
+   grep -E '^\s*(bindsym|bindcode)' ~/.config/sway/config
+}
+
 function pkStats() {
    pacman -Qi | awk 'BEGIN {OFS=","} /^Name/{name=$3} /^Installed Size/{print $4$5,name}' \
       | sort -h | awk 'BEGIN {FS=","; OFS=" : "} {print $2, $1}' 

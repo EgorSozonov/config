@@ -4,16 +4,15 @@
     "mode": "dock",
     "ipc": true,
     "position": "left", // Waybar position (top|bottom|left|right)
-    "height": 30, // Waybar height (to be removed for auto height)
-    "width": 10, // Waybar width
+    "width": 50, // Waybar width
     "spacing": 10, // Gaps between modules (4px)
 //    "margin-bottom": 10,
 //    "margin-left": 10,
 //    "margin-right": 10,
     "margin-top": 0,
     // Choose the order of the modules
-    "modules-center": ["sway/workspaces", "group/battery", "sway/language", "battery#bat2", 
-       "group/date", "group/time", "tray", "temperature"
+    "modules-left": ["sway/workspaces", "group/battery", "sway/language", "battery#bat2", 
+       "group/time", "group/date", "tray", "temperature", "custom/start", "custom/hotkeys"
     ],
 
 	"group/battery": {
@@ -41,42 +40,56 @@
 
    // Modules configuration
    "sway/workspaces": {
-        "icon-size": 36,
-         "disable-scroll": false,
-         "all-outputs": true,
-         "format": "{icon}", 
-         "format-icons": {
-             "1": "1",
-             "2": "2",
-             "3": "3",
-             "4": "4",
-             "5": "q",
-             "6": "w",
-             "7": "e",
-             "8": "r",
-             "9": "a",
-             "10": "s",
-             "11": "d"
-         }
+      "icon-size": 36,
+      "disable-scroll": false,
+      "all-outputs": true,
+      "format": "{icon}", 
+      "format-icons": {
+         "1": "1",
+         "2": "2",
+         "3": "3",
+         "4": "4",
+         "5": "Q",
+         "6": "W",
+         "7": "E",
+         "8": "R",
+         "9": "A",
+         "10": "S",
+         "11": "D"
+      },
+      "persistent-workspaces": {
+         "1": [],
+         "2": [],
+         "3": [],
+         "4": [],
+         "5": [],
+         "6": [],
+         "7": [],
+         "8": [],
+         "9": [],
+         "10": [],
+         "11": []
+      }
    },
    "sway/language": {
       "format": "{}",
       "format-ru": "RU",
-      "format-en": "US"
+      "format-en": "US",
+      "on-click": "swaymsg input type:keyboard xkb_switch_layout next"
    }, 
    "sway/scratchpad": {
-        "format": "{icon} {count}",
-        "show-empty": false,
-        "format-icons": ["", ""],
-        "tooltip": true,
-        "tooltip-format": "{app}: {title}"
-    },
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": {
-            "activated": "",
-            "deactivated": ""
-        }
+      "format": "{icon} {count}",
+      "show-empty": false,
+      "format-icons": ["", ""],
+      "tooltip": true,
+      "tooltip-format": "{app}: {title}"
+   },
+   "idle_inhibitor": {
+      "format": "{icon}",
+      "format-icons": {
+         "activated": "",
+         "deactivated": ""
+      }
    },
    "tray": {
         "icon-size": 36,
@@ -119,13 +132,14 @@
            "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
    },
    "temperature": {
-         "orientation": "vertical",
-        // "thermal-zone": 2,
-        // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
-        "critical-threshold": 80,
-        // "format-critical": "{temperatureC}°C {icon}",
-        "format": "{temperatureC}°C",
-        "format-icons": ["", "", ""]
+      "interval": 120,
+      "orientation": "vertical",
+      // "thermal-zone": 2,
+      // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+      "critical-threshold": 80,
+      // "format-critical": "{temperatureC}°C {icon}",
+      "format": "{temperatureC}°C",
+      "format-icons": ["", "", ""]
    },
 
    "battery": {
@@ -168,16 +182,14 @@
         "format-disconnected": "Disconnected ⚠",
         "format-alt": "{ifname}: {ipaddr}/{cidr}"
     },
-    "custom/media": {
-        "format": "{icon} {}",
-        "return-type": "json",
-        "max-length": 40,
-        "format-icons": {
-            "spotify": "",
-            "default": "🎜"
-        },
-        "escape": true,
-        "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null" // Script in resources folder
-        // "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null" // Filter player based on name
-    }
+   "custom/start": {
+      "format": "▶",
+      "on-click": "wmenu-run", // Command to run on click
+      "tooltip": false
+   },
+   "custom/hotkeys": {
+      "format": "[?]",
+      "on-click": "foot --hold sh -c \". /usr/local/bin/printSwayKeys.sh\"",
+      "tooltip": false
+   }
 }
