@@ -185,3 +185,15 @@ function libraryDeps() {
    readelf -d $1 | grep NEEDED
 }
 
+function plsEdit() {
+  if [ -z "$1" ]; then
+     echo "Usage: plsEdit /etc/file"
+     exit 1
+  fi
+  TEMP=$(mktemp)
+  doas cp "$1" "$TEMP"
+  ${EDITOR:-nvim} "$TEMP"
+  doas cp "$TEMP" "$1"
+  /usr/bin/rm "$TEMP"
+}
+

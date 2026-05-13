@@ -1,12 +1,15 @@
 alias pkInstall="doas pacman -S"
-alias pkRemove="doas pacman -R"
+alias pkRemove="doas pacman -Rn"
 alias pkRefresh="doas pacman -Syu"
 alias pkUpdate="doas pacman -Sy archlinux-keyring && doas pacman -Su"
 alias pkInfo="pacman -Qi"
 alias pkUnused="pacman -Qqdt"
+alias pkMakeExplicit="doas pacman -D --asexplicit"
+alias pkExplicit="pacman -Qqe"
+alias pkSizes="expac -H M '%011m\t%n' | sort -n"
 
-#alias c="date +'%b %d %H:%M. %a'; acpi -b;cal"
-alias c="date +'%H:%M. %a'; acpi -b;cal"
+alias d="date +'%H:%M. %a'; acpi -b;cal"
+alias pls="doas"
 
 alias rm="rm -i"
 alias realRm="/usr/bin/rm"
@@ -78,3 +81,4 @@ alias gj2="cd ~/repos/gcc/gcc/ && v fold-const.cc"
 alias ascii="e ~/backup/ascii.txt"
 alias refresh="source ~/.bashrc"
 
+alias fdir="cd \"./\$(find . -name '.?*' -type d -prune -o -type d -print | fzf)\""
