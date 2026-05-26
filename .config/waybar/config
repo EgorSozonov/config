@@ -10,9 +10,8 @@
 //    "margin-left": 10,
 //    "margin-right": 10,
     "margin-top": 0,
-    // Choose the order of the modules
     "modules-left": ["sway/workspaces", "group/battery", "sway/language", "battery#bat2", 
-       "group/time", "group/date", "tray", "custom/start", "custom/hotkeys"
+       "group/time", "group/date", "tray", "custom/start", "custom/hotkeys", "custom/sound"
     ],
 
 	"group/battery": {
@@ -77,13 +76,6 @@
       "format-en": "US",
       "on-click": "swaymsg input type:keyboard xkb_switch_layout next"
    }, 
-   "sway/scratchpad": {
-      "format": "{icon} {count}",
-      "show-empty": false,
-      "format-icons": ["", ""],
-      "tooltip": true,
-      "tooltip-format": "{app}: {title}"
-   },
    "idle_inhibitor": {
       "format": "{icon}",
       "format-icons": {
@@ -106,7 +98,7 @@
       "interval": 60,
       "format": "{:%b}",
            "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-    },
+   },
    "clock#3": {
         // "timezone": "America/New_York",
       "interval": 60,
@@ -146,40 +138,41 @@
         // "format-full": "",
         "format-icons": ["", "", "", "", ""]
    },
-    "battery#2": {
-        "states": {
-            // "good": 95,
-            "warning": 30,
-            "critical": 20
-        },
-        "format": "{icon} ",
-        "format-charging": "",
-        "format-plugged": "",
-        "format-alt": "{time} {icon} ",
-        // "format-good": "", // An empty format will hide the module
-        // "format-full": "",
-        "format-icons": ["", "", "", "", ""]
-    },
-    "battery#bat2": {
-        "bat": "BAT2"
-    },
-    "network": {
-        // "interface": "wlp2*", // (Optional) To force the use of this interface
-        "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-ethernet": "{ipaddr}/{cidr} ",
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "format-linked": "{ifname} (No IP) ",
-        "format-disconnected": "Disconnected ⚠",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}"
-    },
+   "battery#2": {
+      "states": {
+         // "good": 95,
+         "warning": 30,
+         "critical": 20
+      },
+      "format": "{icon} ",
+      "format-charging": "",
+      "format-plugged": "",
+      "format-alt": "{time} {icon} ",
+      // "format-good": "", // An empty format will hide the module
+      // "format-full": "",
+      "format-icons": ["", "", "", "", ""]
+   },
+   "battery#bat2": {
+       "bat": "BAT2"
+   },
    "custom/start": {
       "format": "▶",
       "on-click": "wmenu-run", // Command to run on click
-      "tooltip": false
+      "tooltip": true,
+      "tooltip-format": "App menu (Esc to close)"
    },
    "custom/hotkeys": {
       "format": "[?]",
       "on-click": "foot --hold sh -c \". /usr/local/bin/printSwayKeys.sh\"",
-      "tooltip": false
+      "tooltip": true,
+      "tooltip-format": "Display hotkeys"
+   },
+   "custom/sound": {
+      "exec": "~/.config/waybar/mute.sh",
+      "return-type": "json",
+      "format": "{}",
+      "interval": "once",
+      "signal": 5,
+      "on-click": "amixer set Master toggle; pkill -RTMIN+5 waybar",
    }
 }

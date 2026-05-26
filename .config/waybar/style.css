@@ -149,64 +149,6 @@ label:focus {
     border: 1px solid rgba(0,255,169,0.0);
 }
 
-#pulseaudio {
-    
-    border: 1px solid rgba(0,255,169,0.0);
-}
-
-#pulseaudio.muted {
-    
-    border: 1px solid rgba(0,255,169,0.0);
-    color: #ec0000;
-}
-
-#wireplumber {
-    
-    border: 1px solid rgba(0,255,169,0.0);
-    color: #000000;
-}
-
-#wireplumber.muted {
-    
-    border: 1px solid rgba(0,255,169,0.0);
-}
-
-#custom-media {
-    background-color: #66cc99;
-    color: #2a5c45;
-    min-width: 100px;
-}
-
-#custom-media.custom-spotify {
-    background-color: #66cc99;
-}
-
-#custom-media.custom-vlc {
-    background-color: #ffa000;
-}
-
-temperature {
-    background-color: #404040;
-}
-
-temperature.critical {
-    background-color: #ff4040;
-}
-
-#tray {
-    border: 1px solid rgba(0,255,169,0.0);
-    padding: 0px 1px;
-    margin-right: 1;
-}
-
-#tray > .passive {
-    -gtk-icon-effect: dim;
-}
-
-#tray > .needs-attention {
-    -gtk-icon-effect: highlight;
-    background-color: #eb4d4b;
-}
 
 #idle_inhibitor {
     background-color: #2d3436;
@@ -218,11 +160,11 @@ temperature.critical {
 }
 
 #language {
-    background: #404040;
-    color: white;
-    padding: 0 5px;
-    margin: 0 5px;
-    min-width: 16px;
+   background: #404040;
+   color: white;
+   padding: 0 5px;
+   margin: 0 5px;
+   min-width: 16px;
 }
 
 #keyboard-state {
@@ -247,4 +189,24 @@ temperature.critical {
 
 #scratchpad.empty {
 	background-color: transparent;
+}
+
+#custom-sound.on {
+   background-image: url("./icons/soundOn.bmp"); 
+   background-repeat: no-repeat;
+   background-position: center;
+   background-size: contain;
+   min-width: 40px;
+   min-height: 40px;
+   padding: 0;
+}
+
+#custom-sound.off {
+   background-image: url("icons/soundMute.bmp");
+   background-repeat: no-repeat;
+   background-position: center;
+   background-size: contain;
+   min-width: 40px;
+   min-height: 40px;
+   padding: 0;
 }

@@ -3,19 +3,19 @@ echo
 
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-   cp .config/aliases ~/.config
-   cp .config/utils ~/.config
-   cp -r .config/awesome/* ~/.config/awesome
-   cp -r .config/nvim/* ~/.config/nvim
-   cp -f .config/vim/vimrc ~/.config/vim
-   cp -f .config/vim/syntax/c.vim ~/.config/syntax/c.vim
-   cp -r .config/kitty/* ~/.config/kitty
-   cp -r .config/alacritty/alacritty.toml ~/.config/alacritty
-   cp -r .config/gdb/* ~/.config/gdb
-   cp -r .config/clangd/* ~/.config/clangd
-   cp -r .config/projector/* ~/.config/projector
-   cp -r .config/sway/* ~/.config/sway
-   cp -r .config/foot/* ~/.config/foot
-   cp -r .config/waybar/* ~/.config/waybar
+   /usr/bin/cp .config/aliases ~/.config
+   /usr/bin/cp .config/utils ~/.config
+   /usr/bin/cp -r .config/awesome/* ~/.config/awesome
+   /usr/bin/cp -r .config/nvim/* ~/.config/nvim
+   /usr/bin/cp -f .config/vim/vimrc ~/.config/vim
+   /usr/bin/cp -f .config/vim/syntax/c.vim ~/.config/syntax/c.vim
+   /usr/bin/cp -r .config/kitty/* ~/.config/kitty
+   /usr/bin/cp -r .config/alacritty/alacritty.toml ~/.config/alacritty
+   /usr/bin/cp -r .config/gdb/* ~/.config/gdb
+   /usr/bin/cp -r .config/clangd/* ~/.config/clangd
+   /usr/bin/cp -r .config/projector/* ~/.config/projector
+   /usr/bin/cp -r .config/sway/* ~/.config/sway
+   /usr/bin/cp -r .config/foot/* ~/.config/foot
+   /usr/bin/cp -r .config/waybar/* ~/.config/waybar
 fi
 
