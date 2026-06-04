@@ -66,6 +66,7 @@ alias partitions="df -Th"
 alias mp3="id3v2"
 alias music="cmus"
 alias rg="grep -rn --exclude-dir={.git,proto}"
+alias pls="doas"
 
 alias burnIso="pls dd bs=4M conv=fsync oflag=direct status=progress"
 
