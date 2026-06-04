@@ -17,5 +17,6 @@ then
    /usr/bin/cp -r .config/sway/* ~/.config/sway
    /usr/bin/cp -r .config/foot/* ~/.config/foot
    /usr/bin/cp -r .config/waybar/* ~/.config/waybar
+   /usr/bin/cp -r .config/home/* ~/
 fi
 

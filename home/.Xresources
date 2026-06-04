@@ -1,14 +1,54 @@
-xterm*background: black
-xterm*foreground: white
-xterm*faceName: Monospace
-xterm*faceSize: 14
-xterm*selectToClipboard: true
-! prevent jumping back to the last line with new output
-xterm*scrollTtyOutput: false
- 
-! add keyboard shortcuts to jump to beginning/end
-xterm*vt100.translations: #override \n\
-    Shift <Key>Home: scroll-forw(10000000000) \n\
-    Shift <Key>End: scroll-back(10000000000) \n\
-    Shift Ctrl <Key> C: copy-selection(CLIPBOARD) \n\
-    Shift Ctrl <Key> V: insert-selection(CLIPBOARD)
+!! Colorscheme
+! special
+*.foreground: #93a1a1
+*.background: #141c21
+*.cursorColor: #afbfbf
+
+! black
+*.color0: #000000
+*.color8: #2a697d
+
+! red
+*.color1: #ff2f2c
+*.color9: #ff3935
+
+! green
+*.color2: #00FF00
+*.color10: #a4ff00
+
+
+! yellow
+*.color3: #b08500
+*.color11: #d9a400
+
+! blue
+*.color4: #2587cc
+*.color12: #2ca2f5
+
+! magenta
+*.color5: #696ebf
+*.color13: #8086e8
+
+! white
+*.color7: #bfbaac
+*.color15: #fdf6e3
+
+! cyan
+*.color6: #289c93
+*.color14: #33c5ba
+
+URxvt.background: #000000
+URxvt.foreground: #FFFFFF
+URxvt.font: xft:0xProtoNerdFontMono:pixelsize=22:antialias=true:hinting:true
+URxvt.boldFont: xft:0xProtoNerdFontMono:bold:pixelsize=22:antialias=true:hinting:true
+URxvt.scrollBar: false
+URxvt.saveLines: 2000
+URxvt.cursorUnderline: true
+
+URxvt.keysym.Shift-Control-V: eval:paste_clipboard
+URxvt.keysym.Shift-Control-C: eval:selection_to_clipboard
+URxvt.keysym.Control-Meta-c: builtin-string:
+URxvt.keysym.Control-Meta-v: builtin-string:
+URxvt.iso14755: false
+URxvt.iso14755_52: false
+URxvt.perl-ext-common: default,-confirm-paste

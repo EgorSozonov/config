@@ -1,7 +1,4 @@
-source ~/.config/aliases
-
 export PS1="\[\e[0;32m\]\W |>\[\e[m\] "
-export EDITOR=nvim
 
 stty -ixon # Disable XON/XOFF crap (terminal freezing)
 
@@ -14,8 +11,7 @@ shopt -s histappend
 
 shopt -s globstar # the /**/ pattern to select files from all depths
 
-readonly PATH="/usr/local/sbin:/usr/local/bin:/usr/bin"
-export CARGO_HOME=~/crust/cargo
-export RUSTUP_HOME=~/crust/rustup
-export VIMRUNTIME=~/.local/share/nvim/site
+source ~/.config/aliases
+source ~/.config/utils
+
 setxkbmap -layout us,ru -option 'grp:nocaps,grp:lctrl_toggle'
