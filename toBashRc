@@ -14,9 +14,7 @@ shopt -s histappend
 
 shopt -s globstar # the /**/ pattern to select files from all depths
 
-export DEBUGDIR=~/debug
-export EXEDIR=~/exes
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin"
+readonly PATH="/usr/local/sbin:/usr/local/bin:/usr/bin"
 export CARGO_HOME=~/crust/cargo
 export RUSTUP_HOME=~/crust/rustup
 export VIMRUNTIME=~/.local/share/nvim/site

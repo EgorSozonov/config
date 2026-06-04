@@ -162,10 +162,10 @@
       "tooltip-format": "App menu (Esc to close)"
    },
    "custom/hotkeys": {
-      "format": "[?]",
+      "format": "(?)",
       "on-click": "foot --hold sh -c \". /usr/local/bin/printSwayKeys.sh\"",
       "tooltip": true,
-      "tooltip-format": "Display hotkeys"
+      "tooltip-format": "Display hotkeys (Win + c to close)"
    },
    "custom/sound": {
       "exec": "~/.config/waybar/mute.sh",

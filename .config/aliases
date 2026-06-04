@@ -1,16 +1,4 @@
-alias pkInstall="doas pacman -S"
-alias pkRemove="doas pacman -Rn"
-alias pkRefresh="doas pacman -Syu"
-alias pkUpdate="doas pacman -Sy archlinux-keyring && doas pacman -Su"
-alias pkInfo="pacman -Qi"
-alias pkUnused="pacman -Qqdt"
-alias pkMakeExplicit="doas pacman -D --asexplicit"
-alias pkExplicit="pacman -Qqe"
-alias pkWhichFiles="pacman -Ql"
-alias pkWhichPackage="pacman -Qo"
-
 alias d="date +'%H:%M. %a'; acpi -b;cal"
-alias pls="doas"
 
 alias rm="rm -i"
 alias realRm="/usr/bin/rm"
@@ -19,10 +7,9 @@ alias realCp="/usr/bin/cp"
 alias mv="mv -i"
 alias realMv="/usr/bin/mv"
 
-alias sys="systemctl"    
 alias sys="doas systemctl"
 alias sus="loginctl suspend"
-alias running="doas sv s /var/service/*"
+alias running="systemctl --state=running --type=service"
 #alias flash="doas mount -o umask=000 -t vfat --mkdir /dev/sda /mnt/flash || doas mount -o umask=000 -t vfat --mkdir /dev/sda1 /mnt/flash"
 #alias unflash="doas umount /mnt/flash"
 alias fixKb="setxkbmap -layout us,ru -option 'ctrl:nocaps,grp:lctrl_toggle'"
@@ -45,8 +32,8 @@ alias allGroups="cat /etc/group"
 alias gitTags="git tag | xargs -n1 git rev-list -n 1"
 alias genTags='ctags-universal --exclude=node_modules $(cat ~/.config/ctags/ctags.conf)'
 alias trailingSpaces="sed -i 's/[ ]*$//'"    
-alias sql="sqlite3" 
-alias l='(ls --color=always -agohA | grep "^d"); (ls --color=always -agohA | grep -v "^[dt]")'
+#alias l='(ls --color=always -agohA | grep "^d"); (ls --color=always -agohA | grep -v "^[dt]")'
+alias l="ls --color=always --group-directories-first -agohA"
 alias lss='ls --color=always -agohA'
 alias la='ls -A'
 alias grep="grep --color"
@@ -78,6 +65,9 @@ alias calendar="calcurse"
 alias partitions="df -Th"
 alias mp3="id3v2"
 alias music="cmus"
+alias rg="grep -rn --exclude-dir={.git,proto}"
+
+alias burnIso="pls dd bs=4M conv=fsync oflag=direct status=progress"
 
 alias gj="cd ~/repos/gcc/gcc/jit/ && v jit-recording.cc jit-recording.h"
 
