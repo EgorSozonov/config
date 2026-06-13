@@ -1,0 +1,13 @@
+[Trigger]
+Type = Path
+Operation = Install
+Operation = Upgrade
+Target = boot/vmlinuz-linux
+Target = boot/initramfs-linux-lts.img
+
+[Action]
+Description = Copying kernel/fallback to /efi
+When = PostTransaction
+Exec = /etc/pacman.d/scripts/updateEfi.sh
+Depends = efibootmgr
+Depends = coreutils

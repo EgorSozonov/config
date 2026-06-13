@@ -67,6 +67,9 @@ alias mp3="id3v2"
 alias music="cmus"
 alias rg="grep -rn --exclude-dir={.git,proto}"
 alias pls="doas"
+alias updateBoot="doas grub-mkconfig -o /boot/grub/grub.cfg"
+#alias fileTypes="find . -type f | xargs file | awk -F, '{print $1}' | awk '{$1=NULL; print $0}' | sort | uniq -c | sort -nr"
+alias fileTypes="find . -type f | xargs file"
 
 alias burnIso="pls dd bs=4M conv=fsync oflag=direct status=progress"
 

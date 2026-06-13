@@ -153,9 +153,105 @@ function tre() {
    tree -aC -I '.git|vendor' --dirsfirst "$@" | less -FRNX
 }
 
+# Custom "rm" command that moves files to trash instead of deleting them
 function trash() {
-   mv "$@" ~/.local/share/trash/
-   echo "Moved to ~/.local/share/trash/"
+   #mv "$@" ~/.local/share/trash/
+   #echo "Moved to ~/.local/share/trash/"
+   
+   # Get the current date and time for uniqueness
+   local DATE=$(date +%Y%m%d_%H%M%S)
+   
+   # Process command line arguments
+   local force=false
+   local recursive=false
+   local verbose=false
+   local files=()
+   
+   # Parse arguments
+   for arg in "$@"; do
+      case $arg in
+         -f|--force)
+            force=true
+            ;;
+         -r|-R|--recursive)
+            recursive=true
+            ;;
+         -v|--verbose)
+            verbose=true
+            ;;
+         -*)
+            # For other options, pass them to the real rm command if needed
+            ;;
+         *)
+            files+=("$arg")
+         ;;
+      esac
+   done
+   
+   # Check if no files were specified
+   if [ ${#files[@]} -eq 0 ]; then
+      echo "rm: missing operand"
+      echo "Try 'rm --help' for more information."
+      exit 1
+   fi
+   
+   # Process each file
+   for file in "${files[@]}"; do
+      # Check if file exists
+      if [ ! -e "$file" ] && [ ! -L "$file" ]; then
+         if [ "$force" = true ]; then
+            # If force option is used, silently ignore non-existent files
+            continue
+         else
+            echo "rm: cannot remove '$file': No such file or directory"
+            exit 1
+         fi
+      fi
+   
+      # Get the filename without path
+      filename=$(basename "$file")
+   
+      # Create a unique name in case of duplicates in trash
+      trashName="${filename}_${DATE}"
+   
+      # Actually move the file to trash
+      if mv "$file" "~/.local/share/trash/$trashName"; then
+         if [ "$verbose" = true ]; then
+             echo "Moved '$file' to trash as '$trashName'"
+         fi
+      else
+         echo "Failed to move '$file' to trash"
+         exit 1
+      fi
+   done
+   
+   exit 0
+}
+
+# Trash restore script
+function unTrash() {
+   if [ $# -eq 0 ]; then
+      echo "Usage: unTrash FILENAME"
+      exit 1
+   fi
+   
+   ls -l ~/.local/share/trash | grep $1
+   echo "Enter the exact filename to restore: "
+   read filename
+   
+   if [ -f "~/.local/share/trash/$filename" ]; then
+      # Extract original filename before the timestamp
+      original=$(echo $filename | sed 's/_[0-9]\{8\}_[0-9]\{6\}$//')
+      mv "~/.local/share/trash/$filename" "./$original"
+      echo "Restored $filename as $original"
+   else
+      echo "File not found in trash"
+   fi
+} 
+
+#Remove files older than 7 days from trash
+function takeOutTheTrash() {
+   find ~/.local/share/trash -type f -mtime +7 -exec /usr/bin/rm -f {} \;
 }
 
 function listening() {
@@ -275,3 +371,10 @@ function ..() {
 function newFiles() {
    ls -lt ${1+"$@"} | head -20;
 }
+
+function cdl {
+   cd $1 && ls --color=always --group-directories-first -agohA
+} 
+
+
+
