@@ -32,11 +32,17 @@ function updateFromDir() {
    fi
    local countExisting="$((${#existingTargets[@]}/2))"
    if (( countExisting > 0 )) then
-      read -p "$countExisting files already exist, OK to overwrite? " -n 1 -r
+      echo "$countExisting files need to be updated:"
+      for ((i=1; i<2*countExisting; i+=2)); do
+         echo "${existingTargets[$i]}"
+      done;
+      echo ""
+      
+      read -p "OK to overwrite? " -n 1 -r
       echo
       
       if [[ $REPLY =~ ^[Yy]$ ]] then
-         for ((i=0; i<countExisting; i+=2)); do
+         for ((i=0; i<2*countExisting; i+=2)); do
             local tgt="${existingTargets[$i + 1]}"
             $3 "$tgt" "$backups/${tgt//\//\%}"
             $3 "${existingTargets[$i]}" "$tgt"
@@ -56,6 +62,6 @@ initBackups
 updateFromDir home ~ "install -D"
 updateFromDir etc /etc "doas install -D"
 
-if /usr/bin/grep '\$HOME' ~/.config/rsync/rsync.conf; then
-   /usr/bin/sed -i "s;\$HOME;$HOME;" ~/.config/rsync/rsync.conf
-fi
+#if /usr/bin/grep '\$HOME' ~/.config/rsync/rsync.conf; then
+#   /usr/bin/sed -i -n "s;\$HOME;$HOME;" ~/.config/rsync/rsync.conf
+#fi

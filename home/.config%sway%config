@@ -88,8 +88,9 @@ output HDMI-A-1 resolution 3840x2160 position 1920,0
     bindsym $mod+Ctrl+r reload
 
     #Exit sway (logs you out of your Wayland session)
-    #bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really 
-    #want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Shift+o exec swaynag -t warning \
+       -m 'Do you really want to exit sway? This will end your Wayland session.' \
+       -B 'Yes, exit sway' 'swaymsg exit'
 #
 # Moving around:
 #
