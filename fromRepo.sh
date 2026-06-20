@@ -21,9 +21,10 @@ function updateFromDir() {
    declare -a fileNames
    declare -a existingTargets
    declare -i countCopied
-   readarray -t fileNames < <(ls $1)
+   readarray -t fileNames < <(ls -A $1)
+   local targetDir="${2/%\//}"  # ensure no trailing slash in $2
    for fN in "${fileNames[@]}"; do
-      local outFile="$2/${fN//%/\/}"
+      local outFile="$targetDir/${fN//\%/\/}"
       copyIfNotExistsOrAddToArray "$1/$fN" $outFile existingTargets "$3" countCopied
    done;
    if ((countCopied > 0)); then
@@ -37,7 +38,7 @@ function updateFromDir() {
       if [[ $REPLY =~ ^[Yy]$ ]] then
          for ((i=0; i<countExisting; i+=2)); do
             local tgt="${existingTargets[$i + 1]}"
-            $3 "$tgt" "$backups/${tgt//\//%}"
+            $3 "$tgt" "$backups/${tgt//\//\%}"
             $3 "${existingTargets[$i]}" "$tgt"
          done;
          echo "$countExisting files overwritten, backups in $backups"
@@ -54,3 +55,7 @@ function initBackups() {
 initBackups
 updateFromDir home ~ "install -D"
 updateFromDir etc /etc "doas install -D"
+
+if /usr/bin/grep '\$HOME' ~/.config/rsync/rsync.conf; then
+   /usr/bin/sed -i "s;\$HOME;$HOME;" ~/.config/rsync/rsync.conf
+fi
