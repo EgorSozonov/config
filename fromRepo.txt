@@ -3,26 +3,31 @@ echo
 
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-   /usr/bin/mkdir -p ~/.config/sway
-   /usr/bin/mkdir -p ~/.config/waybar
-   /usr/bin/mkdir -p ~/.config/awesome
-   /usr/bin/mkdir -p ~/.config/foot
-   /usr/bin/mkdir -p ~/.config/projector
-   /usr/bin/mkdir -p ~/.config/gdb
-   /usr/bin/mkdir -p ~/.config/alacritty
-   /usr/bin/mkdir -p ~/.config/nvim
-   /usr/bin/cp .config/aliases ~/.config
-   /usr/bin/cp .config/utils ~/.config
-   /usr/bin/cp -r .config/awesome/* ~/.config/awesome
-   /usr/bin/cp -r .config/nvim/* ~/.config/nvim
-   /usr/bin/cp -f .config/nvim/syntax/c.vim ~/.config/nvim/syntax/c.vim
-   /usr/bin/cp -r .config/alacritty/alacritty.toml ~/.config/alacritty
-   /usr/bin/cp -r .config/gdb/* ~/.config/gdb
-   /usr/bin/cp -r .config/clangd/* ~/.config/clangd
-   /usr/bin/cp -r .config/projector/* ~/.config/projector
-   /usr/bin/cp -r .config/sway/* ~/.config/sway
-   /usr/bin/cp -r .config/foot/* ~/.config/foot
-   /usr/bin/cp -r .config/waybar/* ~/.config/waybar
-   /usr/bin/cp -r .config/home/* ~/
+#   /usr/bin/mkdir -p ~/.config/waybar
+#   /usr/bin/mkdir -p ~/.config/awesome
+#   /usr/bin/mkdir -p ~/.config/foot
+#   /usr/bin/mkdir -p ~/.config/projector
+#   /usr/bin/mkdir -p ~/.config/gdb
+#   /usr/bin/mkdir -p ~/.config/alacritty
+#   /usr/bin/mkdir -p ~/.config/nvim
+#   /usr/bin/cp .config/aliases ~/.config
+#   /usr/bin/cp .config/utils ~/.config
+#   /usr/bin/cp -r .config/awesome/* ~/.config/awesome
+#   /usr/bin/cp -r .config/nvim/* ~/.config/nvim
+#   /usr/bin/cp -f .config/nvim/syntax/c.vim ~/.config/nvim/syntax/c.vim
+#   /usr/bin/cp -r .config/alacritty/alacritty.toml ~/.config/alacritty
+#   /usr/bin/cp -r .config/gdb/* ~/.config/gdb
+#   /usr/bin/cp -r .config/clangd/* ~/.config/clangd
+#   /usr/bin/cp -r .config/projector/* ~/.config/projector
+#   /usr/bin/mkdir -p ~/.config/sway
+#   /usr/bin/cp -r .config/sway/* ~/.config/sway
+#   /usr/bin/cp -r .config/foot/* ~/.config/foot
+#   /usr/bin/cp -r .config/waybar/* ~/.config/waybar
+#   /usr/bin/cp -r .config/home/* ~/
+   
+   /usr/bin/mkdir -p ~/.config/rsync
+   /usr/bin/mkdir -p ~/.local/state/rsync
+   /usr/bin/cp -r .config/rsync/rsync.conf ~/.config/rsync
+   /usr/bin/sed -i "s;\$HOME;$HOME;" ~/.config/rsync/rsync.conf
 fi
 
