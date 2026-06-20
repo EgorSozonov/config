@@ -7,6 +7,19 @@ alias realCp="/usr/bin/cp"
 alias mv="mv -i"
 alias realMv="/usr/bin/mv"
 
+alias pkInstall="doas pacman -S"
+alias pkRemove="doas pacman -Rn"
+alias pkRefresh="doas pacman -Syu"
+alias pkUpdate="doas pacman -Sy archlinux-keyring && doas pacman -Su"
+alias pkInfo="pacman -Qi"
+alias pkUnused="pacman -Qqdt"
+alias pkOptional="pacman -Qqttd" # packages that were installed only as optional dependencies
+alias pkMakeExplicit="doas pacman -D --asexplicit"
+alias pkExplicit="pacman -Qqe"
+alias pkWhichFiles="pacman -Ql"
+alias pkWhichPackage="pacman -Qo"
+alias pkAur="pacman -Qme"
+
 alias sys="doas systemctl"
 alias sus="loginctl suspend"
 alias running="systemctl --state=running --type=service"
@@ -80,3 +93,8 @@ alias ascii="e ~/backup/ascii.txt"
 alias refresh="source ~/.bashrc"
 
 alias fdir="cd \"./\$(find . -name '.?*' -type d -prune -o -type d -print | fzf)\""
+
+alias battery="acpi -b"
+alias zzz="aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend"
+alias openEyr="v --cmd 'cd ~/proj/eyr' ~/proj/eyr/*.c ~/proj/eyr/test/parserTest.c ~/proj/eyr/libeyr.h" 
+alias openAz="nvim --cmd 'cd ~/proj/azimuth/src/azimuth' ~/proj/azimuth/src/azimuth/tick/ship.c" 
