@@ -8,6 +8,7 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 shopt -s globstar # the /**/ pattern to select files from all depths
 shopt -s extglob # extended globbing like !(*.jpg|*.gif)
+set -o mark-directories
 
 HISTSIZE=1000
 HISTFILESIZE=2000
