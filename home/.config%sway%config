@@ -14,7 +14,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term foot
+set $term foot -D ~
 # Your preferred application launcher
 set $menu wmenu-run
 
@@ -168,6 +168,11 @@ output HDMI-A-1 resolution 3840x2160 position 1920,0
     # Make the current focus fullscreen
     bindsym $mod+Shift+t fullscreen
     bindsym $mod+t layout toggle tabbed split
+    
+    # Make the titlebar in tabbed layout as small as possible 
+    titlebar_padding 1
+    titlebar_border_thickness 0
+    font pango:monospace 1
 
     # Toggle the current focus between tiling and floating mode
     #bindsym $mod+Shift+space floating toggle
