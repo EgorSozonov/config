@@ -164,13 +164,13 @@
    },
    "custom/firefox": {
       "format": " ",
-      "on-click": "firefox",
+      "on-click": "firejail firefox",
       "tooltip": true,
       "tooltip-format": "Launch the Firefox browser"
    },
    "custom/hotkeys": {
       "format": "(?)",
-      "on-click": "foot --hold sh -c \". /usr/local/bin/printSwayKeys.sh\"",
+      "on-click": "foot --hold sh -c \". $HOME/.config/waybar/printKeys.sh\"",
       "tooltip": true,
       "tooltip-format": "Display hotkeys (Win + c to close)"
    },
