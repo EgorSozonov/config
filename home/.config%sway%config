@@ -231,8 +231,8 @@ mode "resize" {
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
     # Special key to take a screenshot with grim
-    bindsym Insert exec grimshot save output ~/pictures/screenshots/scr.png
-    bindsym Shift+Insert exec grimshot copy area
+    bindsym Porint exec grimshot save output ~/pictures/screenshots/scr.png
+    bindsym Shift+Print exec grimshot copy area
     
 bar {
    swaybar_command waybar
