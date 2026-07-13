@@ -61,6 +61,7 @@ function initBackups() {
 initBackups
 updateFromDir home ~ "install -D"
 updateFromDir etc /etc "doas install -D"
+updateFromDir armor /etc/apparmor.d "doas install -D"
 
 #if /usr/bin/grep '\$HOME' ~/.config/rsync/rsync.conf; then
 #   /usr/bin/sed -i -n "s;\$HOME;$HOME;" ~/.config/rsync/rsync.conf

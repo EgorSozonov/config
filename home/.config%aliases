@@ -86,6 +86,11 @@ alias fileTypes="find . -type f | xargs file"
 
 alias burnIso="pls dd bs=4M conv=fsync oflag=direct status=progress"
 
+alias aaEnable="doas aa-enforce"
+alias aaDisable="doas aa-disable"
+alias aaWarn="doas aa-complain"
+alias aaRefresh="doas apparmor_parser -r"
+
 alias gj="cd ~/repos/gcc/gcc/jit/ && v jit-recording.cc jit-recording.h"
 
 alias gj2="cd ~/repos/gcc/gcc/ && v fold-const.cc" 
