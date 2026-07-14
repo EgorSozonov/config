@@ -45,8 +45,7 @@ alias allGroups="cat /etc/group"
 alias gitTags="git tag | xargs -n1 git rev-list -n 1"
 alias genTags='ctags-universal --exclude=node_modules $(cat ~/.config/ctags/ctags.conf)'
 alias trailingSpaces="sed -i 's/[ ]*$//'"    
-#alias l='(ls --color=always -agohA | grep "^d"); (ls --color=always -agohA | grep -v "^[dt]")'
-alias l="ls --color=always --group-directories-first -agohA"
+alias l="LC_COLLATE=C ls --color=always --group-directories-first -agohA"
 alias lss='ls --color=always -agohA'
 alias la='ls -A'
 alias grep="grep --color"
