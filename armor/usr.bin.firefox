@@ -9,19 +9,6 @@ abi <abi/4.0>,
 @{HOME}=/home/*/ /root/
 
 
-@{PROC}=/proc/
-
-#@{etc_ro} contains directories with configuration files, including read-only directories.
-#Do not use @{etc_ro} in rules that allow write access.
-@{etc_ro}=/etc/ /usr/etc/
-
-#@{etc_rw} contains directories where writing to configuration files is allowed.
-#@{etc_rw} should always be a subset of @{etc_ro}.
-#
-#Only use @{etc_rw} if the profile allows writing to a configuration file.
-#For rules that only allows read access, use @{etc_ro}.
-@{etc_rw}=/etc/
-
 # Placeholder for user id until kernel var is implemented to match
 # current user of the confined application.
 # Values are 0...4,294,967,295 (32-bit unsigned, 10 digits).
@@ -53,20 +40,20 @@ profile firefox /usr/lib/firefox/firefox {
 /etc/ssl/{engdef*,engines*}.d/*.cnf r,
 /usr/share/ssl/openssl.cnf r,
 
-@{etc_ro}/gcrypt/hwf.deny r,
-@{etc_ro}/gcrypt/random.conf r,
-@{PROC}/sys/crypto/fips_enabled r,
+/etc/gcrypt/hwf.deny r,
+/etc/gcrypt/random.conf r,
+/proc/sys/crypto/fips_enabled r,
 
 # libgcrypt reads some flags from /proc
-@{PROC}/sys/crypto/* r,
+/proc/sys/crypto/* r,
 
 # crypto policies used by various libraries
 /etc/crypto-policies/*/*.txt r,
 /usr/share/crypto-policies/*/*.txt r,
 
 # Global gnutls config
-@{etc_ro}/gnutls/config r,
-@{etc_ro}/gnutls/pkcs11.conf r,
+/etc/gnutls/config r,
+/etc/gnutls/pkcs11.conf r,
 
 
 #The __canary_death_handler function writes a time-stamped log #message to /dev/log for logging by 
@@ -79,10 +66,10 @@ profile firefox /usr/lib/firefox/firefox {
 # time and getrandom()/{,u}random and, when available, runs under an
 # unprivileged, dedicated user).
 @{run}/uuidd/request           rw,
-@{etc_ro}/locale/**          r,
-@{etc_ro}/locale.alias       r,
-@{etc_ro}/localtime          r,
-@{etc_rw}/localtime          r,
+/etc/locale/**          r,
+/etc/locale.alias       r,
+/etc/localtime          r,
+/etc/localtime          r,
 /usr/share/locale-bundle/**    r,
 /usr/share/locale-langpack/**  r,
 /usr/share/locale/             r,
@@ -109,14 +96,14 @@ profile firefox /usr/lib/firefox/firefox {
 /usr/lib/@{multiarch}/gconv/gconv-modules* mr,
 
 # used by glibc when binding to ephemeral ports
-@{etc_ro}/bindresvport.blacklist    r,
+/etc/bindresvport.blacklist    r,
 
 #ld.so.cache and ld are used to load shared libraries; they are best # available everywhere
-@{etc_ro}/ld.so.cache               mr,
-@{etc_ro}/ld.so.conf                r,
-@{etc_ro}/ld.so.conf.d/{,*.conf}    r,
-@{etc_ro}/ld.so.preload             r,
-@{etc_ro}/ld-musl-*.path            r,
+/etc/ld.so.cache               mr,
+/etc/ld.so.conf                r,
+/etc/ld.so.conf.d/{,*.conf}    r,
+/etc/ld.so.preload             r,
+/etc/ld-musl-*.path            r,
 /{usr/,}lib{,32,64}/ld{,32,64}-*.so   mr,
 /{usr/,}lib/@{multiarch}/ld{,32,64}-*.so    mr,
 /{usr/,}lib/tls/i686/{cmov,nosegneg}/ld-*.so     mr,
@@ -145,18 +132,18 @@ profile firefox /usr/lib/firefox/firefox {
 /dev/full rw,
 
 # Sometimes used to determine kernel/user interfaces to use
-@{PROC}/sys/kernel/version     r,
+/proc/sys/kernel/version     r,
 # Depending on which glibc routine uses this file, base may not be the
 # best place -- but many profiles require it, and it is quite harmless.
-@{PROC}/sys/kernel/ngroups_max r,
+/proc/sys/kernel/ngroups_max r,
 
 # Used to determine if Linux is running in FIPS mode
-@{PROC}/sys/crypto/fips_enabled r,
+/proc/sys/crypto/fips_enabled r,
 
 # glibc's sysconf(3) routine to determine free memory, etc
-@{PROC}/meminfo r,
-@{PROC}/stat r,
-@{PROC}/cpuinfo r,
+/proc/meminfo r,
+/proc/stat r,
+/proc/cpuinfo r,
 @{sys}/devices/system/cpu/ r,
 @{sys}/devices/system/cpu/online r,
 @{sys}/devices/system/cpu/possible r,
@@ -165,32 +152,32 @@ profile firefox /usr/lib/firefox/firefox {
 @{sys}/kernel/mm/transparent_hugepage/hpage_pmd_size r,
 
 # glibc's *printf protections read the maps file
-@{PROC}/@{pid}/{maps,auxv,status} r,
+/proc/@{pid}/{maps,auxv,status} r,
 
 # some applications will display license information
 /usr/share/common-licenses/**  r,
 
 # glibc statvfs
-@{PROC}/filesystems r,
+/proc/filesystems r,
 
 # glibc malloc (man 5 proc)
-@{PROC}/sys/vm/overcommit_memory r,
+/proc/sys/vm/overcommit_memory r,
 
 # Allow determining the highest valid capability of the running kernel
-@{PROC}/sys/kernel/cap_last_cap r,
+/proc/sys/kernel/cap_last_cap r,
 
-# Allow other processes to read our /proc entries, futexes, perf tracing and
-# kcmp for now (they will need 'read' in the first place). Administrators can
-# override with:
+#Allow other processes to read our /proc entries, futexes, perf tracing and
+#kcmp for now (they will need 'read' in the first place). Administrators can
+#override with:
 #   deny ptrace (readby) ...
 ptrace (readby),
 
-# Allow other processes to trace us by default (they will need 'trace' in
-# the first place). Administrators can override with:
+#Allow other processes to trace us by default (they will need 'trace' in
+#the first place). Administrators can override with:
 #   deny ptrace (tracedby) ...
 ptrace (tracedby),
 
-# Allow us to ptrace read ourselves
+#Allow us to ptrace read ourselves
 ptrace (read) peer=@{profile_name},
 
 # Allow unconfined processes to send us signals by default
@@ -240,7 +227,7 @@ unix (getattr, getopt, setopt, shutdown),
 /dev/snd/*      rw,
 /dev/sound/*    rw,
 
-@{PROC}/asound/** rw,
+/proc/asound/** rw,
 
 /usr/share/alsa/** r,
 /usr/share/sounds/ r,
@@ -272,10 +259,6 @@ owner @{HOME}/.config/pulse/cookie rwk,
 owner /tmp/pulse-*/ rw,
 owner /tmp/pulse-*/* rw,
 
-# libgnome2
-/etc/sound/ r,
-/etc/sound/** r,
-
 # openal
 /etc/alsa/conf.d/{,*} r,
 /etc/openal/alsoft.conf r,
@@ -283,16 +266,11 @@ owner @{HOME}/.alsoftrc r,
 /usr/{,local/}share/openal/hrtf/{,**} r,
 owner @{HOME}/.local/share/openal/hrtf/{,**} r,
 
-# wildmidi
-/etc/wildmidi/wildmidi.cfg r,
-
 # pipewire
 /usr/share/pipewire/client{,-rt}.conf r,
 
 #}}}
 #{{{fonts
-
-/usr/share/AbiSuite/fonts/**          r,
 
 /usr/lib/xorg/modules/fonts/**.so*    mr,
 
@@ -301,37 +279,19 @@ owner @{HOME}/.local/share/openal/hrtf/{,**} r,
 
 /etc/fonts/**                         r,
 #Debian, openSUSE paths are different
-/usr/share/{fontconfig,fonts-config,*-fonts}/conf.avail/{,**} r,
+/usr/share/fontconfig/conf.avail/{,**} r,
+@{HOME}/.cache/fontconfig/{,**} r,
 /usr/share/ghostscript/fonts/{,**}    r,
-
-/opt/kde3/share/fonts/**              r,
-
-/usr/lib{,32,64}/openoffice/share/fonts/**    r,
 
 /var/cache/fonts/**                   r,
 /var/cache/fontconfig/              mrw,
 /var/cache/fontconfig/**              mrw,
-/var/lib/defoma/**                    mr,
 
-/usr/share/a2ps/fonts/**              r,
-/usr/share/ghostscript/fonts/**       r,
 /var/lib/ghostscript/**               r,
 
-owner @{HOME}/.fonts.conf             r,
-owner @{HOME}/.fonts/                 r,
-owner @{HOME}/.fonts/**               r,
-owner @{HOME}/.local/share/fonts/     r,
-owner @{HOME}/.local/share/fonts/**   r,
-owner @{HOME}/.fonts.cache-2          mr,
-owner @{HOME}/.{,cache/}fontconfig/   rw,
-owner @{HOME}/.{,cache/}fontconfig/** mrwkl,
-owner @{HOME}/.fonts.conf.d/          r,
-owner @{HOME}/.fonts.conf.d/**        r,
-owner @{HOME}/.config/fontconfig/     r,
-owner @{HOME}/.config/fontconfig/**   r,
+owner @{HOME}/.local/share/fonts/{,**}  r,
 
-/usr/local/share/fonts/               r,
-/usr/local/share/fonts/**             r,
+/usr/local/share/fonts/{,**}          r,
 
 # poppler CMap tables
 /usr/share/poppler/cMap/**            r,
@@ -344,7 +304,6 @@ owner @{HOME}/.config/fontconfig/**   r,
 /var/lib/dbus/machine-id r,
 
 unix (connect, receive, send, accept) type=stream peer=(addr="@/tmp/dbus-*"),
-
 unix (connect, send, receive, accept) type=stream addr="@/tmp/dbus-*",
 unix (bind, listen) type=stream addr="@/tmp/dbus-*",
 
@@ -368,19 +327,19 @@ dbus bus=session,
 #}}}
 #{{{nss
 
-@{etc_ro}/default/nss r,
-@{etc_ro}/gai.conf r,
-@{etc_ro}/group r,
-@{etc_ro}/host.conf r,
-@{etc_ro}/hosts r,
-@{etc_ro}/nsswitch.conf r,
-@{etc_ro}/passwd r,
-@{etc_ro}/protocols r,
-@{etc_ro}/resolv.conf r,
-@{etc_ro}/services r,
+/etc/default/nss r,
+/etc/gai.conf r,
+/etc/group r,
+/etc/host.conf r,
+/etc/hosts r,
+/etc/nsswitch.conf r,
+/etc/passwd r,
+/etc/protocols r,
+/etc/resolv.conf r,
+/etc/services r,
 
 # On systems with authselect installed, /etc/nsswitch.conf is a symlink to /etc/authselect/nsswitch.conf
-@{etc_ro}/authselect/nsswitch.conf r,
+/etc/authselect/nsswitch.conf r,
 
 # Alternative location for group & passwd files
 /var/lib/extrausers/group  r,
@@ -393,7 +352,7 @@ dbus bus=session,
 @{run}/systemd/resolve/resolv.conf r,
 @{run}/systemd/resolve/stub-resolv.conf r,
 
-@{etc_ro}/netconfig r,
+/etc/netconfig r,
 
 # When using sssd, the passwd and group files are stored in an alternate path
 # and the nss plugin also needs to talk to a pipe
@@ -405,10 +364,9 @@ dbus bus=session,
 #On systems where /etc/resolv.conf is managed programmatically, it is
 #a symlink to @{run}/(whatever program is managing it)/resolv.conf.
 @{run}/{NetworkManager,connman,netconfig}/resolv.conf r,
-@{etc_ro}/resolvconf/run/resolv.conf  r,
-/mnt/wsl/resolv.conf r,
+/etc/resolvconf/run/resolv.conf  r,
 
-@{etc_ro}/samba/lmhosts  r,
+/etc/samba/lmhosts  r,
 #db backend
 /var/lib/misc/*.db      r,
 #The Name Service Cache Daemon can cache lookups, sometimes leading
@@ -435,8 +393,8 @@ dbus bus=session,
 @{run}/avahi-daemon/socket rw,
 
 # libnl-3-200 via libnss-gw-name
-@{PROC}/@{pid}/net/psched r,
-@{etc_ro}/libnl-*/classid r,
+/proc/@{pid}/net/psched r,
+/etc/libnl-*/classid r,
 
 
 #}}}
@@ -444,7 +402,7 @@ dbus bus=session,
    /usr/share/gtk-3.0/** r,
    /usr/share/icons/{,**} r,
    /usr/share/drirc.d/{,**} r,
-   @{PROC}/@{pid}/** r, 
+   /proc/@{pid}/** r, 
 
    /usr/lib/firefox/glxtest ix,
    /usr/lib/gdk-pixbuf-2.0/ r,
@@ -456,10 +414,10 @@ dbus bus=session,
    /usr/share/pixmaps/{,**} r,
    /usr/share/applications/{,**} r,
    /usr/share/ca-certificates/trust-source/{,**} r,
+   /etc/ca-certificates/trust-source/{,**} r,
    /usr/share/mime/** r,
    /usr/share/applications/mimeinfo.cache r,
    /proc/sys/kernel/* r,
-   /etc/ca-certificates/trust-source/{,**} r,
    /etc/ca-certificates/extracted/{,**} r,
    /etc/mailcap r,
    /etc/mime.types r,
@@ -467,8 +425,8 @@ dbus bus=session,
    /proc/sys/net/ipv6/conf/all/disable_ipv6 r,
    /proc/pressure/memory r,
    
-   deny /home/onr/docs rwx,
-   deny /home/onr/docs/{,**} rwx,
+   #deny @{HOME}/docs rwx,
+   #deny @{HOME}/docs/{,**} rwx,
    
    owner @{HOME}/.mozilla/{,**} rwk,
    owner @{HOME}/.config/mimeapps.list r,
@@ -476,7 +434,7 @@ dbus bus=session,
    owner @{HOME}/.local/share/mime/{,**} rw,
    owner @{HOME}/.local/share/gvfs-metadata/{,**} rw,
    owner @{HOME}/.local/share/applications/{,**} r,
-   owner @{HOME}/.cache/mesa_shader_cache/{,**} rw,
+   owner @{HOME}/.cache/mesa_shader_cache/{,**} rwk,
    owner @{HOME}/.cache/mozilla/{,**} rw,
    
    /usr/share/glycin-loaders/** r,
@@ -502,12 +460,12 @@ dbus bus=session,
    network packet, 
 
    #interface details
-   @{PROC}/@{pid}/net/ipv6_route r,
-   @{PROC}/@{pid}/net/route r,
-   @{PROC}/@{pid}/task/** r,
-   @{PROC}/@{pid}/stat r,
-   @{PROC}/@{pid}/cgroup r,
-   @{PROC}/@{pid}/oom_score_adj rw,
+   /proc/@{pid}/net/ipv6_route r,
+   /proc/@{pid}/net/route r,
+   /proc/@{pid}/task/** r,
+   /proc/@{pid}/stat r,
+   /proc/@{pid}/cgroup r,
+   /proc/@{pid}/oom_score_adj rw,
    /sys/bus/pci/devices/ r, 
    /sys/devices/** r,
    /usr/bin/bwrap rix,

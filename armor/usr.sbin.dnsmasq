@@ -1,0 +1,604 @@
+abi <abi/4.0>,
+
+@{TFTP_DIR}=/var/tftp /srv/tftp /srv/tftpboot
+
+#{{{variables
+
+# @{HOME} is a space-separated list of all user home directories. While
+# it doesn't refer to a specific home directory (AppArmor doesn't
+# enforce discretionary access controls) it can be used as if it did
+# refer to a specific home directory
+@{HOME}=/home/*/ /root/
+
+
+# Placeholder for user id until kernel var is implemented to match
+# current user of the confined application.
+# Values are 0...4,294,967,295 (32-bit unsigned, 10 digits).
+@{uid}={[0-9],[1-9][0-9],[1-9][0-9][0-9],[1-9][0-9][0-9][0-9],[1-9][0-9][0-9][0-9][0-9],[1-9][0-9][0-9][0-9][0-9][0-9],[1-9][0-9][0-9][0-9][0-9][0-9][0-9],[1-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9],[1-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9],[1-4][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]}
+
+# until kernel vars are implemented
+# and until the parser supports nested groupings like
+#   @{pid}=[1-9]{[0-9]{[0-9]{[0-9]{[0-9]{[0-9],},},},},}
+# use
+@{pid}={[1-9],[1-9][0-9],[1-9][0-9][0-9],[1-9][0-9][0-9][0-9],[1-9][0-9][0-9][0-9][0-9],[1-9][0-9][0-9][0-9][0-9][0-9],[1-4][0-9][0-9][0-9][0-9][0-9][0-9]}
+
+# until kernel var is implemented
+@{sys}=/sys/
+
+@{run}=/run/ /var/run/
+
+@{multiarch}=*-linux-gnu*
+
+#}}}
+
+profile dnsmasq /usr/{bin,sbin}/dnsmasq flags=(attach_disconnected) {
+
+#{{{base  
+  
+/etc/ssl/openssl.cnf r,
+/etc/ssl/openssl-*.cnf r,
+/etc/ssl/{engdef*,engines*}.d/ r,
+/etc/ssl/{engdef*,engines*}.d/*.cnf r,
+/usr/share/ssl/openssl.cnf r,
+
+/etc/gcrypt/hwf.deny r,
+/etc/gcrypt/random.conf r,
+/proc/sys/crypto/fips_enabled r,
+
+# libgcrypt reads some flags from /proc
+/proc/sys/crypto/* r,
+
+# crypto policies used by various libraries
+/etc/crypto-policies/*/*.txt r,
+/usr/share/crypto-policies/*/*.txt r,
+
+# Global gnutls config
+/etc/gnutls/config r,
+/etc/gnutls/pkcs11.conf r,
+
+
+#The __canary_death_handler function writes a time-stamped log #message to /dev/log for logging by 
+#syslogd. So, /dev/log, timezones, and localisations of date should be available EVERYWHERE, so as
+#StackGuard, FormatGuard, etc., alerts can be properly logged.
+/dev/log                       w,
+/dev/random                    r,
+/dev/urandom                   r,
+#Allow access to the uuidd daemon (this daemon is a thin wrapper around
+#time and getrandom()/{,u}random and, when available, runs under an
+#unprivileged, dedicated user).
+@{run}/uuidd/request           rw,
+/etc/locale/**          r,
+/etc/locale.alias       r,
+/etc/localtime          r,
+/etc/localtime          r,
+/usr/share/locale-bundle/**    r,
+/usr/share/locale-langpack/**  r,
+/usr/share/locale/             r,
+/usr/share/locale/**           r,
+/usr/share/**/locale/**        r,
+/usr/share/zoneinfo{,-icu}/    r,
+/usr/share/zoneinfo{,-icu}/**  r,
+/usr/share/X11/locale/**       r,
+/usr/share/X11/xkb/**       r,
+/usr/share/xkeyboard-config-2/**       r,
+@{run}/systemd/journal/dev-log w,
+#systemd native journal API (see sd_journal_print(4))
+@{run}/systemd/journal/socket  w,
+
+#Nested containers and anything using systemd-cat need this. 'r' shouldn't
+#be required but applications fail without it. journald doesn't leak
+#anything when reading so this is ok.
+@{run}/systemd/journal/stdout  rw,
+
+/usr/lib{,32,64}/locale/**             mr,
+/usr/lib{,32,64}/gconv/*.so            mr,
+/usr/lib{,32,64}/gconv/gconv-modules*  mr,
+/usr/lib/@{multiarch}/gconv/*.so           mr,
+/usr/lib/@{multiarch}/gconv/gconv-modules* mr,
+
+# used by glibc when binding to ephemeral ports
+/etc/bindresvport.blacklist    r,
+
+#ld.so.cache and ld are used to load shared libraries; they are best # available everywhere
+/etc/ld.so.cache               mr,
+/etc/ld.so.conf                r,
+/etc/ld.so.conf.d/{,*.conf}    r,
+/etc/ld.so.preload             r,
+/etc/ld-musl-*.path            r,
+/{usr/,}lib{,32,64}/ld{,32,64}-*.so   mr,
+/{usr/,}lib/@{multiarch}/ld{,32,64}-*.so    mr,
+/{usr/,}lib/tls/i686/{cmov,nosegneg}/ld-*.so     mr,
+/{usr/,}lib/i386-linux-gnu/tls/i686/{cmov,nosegneg}/ld-*.so     mr,
+/opt/*-linux-uclibc/lib/ld-uClibc*so* mr,
+
+# we might as well allow everything to use common libraries
+/{usr/,}lib{,32,64}/** r,
+/{usr/,}lib{,32,64}/**.so* mr,
+/{usr/,}lib/@{multiarch}/** r,
+/{usr/,}lib/@{multiarch}/**.so* mr,
+/{usr/,}lib/tls/i686/{cmov,nosegneg}/*.so* mr,
+/{usr/,}lib/i386-linux-gnu/tls/i686/{cmov,nosegneg}/*.so* mr,
+
+# FIPS-140-2 versions of some crypto libraries need to access their
+# associated integrity verification file, or they will abort.
+/{usr/,}lib{,32,64}/.lib*.so*.hmac      r,
+/{usr/,}lib/@{multiarch}/.lib*.so*.hmac r,
+
+#/dev/null is pretty harmless and frequently used
+/dev/null rw,
+#as is /dev/zero
+/dev/zero rw,
+#recent glibc uses /dev/full in preference to /dev/null for programs
+#that don't have open fds at exec()
+/dev/full rw,
+
+# Sometimes used to determine kernel/user interfaces to use
+/proc/sys/kernel/version     r,
+# Depending on which glibc routine uses this file, base may not be the
+# best place -- but many profiles require it, and it is quite harmless.
+/proc/sys/kernel/ngroups_max r,
+
+# Used to determine if Linux is running in FIPS mode
+/proc/sys/crypto/fips_enabled r,
+
+# glibc's sysconf(3) routine to determine free memory, etc
+/proc/meminfo r,
+/proc/stat r,
+/proc/cpuinfo r,
+@{sys}/devices/system/cpu/ r,
+@{sys}/devices/system/cpu/online r,
+@{sys}/devices/system/cpu/possible r,
+
+# transparent hugepage support
+@{sys}/kernel/mm/transparent_hugepage/hpage_pmd_size r,
+
+# glibc's *printf protections read the maps file
+/proc/@{pid}/{maps,auxv,status} r,
+
+# some applications will display license information
+/usr/share/common-licenses/**  r,
+
+# glibc statvfs
+/proc/filesystems r,
+
+# glibc malloc (man 5 proc)
+/proc/sys/vm/overcommit_memory r,
+
+# Allow determining the highest valid capability of the running kernel
+/proc/sys/kernel/cap_last_cap r,
+
+# Allow other processes to read our /proc entries, futexes, perf tracing and
+# kcmp for now (they will need 'read' in the first place). Administrators can
+# override with:
+#   deny ptrace (readby) ...
+ptrace (readby),
+
+# Allow other processes to trace us by default (they will need 'trace' in
+# the first place). Administrators can override with:
+#   deny ptrace (tracedby) ...
+ptrace (tracedby),
+
+#Allow us to ptrace read ourselves
+ptrace (read) peer=@{profile_name},
+
+#Allow unconfined processes to send us signals by default
+signal (receive) peer=unconfined,
+
+#Allow us to signal ourselves
+signal peer=@{profile_name},
+
+#Checking for PID existence is quite common so add it by default for now
+signal (receive, send) set=("exists"),
+
+#Allow us to create and use abstract and anonymous sockets
+unix peer=(label=@{profile_name}),
+
+#Allow unconfined processes to us via unix sockets
+unix (receive) peer=(label=unconfined),
+
+#Allow us to create abstract and anonymous sockets
+unix (create),
+
+#Allow us to getattr, getopt, setop and shutdown on unix sockets
+unix (getattr, getopt, setopt, shutdown),
+
+#}}}
+#{{{dbus
+
+# unique per-machine identifier
+/etc/machine-id r,
+/var/lib/dbus/machine-id r,
+
+unix (connect, receive, send, accept) type=stream peer=(addr="@/tmp/dbus-*"),
+unix (connect, send, receive, accept) type=stream addr="@/tmp/dbus-*",
+unix (bind, listen) type=stream addr="@/tmp/dbus-*",
+
+# dbus with systemd and --enable-user-session
+owner @{run}/user/[0-9]*/bus rw,
+
+dbus send
+    bus=session
+    path=/org/freedesktop/DBus
+    interface=org.freedesktop.DBus
+    member={Hello,AddMatch,RemoveMatch,GetNameOwner,NameHasOwner,StartServiceByName}
+    peer=(name=org.freedesktop.DBus),
+
+owner @{run}/user/@{uid}/at-spi/ rw,
+owner @{run}/user/@{uid}/at-spi/bus{,_[0-9]*} rw,
+
+owner /tmp/dbus-[0-9a-zA-Z]* rw,
+/usr/bin/dbus-launch ix,
+dbus bus=session,
+
+#}}}
+#{{{nss
+
+/etc/default/nss r,
+/etc/gai.conf r,
+/etc/group r,
+/etc/host.conf r,
+/etc/hosts r,
+/etc/nsswitch.conf r,
+/etc/passwd r,
+/etc/protocols r,
+/etc/resolv.conf r,
+/etc/services r,
+
+# On systems with authselect installed, /etc/nsswitch.conf is a symlink to /etc/authselect/nsswitch.conf
+/etc/authselect/nsswitch.conf r,
+
+# Alternative location for group & passwd files
+/var/lib/extrausers/group  r,
+/var/lib/extrausers/passwd r,
+/var/lib/nscd/group r,
+/var/lib/nscd/passwd r,
+
+@{run}/nscd/db* r,
+@{run}/resolvconf/resolv.conf r,
+@{run}/systemd/resolve/resolv.conf r,
+@{run}/systemd/resolve/stub-resolv.conf r,
+
+/etc/netconfig r,
+
+# When using sssd, the passwd and group files are stored in an alternate path
+# and the nss plugin also needs to talk to a pipe
+/var/lib/sss/mc/group   r,
+/var/lib/sss/mc/initgroups r,
+/var/lib/sss/mc/passwd  r,
+/var/lib/sss/pipes/nss  rw,
+
+#On systems where /etc/resolv.conf is managed programmatically, it is
+#a symlink to @{run}/(whatever program is managing it)/resolv.conf.
+@{run}/{NetworkManager,connman,netconfig}/resolv.conf r,
+/etc/resolvconf/run/resolv.conf  r,
+
+/etc/samba/lmhosts  r,
+#db backend
+/var/lib/misc/*.db      r,
+#The Name Service Cache Daemon can cache lookups, sometimes leading
+#to vast speed increases when working with network-based lookups.
+@{run}/.nscd_socket   rw,
+@{run}/nscd/socket    rw,
+/{var/db,var/cache,var/lib,var/run,run}/nscd/{passwd,group,services,hosts}    r,
+#nscd renames and unlinks files in it's operation that clients will have open
+@{run}/nscd/db*  mix,
+
+#make libnss-libvirt name resolution work.
+/var/lib/libvirt/dnsmasq/*  r,
+
+# make libnss-libvirt name resolution work.
+/var/lib/libvirt/dnsmasq/  r,
+/var/lib/libvirt/dnsmasq/*.status  r,
+
+# The nss libraries are sometimes used in addition to PAM; make sure
+# they are available
+/{usr/,}lib{,32,64}/libnss_*.so*      mr,
+/{usr/,}lib/@{multiarch}/libnss_*.so*      mr,
+
+# avahi-daemon is used for mdns4 resolution
+@{run}/avahi-daemon/socket rw,
+
+# libnl-3-200 via libnss-gw-name
+/proc/@{pid}/net/psched r,
+/etc/libnl-*/classid r,
+
+
+#}}}
+
+   capability chown,
+   capability net_bind_service,
+   capability setgid,
+   capability setuid,
+   capability dac_override,
+   capability net_admin,         # for DHCP server
+   capability net_raw,           # for DHCP server ping checks
+   network inet raw,
+   network inet dgram,
+   network inet6 raw,
+   network inet6 dgram,
+   network netlink raw,
+   network netlink dgram,
+  
+   #Deny access to sensitive files
+   deny /etc/shadow r,
+   deny /etc/sudoers r,
+   deny /etc/doas.conf r,
+
+   signal (receive) peer=/usr/{bin,sbin}/libvirtd,
+   signal (receive) peer=libvirtd,
+   ptrace (readby) peer=/usr/{bin,sbin}/libvirtd,
+   ptrace (readby) peer=libvirtd,
+
+   owner /dev/tty rw,
+
+   /proc/@{pid}/fd/ r,
+
+   /etc/dnsmasq.conf r,
+   /etc/dnsmasq.d/ r,
+   /etc/dnsmasq.d/* r,
+   /etc/dnsmasq.d-available/ r,
+   /etc/dnsmasq.d-available/* r,
+   /etc/ethers r,
+   /etc/NetworkManager/dnsmasq.d/ r,
+   /etc/NetworkManager/dnsmasq.d/* r,
+   /etc/NetworkManager/dnsmasq-shared.d/ r,
+   /etc/NetworkManager/dnsmasq-shared.d/* r,
+   /etc/dnsmasq-conf.conf r,
+   /etc/dnsmasq-resolv.conf r,
+
+   /usr/{bin,sbin}/dnsmasq mr,
+
+   /var/log/dnsmasq*.log w,
+
+   /usr/share/dnsmasq{-base,}/ r,
+   /usr/share/dnsmasq{-base,}/* r,
+
+   @{run}/*dnsmasq*.pid w,
+   @{run}/dnsmasq-forwarders.conf r,
+   @{run}/dnsmasq/ r,
+   @{run}/dnsmasq/* rw,
+
+   /var/lib/misc/dnsmasq.leases rw, # Required only for DHCP server usage
+
+   /usr/bin/bash ix, # Required to execute --dhcp-script argument
+
+   #access to iface mtu needed for Router Advertisement messages in IPv6
+   #Neighbor Discovery protocol (RFC 2461)
+   /proc/sys/net/ipv6/conf/*/mtu r,
+
+   # for the read-only TFTP server
+   @{TFTP_DIR}/ r,
+   @{TFTP_DIR}/** r,
+
+   # libvirt config and hosts file for dnsmasq
+   /var/lib/libvirt/dnsmasq/          r,
+   /var/lib/libvirt/dnsmasq/*         r,
+
+   # libvirt pid files for dnsmasq
+   @{run}/libvirt/network/      r,
+   @{run}/libvirt/network/*.pid rw,
+
+   # libvirt lease helper
+   /usr/lib{,64}/libvirt/libvirt_leaseshelper Cx -> libvirt_leaseshelper,
+   /usr/libexec/libvirt_leaseshelper Cx -> libvirt_leaseshelper,
+
+   # lxc-net pid and lease files
+   @{run}/lxc/dnsmasq.pid    rw,
+   /var/lib/misc/dnsmasq.*.leases rw,
+
+   # lxd-bridge pid and lease files
+   @{run}/lxd-bridge/dnsmasq.pid   rw,
+   /var/lib/lxd-bridge/dnsmasq.*.leases rw,
+   /var/lib/lxd/networks/*/dnsmasq.* r,
+   /var/lib/lxd/networks/*/dnsmasq.leases rw,
+   /var/lib/lxd/networks/*/dnsmasq.pid rw,
+
+   # NetworkManager integration
+   /var/lib/NetworkManager/dnsmasq-*.leases rw,
+   @{run}/nm-dns-dnsmasq.conf r,
+   @{run}/nm-dnsmasq-*.pid rw,
+   @{run}/sendsigs.omit.d/*dnsmasq.pid w,
+   @{run}/NetworkManager/dnsmasq.conf r,
+   @{run}/NetworkManager/dnsmasq.pid w,
+   @{run}/NetworkManager/NetworkManager.pid w,
+
+   # dnsname plugin in podman
+   @{run}/containers/cni/dnsname/*/dnsmasq.conf r,
+   @{run}/containers/cni/dnsname/*/addnhosts r,
+   @{run}/containers/cni/dnsname/*/pidfile rw,
+   owner @{run}/user/*/containers/cni/dnsname/*/dnsmasq.conf r,
+   owner @{run}/user/*/containers/cni/dnsname/*/addnhosts r,
+   owner @{run}/user/*/containers/cni/dnsname/*/pidfile rw,
+
+   # waydroid lxc-net pid file
+   @{run}/waydroid-lxc/dnsmasq.pid rw,
+
+   profile libvirt_leaseshelper {
+#{{{base  
+  
+/etc/ssl/openssl.cnf r,
+/etc/ssl/openssl-*.cnf r,
+/etc/ssl/{engdef*,engines*}.d/ r,
+/etc/ssl/{engdef*,engines*}.d/*.cnf r,
+/usr/share/ssl/openssl.cnf r,
+
+/etc/gcrypt/hwf.deny r,
+/etc/gcrypt/random.conf r,
+/proc/sys/crypto/fips_enabled r,
+
+# libgcrypt reads some flags from /proc
+/proc/sys/crypto/* r,
+
+# crypto policies used by various libraries
+/etc/crypto-policies/*/*.txt r,
+/usr/share/crypto-policies/*/*.txt r,
+
+# Global gnutls config
+/etc/gnutls/config r,
+/etc/gnutls/pkcs11.conf r,
+
+
+#The __canary_death_handler function writes a time-stamped log #message to /dev/log for logging by 
+#syslogd. So, /dev/log, timezones, #and localisations of date should be available EVERYWHERE, so
+#StackGuard, FormatGuard, etc., alerts can be properly logged.
+/dev/log                       w,
+/dev/random                    r,
+/dev/urandom                   r,
+# Allow access to the uuidd daemon (this daemon is a thin wrapper around
+# time and getrandom()/{,u}random and, when available, runs under an
+# unprivileged, dedicated user).
+@{run}/uuidd/request           rw,
+/etc/locale/**          r,
+/etc/locale.alias       r,
+/etc/localtime          r,
+/etc/localtime          r,
+/usr/share/locale-bundle/**    r,
+/usr/share/locale-langpack/**  r,
+/usr/share/locale/             r,
+/usr/share/locale/**           r,
+/usr/share/**/locale/**        r,
+/usr/share/zoneinfo{,-icu}/    r,
+/usr/share/zoneinfo{,-icu}/**  r,
+/usr/share/X11/locale/**       r,
+/usr/share/X11/xkb/**       r,
+/usr/share/xkeyboard-config-2/**       r,
+@{run}/systemd/journal/dev-log w,
+#systemd native journal API (see sd_journal_print(4))
+@{run}/systemd/journal/socket  w,
+
+#Nested containers and anything using systemd-cat need this. 'r' shouldn't
+#be required but applications fail without it. journald doesn't leak
+#anything when reading so this is ok.
+@{run}/systemd/journal/stdout  rw,
+
+/usr/lib{,32,64}/locale/**             mr,
+/usr/lib{,32,64}/gconv/*.so            mr,
+/usr/lib{,32,64}/gconv/gconv-modules*  mr,
+/usr/lib/@{multiarch}/gconv/*.so           mr,
+/usr/lib/@{multiarch}/gconv/gconv-modules* mr,
+
+# used by glibc when binding to ephemeral ports
+/etc/bindresvport.blacklist    r,
+
+#ld.so.cache and ld are used to load shared libraries; they are best # available everywhere
+/etc/ld.so.cache               mr,
+/etc/ld.so.conf                r,
+/etc/ld.so.conf.d/{,*.conf}    r,
+/etc/ld.so.preload             r,
+/etc/ld-musl-*.path            r,
+/{usr/,}lib{,32,64}/ld{,32,64}-*.so   mr,
+/{usr/,}lib/@{multiarch}/ld{,32,64}-*.so    mr,
+/{usr/,}lib/tls/i686/{cmov,nosegneg}/ld-*.so     mr,
+/{usr/,}lib/i386-linux-gnu/tls/i686/{cmov,nosegneg}/ld-*.so     mr,
+/opt/*-linux-uclibc/lib/ld-uClibc*so* mr,
+
+# we might as well allow everything to use common libraries
+/{usr/,}lib{,32,64}/** r,
+/{usr/,}lib{,32,64}/**.so* mr,
+/{usr/,}lib/@{multiarch}/** r,
+/{usr/,}lib/@{multiarch}/**.so* mr,
+/{usr/,}lib/tls/i686/{cmov,nosegneg}/*.so* mr,
+/{usr/,}lib/i386-linux-gnu/tls/i686/{cmov,nosegneg}/*.so* mr,
+
+# FIPS-140-2 versions of some crypto libraries need to access their
+# associated integrity verification file, or they will abort.
+/{usr/,}lib{,32,64}/.lib*.so*.hmac      r,
+/{usr/,}lib/@{multiarch}/.lib*.so*.hmac r,
+
+# /dev/null is pretty harmless and frequently used
+/dev/null rw,
+# as is /dev/zero
+/dev/zero rw,
+# recent glibc uses /dev/full in preference to /dev/null for programs
+# that don't have open fds at exec()
+/dev/full rw,
+
+# Sometimes used to determine kernel/user interfaces to use
+/proc/sys/kernel/version     r,
+# Depending on which glibc routine uses this file, base may not be the
+# best place -- but many profiles require it, and it is quite harmless.
+/proc/sys/kernel/ngroups_max r,
+
+# Used to determine if Linux is running in FIPS mode
+/proc/sys/crypto/fips_enabled r,
+
+# glibc's sysconf(3) routine to determine free memory, etc
+/proc/meminfo r,
+/proc/stat r,
+/proc/cpuinfo r,
+@{sys}/devices/system/cpu/ r,
+@{sys}/devices/system/cpu/online r,
+@{sys}/devices/system/cpu/possible r,
+
+# transparent hugepage support
+@{sys}/kernel/mm/transparent_hugepage/hpage_pmd_size r,
+
+# glibc's *printf protections read the maps file
+/proc/@{pid}/{maps,auxv,status} r,
+
+# some applications will display license information
+/usr/share/common-licenses/**  r,
+
+# glibc statvfs
+/proc/filesystems r,
+
+# glibc malloc (man 5 proc)
+/proc/sys/vm/overcommit_memory r,
+
+# Allow determining the highest valid capability of the running kernel
+/proc/sys/kernel/cap_last_cap r,
+
+# Allow other processes to read our /proc entries, futexes, perf tracing and
+# kcmp for now (they will need 'read' in the first place). Administrators can
+# override with:
+#   deny ptrace (readby) ...
+ptrace (readby),
+
+# Allow other processes to trace us by default (they will need 'trace' in
+# the first place). Administrators can override with:
+#   deny ptrace (tracedby) ...
+ptrace (tracedby),
+
+# Allow us to ptrace read ourselves
+ptrace (read) peer=@{profile_name},
+
+# Allow unconfined processes to send us signals by default
+signal (receive) peer=unconfined,
+
+# Allow us to signal ourselves
+signal peer=@{profile_name},
+
+# Checking for PID existence is quite common so add it by default for now
+signal (receive, send) set=("exists"),
+
+# Allow us to create and use abstract and anonymous sockets
+unix peer=(label=@{profile_name}),
+
+# Allow unconfined processes to us via unix sockets
+unix (receive) peer=(label=unconfined),
+
+# Allow us to create abstract and anonymous sockets
+unix (create),
+
+# Allow us to getattr, getopt, setop and shutdown on unix sockets
+unix (getattr, getopt, setopt, shutdown),
+
+#}}}
+
+      /etc/libnl-3/classid r,
+
+      /usr/lib{,64}/libvirt/libvirt_leaseshelper mr,
+      /usr/libexec/libvirt_leaseshelper mr,
+
+      owner /proc/@{pid}/net/psched r,
+
+      /sys/devices/system/node/ r,
+      /sys/devices/system/node/*/meminfo r,
+
+      #libvirt lease and status files for dnsmasq
+      /var/lib/libvirt/dnsmasq/*.leases  rw,
+      /var/lib/libvirt/dnsmasq/*.status* rw,
+
+      @{run}/leaseshelper.pid rwk,
+   }
+}
