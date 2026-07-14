@@ -164,7 +164,7 @@
    },
    "custom/firefox": {
       "format": " ",
-      "on-click": "firejail firefox",
+      "on-click": "firefox",
       "tooltip": true,
       "tooltip-format": "Launch the Firefox browser"
    },
@@ -175,11 +175,11 @@
       "tooltip-format": "Display hotkeys (Win + c to close)"
    },
    "custom/sound": {
-      "exec": "~/.config/waybar/mute.sh",
+      "exec": "~/.config/waybar/showSound.sh",
       "return-type": "json",
       "format": "{}",
       "interval": "once",
       "signal": 5,
-      "on-click": "amixer set Master toggle; pkill -RTMIN+5 waybar",
+      "on-click": "~/.config/waybar/toggleSound.sh",
    }
 }

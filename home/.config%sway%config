@@ -224,7 +224,7 @@ mode "resize" {
 #
     bindsym --locked XF86AudioLowerVolume exec amixer set Master 3dB-
     bindsym --locked XF86AudioRaiseVolume exec amixer set Master 3dB+
-    bindsym --locked XF86AudioMute exec "amixer set Master toggle && pkill -RTMIN+5 waybar"
+    bindsym --locked XF86AudioMute exec "~/.config/waybar/toggleSound.sh"
     # Special keys to adjust brightness via brightnessctl
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+

@@ -484,15 +484,19 @@ dbus bus=session,
    /usr/bin/firefox rmix,
    /usr/lib/firefox/firefox rmix,
    /usr/lib/firefox/crashhelper rmix,
+   /usr/lib/firefox/crashreporter rmix,
+   /usr/lib/firefox/glxtest rmix,
    /usr/lib/firefox/pingsender rmix,
    /usr/lib/firefox/firefox-bin rmix,
    /usr/lib/firefox/vaapitest rmix,
-   /usr/lib/firefox/updater rmix,
+   /usr/lib/firefox/vulkantest rmix,
    
    #Wayland display  
    owner @{run}/user/@{uid}/wayland-*[0-9] rw,
    owner @{HOME}/.config/dconf/user rw,
    owner @{run}/user/*/dconf/user rw,
+   
+   /usr/share/doc/arch-wiki/{,**} r,
    
    #Deny access to sensitive files
    deny /etc/shadow r,
