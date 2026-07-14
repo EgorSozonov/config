@@ -1,4 +1,4 @@
-export PS1="\e[32;40m\W @\[\e[0m\] "
+export PS1="\e[38;5;46m\e[4m\W\[\e[0m\] "
 
 HISTCONTROL=ignoreboth
 # don't put duplicate lines or lines starting with space in the history.

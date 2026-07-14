@@ -138,7 +138,7 @@ function hist() {
 }
 
 function ff() {
-   find . -type -f -iname "*$1*" 2>/dev/null
+   find . \( -name ".git" -prune \) -o \( -type f -iname "*$1*" -print \) 2>/dev/null
 }
 
 function fdi() {
@@ -258,6 +258,7 @@ function listening() {
    lsof -iTCP -sTCP:LISTEN -P -n
 }
 
+#Top 10 directories by size on disk
 function spaceHogs() {
    du -hs * | sort -rh | head -10
 }
@@ -278,7 +279,11 @@ function exciseBlock() {
 
 # Shared library dependencies of a binary. Use like `libraryDeps $(which nvim)`
 function libraryDeps() {
-   readelf -d $1 | grep NEEDED
+   echo "Executable: $1"
+   echo ""
+   echo "Dynamically linked to library dependencies:"
+   readelf -d $1 | grep NEEDED | grep -o --color=never '\[.*\]'
+   readelf -h $1 | grep Type
 }
 
 function plsEdit() {
@@ -313,6 +318,7 @@ function fzfDeleteHistory() {
   fi
 }
 
+#Find a command within history and repeat it. Call as `$(hi)`
 function hi() {
    local output script deletefile
    deletefile=$(mktemp)
@@ -373,7 +379,7 @@ function newFiles() {
 }
 
 function cdl {
-   cd $1 && ls --color=always --group-directories-first -agohA
+   cd $1 && LC_COLLATE=C ls --color=always --group-directories-first -agohA
 } 
 
 
