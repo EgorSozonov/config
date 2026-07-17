@@ -20,7 +20,7 @@ function flash() {
    local theCommand="lsblk -lntbo NAME,SIZE,MOUNTPOINT | tr -s ' '"
    readarray -t partitions < <(eval $theCommand)
    
-   # filter out unmounted, small partitions starting with "sd" like "sdb1"
+   #filter out unmounted, small partitions starting with "sd" like "sdb1"
    local currPrefix=""
    local currName=""
    local newName="" 
@@ -56,11 +56,12 @@ function flash() {
    declare -a mountCommands
    local i=0
    for stick in "${usbSticks[@]}"; do
-      mountCommands+=("sudo mount -o umask=000 -t vfat --mkdir $stick /mnt/flash$i")
+      mountCommands+=("sudo mount -o uid=$(id -u),gid=$(id -g),umask=000 -t vfat --mkdir \
+         $stick /mnt/flash$i")
       ((i++))
    done
 
-   # mount the partitions
+   #mount the partitions
    for cm in "${mountCommands[@]}"; do
       eval $cm
    done
@@ -80,6 +81,7 @@ function help() {
    echo "Search Man pages: mans tar extract"
    echo "Find files: ff .pdf"
    echo "Find directories: fdi"
+   echo "Update fonts: updateFonts, update boot loader: updateBoot" 
    echo "All these useful functions are defined in ~/.config/utils"
 }
 
