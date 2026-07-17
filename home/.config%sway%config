@@ -16,7 +16,10 @@ set $right l
 # Your preferred terminal emulator
 set $term foot -D ~
 # Your preferred application launcher
-set $menu wmenu-run -l 16
+set $menu tofi-run --font ~/.local/share/fonts/Linejoy-Regular.ttf \
+   --selection-color E0FF00 --border-color 00E000 --border-width 3 \
+   --corner-radius 16 \
+   | xargs swaymsg exec --
 
 ### Output configuration
 
