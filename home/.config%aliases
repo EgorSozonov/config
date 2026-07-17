@@ -19,6 +19,7 @@ alias pkExplicit="pacman -Qqe"
 alias pkWhichFiles="pacman -Ql"
 alias pkWhichPackage="pacman -Qo"
 alias pkAur="pacman -Qme"
+alias pkAddLocal="doas repo-add /opt/locals/locals.db.tar.gz"
 
 alias sys="doas systemctl"
 alias sus="loginctl suspend"
