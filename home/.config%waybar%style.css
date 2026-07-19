@@ -16,7 +16,7 @@ window#waybar {
 }
 
 tooltip {
-    background-color: rgba(11, 29, 43, 0.5);
+    background-color: rgba(40, 40, 40, 1.0);
 }
 
 button {
@@ -74,16 +74,6 @@ button:hover {
 }
 
 
-/* If workspaces is the leftmost module, omit left margin */
-.modules-left > widget:first-child > #workspaces {
-    margin-left: 2;
-}
-
-/* If workspaces is the rightmost module, omit right margin */
-.modules-right > widget:last-child > #workspaces {
-    margin-right: 2;
-}
-
 #clock {
     border: 1px solid rgba(0,255,169,0.0);
 }
@@ -97,22 +87,20 @@ button:hover {
 }
 
 @keyframes blink {
-    to {
-
-	border: 2px solid rgba(0,0,51,0.0);
-        color: #000033;
-    }
+   to {
+      border: 2px solid rgba(0,0,51,0.0);
+      color: #000033;
+   }
 }
 
 #battery.critical:not(.charging) {
-    
-    color: #ff0000;
-    border: 2px solid rgba(255,0,0,0);
-    animation-name: blink;
-    animation-duration: 0.5s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+   color: #ff0000;
+   border: 2px solid rgba(255,0,0,0);
+   animation-name: blink;
+   animation-duration: 1.5s;
+   animation-timing-function: linear;
+   animation-iteration-count: infinite;
+   animation-direction: alternate;
 }
 
 label:focus {
@@ -124,39 +112,16 @@ label:focus {
     border: 1px solid rgba(0,255,169,0.0);
 }
 
-#memory {
-    
-    border: 1px solid rgba(0,255,169,0.0);
-}
-
-#disk {
-    
-    border: 1px solid rgba(0,255,169,0.0);
-}
-
-#backlight {
-    
-    border: 1px solid rgba(0,255,169,0.0);
-}
-
-#network {
-    
-    border: 1px solid rgba(0,255,169,0.0);
-}
-
-#network.disconnected {
-    
-    border: 1px solid rgba(0,255,169,0.0);
-}
-
 
 #idle_inhibitor {
-    background-color: #2d3436;
+   background-color: #404040;
+   padding: 0px;
+   margin: 0px;
 }
 
 #idle_inhibitor.activated {
-    background-color: #ecf0f1;
-    color: #2d3436;
+   background-color: #808080;
+   color: #404040;
 }
 
 #language {
@@ -168,23 +133,23 @@ label:focus {
 }
 
 #keyboard-state {
-    background: #97e1ad;
-    color: #00ffa9;
-    padding: 0 0px;
-    margin: 0 5px;
-    min-width: 16px;
+   background: #97e1ad;
+   color: #00ffa9;
+   padding: 0 0px;
+   margin: 0 5px;
+   min-width: 16px;
 }
 
 #keyboard-state > label {
-    padding: 0 5px;
+   padding: 0 5px;
 }
 
 #keyboard-state > label.locked {
-    background: rgba(0, 0, 0, 0.2);
+   background: rgba(0, 0, 0, 0.2);
 }
 
 #scratchpad {
-    background: rgba(0, 0, 0, 0.2);
+   background: rgba(0, 0, 0, 0.2);
 }
 
 #scratchpad.empty {

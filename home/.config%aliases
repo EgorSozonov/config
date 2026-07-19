@@ -1,4 +1,5 @@
 alias d="date +'%H:%M. %a'; acpi -b;cal"
+alias pls="doas"
 
 alias rm="rm -i"
 alias realRm="/usr/bin/rm"
@@ -76,7 +77,6 @@ alias partitions="df -Th"
 alias mp3="id3v2"
 alias music="cmus"
 alias g="grep -rn --exclude-dir={.git,proto}"
-alias pls="doas"
 alias updateBoot="doas grub-mkconfig -o /boot/grub/grub.cfg"
 alias updateFonts="fc-cache -fv"
 #alias fileTypes="find . -type f | xargs file | awk -F, '{print $1}' | awk '{$1=NULL; print $0}' | sort | uniq -c | sort -nr"
@@ -90,16 +90,20 @@ alias aaDisable="doas aa-disable"
 alias aaWarn="doas aa-complain"
 alias aaRefresh="doas apparmor_parser -r"
 
-alias gj="cd ~/repos/gcc/gcc/jit/ && v jit-recording.cc jit-recording.h"
+alias gj="cd ~/repos/gcc/gcc/jit/ && e jit-recording.cc jit-recording.h"
 
 alias gj2="cd ~/repos/gcc/gcc/ && v fold-const.cc" 
-alias ascii="e ~/backup/ascii.txt"
+alias ascii="e -R ~/backup/ascii.txt"
 alias refresh="source ~/.bashrc"
 
 alias fdir="cd \"./\$(find . -name '.?*' -type d -prune -o -type d -print | fzf)\""
 
+alias ww="firefox"
+
 alias battery="acpi -b"
 alias zzz="aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend"
 alias zz="aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend"
+
 alias openEyr="v --cmd 'cd ~/proj/eyr' ~/proj/eyr/*.c ~/proj/eyr/test/parserTest.c ~/proj/eyr/libeyr.h" 
 alias openAz="nvim --cmd 'cd ~/proj/azimuth/src/azimuth' ~/proj/azimuth/src/azimuth/tick/ship.c" 
+alias de="gdb ../bin/eegl"

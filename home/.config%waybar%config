@@ -3,16 +3,22 @@
    "bar_id": "bar-0",
    "mode": "dock",
    "ipc": true,
-   "position": "left", // Waybar position (top|bottom|left|right)
-   "width": 50, // Waybar width
-   "spacing": 24, // Gaps between modules (4px)
-//   "margin-bottom": 10,
-//   "margin-left": 10,
-//   "margin-right": 10,
+   "position": "left", //top|bottom|left|right
+   "width": 40, // Waybar width
+   "spacing": 16, // Gaps between modules (4px)
    "margin-top": 0,
-   "modules-left": ["sway/workspaces", "group/battery", "sway/language", "battery#bat2", 
-      "group/time", "group/date", "tray", "custom/start", "custom/firefox", 
-      "custom/hotkeys", "custom/sound"
+   "modules-left": [
+      "sway/workspaces", 
+      "group/battery", 
+      "sway/language", 
+      "battery#bat2", 
+      "group/time", 
+      "group/date", 
+      "custom/start", 
+      "custom/hotkeys", 
+      "custom/firefox", 
+      //"idle_inhibitor", 
+      "custom/sound"
    ],
 
 	"group/battery": {
@@ -22,25 +28,22 @@
 			"battery#2"
 		]
    },
-	"group/date": {
-		"orientation": "vertical",
-		"modules": [
-			//"clock", year
-			"clock#3",
-			"clock#2"
-		]
-   },
 	"group/time": {
 		"orientation": "vertical",
 		"modules": [
 			"clock#4",
-			"clock#5"//, "clock#6" for seconds
+         "clock#5"
 		]
    },
-
+	"group/date": {
+		"orientation": "vertical",
+		"modules": [
+			"clock#3"
+		]
+   },
    // Modules configuration
    "sway/workspaces": {
-      "icon-size": 36,
+      "icon-size": 32,
       "disable-scroll": false,
       "all-outputs": true,
       "format": "{icon}", 
@@ -80,57 +83,45 @@
       "on-click": "swaymsg input type:keyboard xkb_switch_layout next"
    }, 
    "idle_inhibitor": {
-      "format": "{icon}",
+      "format": "{icon} ",
       "format-icons": {
          "activated": "",
          "deactivated": ""
       }
    },
-   "tray": {
-        "icon-size": 36,
-        "spacing": 10
-   },
-   "clock": {
-        // "timezone": "America/New_York",
-      "interval": 60,
-      "format": "{:%y}",
-      "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-   },
-   "clock#2": {
-      // "timezone": "America/New_York",
-      "interval": 60,
-      "format": "{:%b}",
-           "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-   },
    "clock#3": {
-        // "timezone": "America/New_York",
+      // month
       "interval": 60,
-      "format": "{:%d}",
-           "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+      "format": "[{:%d}]",
+      "tooltip-format": "<tt><small>{calendar}</small></tt>",
+      "calendar": {
+         "locale": "en_GB.UTF-8", //so it starts on Monday
+         "iso8601": true, // so it starts on Monday
+         "mode"          : "month",
+         "mode-mon-col"  : 3,
+         "on-scroll"     : 1,
+         "format": {
+            "months":     "<span color='#a0ffa0'><b>{}</b></span>",
+            "weekdays":   "<span color='#a0ffa0'><b>{}</b></span>",
+            "weeks":      "<span color='#a0a0a0'><b>W{}</b></span>",
+            "today":      "<span color='#ffffff'><b>{}</b></span>"
+         }
+      }
    },
    "clock#4": {
       // "timezone": "America/New_York",
       "interval": 60,
-      "format": "{:%H}:",
-           "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+      "format": "{:%H}:"
    },
    "clock#5": {
-      // "timezone": "America/New_York",
       "interval": 60,
-      "format": ":{:%M}",
-           "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-   },
-   "clock#6": {
-           // "timezone": "America/New_York",
-      "interval": 1,
-      "format": "{:%OS}",
-           "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+      "format": ":{:%M}"
    },
    "battery": {
         "states": {
             // "good": 95,
             "warning": 30,
-            "critical": 20
+            "critical": 18
         },
         "interval": 300,
         "format": "{capacity}%",
@@ -145,7 +136,7 @@
       "states": {
          // "good": 95,
          "warning": 30,
-         "critical": 20
+         "critical": 18
       },
       "format": "{icon} ",
       "format-charging": "",
@@ -171,7 +162,7 @@
       "tooltip-format": "Launch the Firefox browser"
    },
    "custom/hotkeys": {
-      "format": "(?)",
+      "format": "((?))",
       "on-click": "foot --hold sh -c \". $HOME/.config/waybar/printKeys.sh\"",
       "tooltip": true,
       "tooltip-format": "Display hotkeys (Win + c to close)"
@@ -182,6 +173,6 @@
       "format": "{}",
       "interval": "once",
       "signal": 5,
-      "on-click": "~/.config/waybar/toggleSound.sh",
+      "on-click": "~/.config/waybar/toggleSound.sh"
    }
 }
