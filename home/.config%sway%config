@@ -16,13 +16,9 @@ set $right l
 # Your preferred terminal emulator
 set $term foot -D ~
 # Your preferred application launcher
-set $menu wofi --show drun --allow-images
-#set $menu wofi-run --font ~/.local/share/fonts/Linejoy-Regular.ttf \
-#   --selection-color E0FF00 --border-color 00E000 --border-width 3 \
-#   --corner-radius 16 \
-#   | xargs swaymsg exec --
+set $menu wofi --show drun --allow-images -a --prompt ""
 
-### Output configuration
+###Output configuration & things specific to a particular computer
 include specific
 
 ### Idle configuration

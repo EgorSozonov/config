@@ -111,26 +111,28 @@
    "clock#4": {
       // "timezone": "America/New_York",
       "interval": 60,
+      "tooltip": false,
       "format": "{:%H}:"
    },
    "clock#5": {
       "interval": 60,
+      "tooltip": false,
       "format": ":{:%M}"
    },
    "battery": {
-        "states": {
-            // "good": 95,
-            "warning": 30,
-            "critical": 18
-        },
-        "interval": 300,
-        "format": "{capacity}%",
-        "format-charging": "{capacity}%",
-        "format-plugged": "{capacity}%",
-        "format-alt": "{time} {icon}",
-        // "format-good": "", // An empty format will hide the module
-        // "format-full": "",
-        "format-icons": ["", "", "", "", ""]
+      "states": {
+          // "good": 95,
+          "warning": 30,
+          "critical": 18
+      },
+      "interval": 300,
+      "format": "{capacity}%",
+      "format-charging": "{capacity}%",
+      "format-plugged": "{capacity}%",
+      "format-alt": "{time} {icon}",
+      // "format-good": "", // An empty format will hide the module
+      // "format-full": "",
+      "format-icons": ["", "", "", "", ""]
    },
    "battery#2": {
       "states": {
@@ -151,7 +153,7 @@
    },
    "custom/start": {
       "format": "▶",
-      "on-click": "wofi --show drun --allow-images", // Command to run on click
+      "on-click": "wofi --show drun --allow-images -a",
       "tooltip": true,
       "tooltip-format": "App menu (Esc to close)"
    },
