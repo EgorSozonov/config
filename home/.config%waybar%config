@@ -4,7 +4,7 @@
    "mode": "dock",
    "ipc": true,
    "position": "left", //top|bottom|left|right
-   "width": 40, // Waybar width
+   "width": 32, // Waybar width
    "spacing": 16, // Gaps between modules (4px)
    "margin-top": 0,
    "modules-left": [
@@ -170,5 +170,6 @@
       "interval": "once",
       "signal": 5,
       "on-click": "~/.config/waybar/toggleSound.sh"
+      
    }
 }

@@ -156,22 +156,13 @@ label:focus {
 	background-color: transparent;
 }
 
-#custom-sound.on {
-   background-image: url("./icons/soundOn.bmp"); 
-   background-repeat: no-repeat;
-   background-position: center;
-   background-size: contain;
-   min-width: 40px;
-   min-height: 40px;
-   padding: 0;
+
+#custom-sound {
+   font-family: "Material Design Icons";
+   font-size: 24px;
 }
 
 #custom-sound.off {
-   background-image: url("icons/soundMute.bmp");
-   background-repeat: no-repeat;
-   background-position: center;
-   background-size: contain;
-   min-width: 40px;
-   min-height: 40px;
-   padding: 0;
+   color: #ff8080;
 }
+

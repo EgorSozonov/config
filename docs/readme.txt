@@ -9,4 +9,9 @@ Machine-specific files (which override ordinary files) should be placed in the _
 They will automatically be applied on the machine with the corresponding host name.
 
 
+Prerequisites:
 
+sway
+waybar
+wofi
+ttf-material-icons
