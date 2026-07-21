@@ -156,16 +156,6 @@ label:focus {
 	background-color: transparent;
 }
 
-#custom-firefox {
-   background-image: url("./icons/firefox.bmp"); 
-   background-repeat: no-repeat;
-   background-position: center;
-   background-size: contain;
-   min-width: 40px;
-   min-height: 40px;
-   padding: 0;
-}
-
 #custom-sound.on {
    background-image: url("./icons/soundOn.bmp"); 
    background-repeat: no-repeat;

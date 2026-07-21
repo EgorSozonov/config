@@ -151,15 +151,9 @@
    },
    "custom/start": {
       "format": "▶",
-      "on-click": "wmenu-run", // Command to run on click
+      "on-click": "wofi --show drun --allow-images", // Command to run on click
       "tooltip": true,
       "tooltip-format": "App menu (Esc to close)"
-   },
-   "custom/firefox": {
-      "format": " ",
-      "on-click": "firefox",
-      "tooltip": true,
-      "tooltip-format": "Launch the Firefox browser"
    },
    "custom/hotkeys": {
       "format": "((?))",
