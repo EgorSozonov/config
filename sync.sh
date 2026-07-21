@@ -19,13 +19,24 @@ function copyIfNotExistsOrAddToArray() {
 #$1 = source dir we're looping on, $2 = target dir, $3 = "cp" command
 function updateFromDir() {
    declare -a fileNames
+   declare -a compSpecificFNames
    declare -a existingTargets
    declare -i countCopied
    readarray -t fileNames < <(ls -A $1)
+   local hostName="$HOSTNAME"
+   readarray -t compSpecificFNames < <(ls -A _$hostName/$1 2>/dev/null)
    local targetDir="${2/%\//}"  # ensure no trailing slash in $2
+   
    for fN in "${fileNames[@]}"; do
       local outFile="$targetDir/${fN//\%/\/}"
-      copyIfNotExistsOrAddToArray "$1/$fN" $outFile existingTargets "$3" countCopied
+      local srcFile="$1/$fN"
+      for compSpec in "${compSpecificFNames[@]}"; do
+         if [[ "$compSpec" == "$fN" ]]; then
+            srcFile="_$hostName/$1/$fN"
+         fi
+      done
+      
+      copyIfNotExistsOrAddToArray $srcFile $outFile existingTargets "$3" countCopied
    done;
    if ((countCopied > 0)); then
       echo "Copied $countCopied files"
@@ -59,10 +70,8 @@ function initBackups() {
 }
 
 initBackups
-updateFromDir home ~ "install -D"
-updateFromDir etc /etc "doas install -D"
-updateFromDir armor /etc/apparmor.d "doas install -D"
+updateFromDir home ~/toys/temp "install -D"
+#updateFromDir home ~ "install -D"
+#updateFromDir etc /etc "doas install -D"
+#updateFromDir armor /etc/apparmor.d "doas install -D"
 
-#if /usr/bin/grep '\$HOME' ~/.config/rsync/rsync.conf; then
-#   /usr/bin/sed -i -n "s;\$HOME;$HOME;" ~/.config/rsync/rsync.conf
-#fi

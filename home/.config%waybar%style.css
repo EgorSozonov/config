@@ -88,23 +88,23 @@ button:hover {
 
 @keyframes blink {
    to {
-      border: 2px solid rgba(0,0,51,0.0);
-      color: #000033;
+      border: 2px solid rgba(127, 40, 40, 1.0);
+      color: #a04040;
    }
 }
 
 #battery.critical:not(.charging) {
-   color: #ff0000;
-   border: 2px solid rgba(255,0,0,0);
+   color: #ffa0a0;
+   border: 2px solid rgba(255,40,40,0);
    animation-name: blink;
-   animation-duration: 1.5s;
+   animation-duration: 1.2s;
    animation-timing-function: linear;
    animation-iteration-count: infinite;
    animation-direction: alternate;
 }
 
 label:focus {
-    background-color: #000000;
+   background-color: #000000;
 }
 
 #cpu {
