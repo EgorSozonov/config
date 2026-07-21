@@ -152,13 +152,13 @@
        "bat": "BAT2"
    },
    "custom/start": {
-      "format": "▶",
+      "format": "󱓞",
       "on-click": "wofi --show drun --allow-images -a",
       "tooltip": true,
       "tooltip-format": "App menu (Esc to close)"
    },
    "custom/hotkeys": {
-      "format": "((?))",
+      "format": "󰘥",
       "on-click": "foot --hold sh -c \". $HOME/.config/waybar/printKeys.sh\"",
       "tooltip": true,
       "tooltip-format": "Display hotkeys (Win + c to close)"

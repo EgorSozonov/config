@@ -156,6 +156,13 @@ label:focus {
 	background-color: transparent;
 }
 
+#custom-start {
+   font-size: 24px;
+}
+
+#custom-hotkeys {
+   font-size: 24px;
+}
 
 #custom-sound {
    font-family: "Material Design Icons";
