@@ -165,11 +165,11 @@ label:focus {
 }
 
 #custom-sound {
-   font-family: "Material Design Icons";
+   font-family: "Font Awesome 7";
    font-size: 24px;
 }
 
 #custom-sound.off {
-   color: #ff8080;
+   color: #80ff80;
 }
 

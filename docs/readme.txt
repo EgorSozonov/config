@@ -14,4 +14,4 @@ Prerequisites:
 sway
 waybar
 wofi
-ttf-material-icons
+otf-font-awesome
