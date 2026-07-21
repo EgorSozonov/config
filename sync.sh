@@ -70,8 +70,7 @@ function initBackups() {
 }
 
 initBackups
-updateFromDir home ~/toys/temp "install -D"
-#updateFromDir home ~ "install -D"
-#updateFromDir etc /etc "doas install -D"
-#updateFromDir armor /etc/apparmor.d "doas install -D"
+updateFromDir home ~ "install -D"
+updateFromDir etc /etc "doas install -D"
+updateFromDir armor /etc/apparmor.d "doas install -D"
 

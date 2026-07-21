@@ -4,6 +4,9 @@ Deploy them from this repo to the system. WARNING: this will overwrite your loca
 also will save the old versions to a backup dir).
 
     ./sync.sh
+    
+Machine-specific files (which override ordinary files) should be placed in the _$HOSTNAME dir. 
+They will automatically be applied on the machine with the corresponding host name.
 
 
 
