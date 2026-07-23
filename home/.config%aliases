@@ -53,8 +53,11 @@ alias backup=". ~/scr/backupVault.txt"
 alias compress="tar -I 'xz -9' --exclude .git --exclude _debug --exclude bin --exclude objects --exclude testdir -c"
 alias decompress="tar -xf"
 alias backup=". ~/scr/backupVault.txt"
+
 alias startPg="doas mkdir -p /run/postgresql; doas chown postgres /run/postgresql; \
-   doas -u postgres /usr/bin/pg_ctl -l /var/local/log/pg/log -D /usr/local/pg/data -o '-p 6789' start"
+   doas chmod 2775 /run/postgresql; \
+   doas -u postgres /usr/bin/pg_ctl -l /var/log/pg/log -D /var/lib/pg/data -o '-p 6789' start"
+alias stopPg="doas -u postgres pg_ctl stop -D /var/lib/pg/data" 
 alias runPg="psql -U dev -d devdb -p 6789 -f"
 alias adminPg="psql -U devdb_admin -d devdb -p 6789"
 alias pg="psql -U devdb_dev -d devdb -p 6789"
@@ -63,6 +66,7 @@ alias dml="psql -U devdb_dml -d devdb -p 6789"
 alias dev="psql -U devdb_dev -d devdb -p 6789"
 alias personal="psql -U personal_dml -d personal -p 6789"
 alias personalDdl="psql -U personal_ddl -d personal -p 6789"
+
 #alias gdb="gdb --command=~/.config/gdb/gdb.py --eval-command='set auto-load python-scripts on; set filename-display absolute'"
 alias gdb="gdb -q -x ~/.config/gdb/breaks"
 alias tmux="tmux -f ~/.config/tmux/tmux.conf"

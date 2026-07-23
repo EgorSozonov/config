@@ -8,13 +8,13 @@
    "spacing": 16, // Gaps between modules (4px)
    "margin-top": 0,
    "modules-left": [
+      "custom/start", 
       "sway/workspaces", 
       "group/battery", 
       "sway/language", 
       "battery#bat2", 
       "group/time", 
       "group/date", 
-      "custom/start", 
       "custom/hotkeys", 
       "custom/firefox", 
       //"idle_inhibitor", 
