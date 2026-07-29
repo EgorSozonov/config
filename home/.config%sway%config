@@ -34,8 +34,6 @@ exec swayidle -w \
 
 ### Input configuration
 #
-# Example configuration:
-#
 #   input type:touchpad {
 #       dwt enabled
 #       tap enabled
@@ -44,8 +42,8 @@ exec swayidle -w \
 #   }
 #
    input type:keyboard {
-       xkb_layout "us,ru"
-       xkb_options "ctrl:nocaps,grp:lctrl_toggle"
+      xkb_layout "us,ru"
+      xkb_options "ctrl:nocaps,grp:lctrl_toggle"
    }
 #
 # You can also configure each device individually.
@@ -55,53 +53,43 @@ exec swayidle -w \
 #
 # Basics:
 #
-    # Start a terminal
-    bindsym $mod+z exec $term
+   # Start a terminal
+   bindsym $mod+z exec $term
 
-    # Kill focused window
-    bindsym $mod+c kill
+   # Kill focused window
+   bindsym $mod+c kill
 
-    # Start your launcher
-    bindsym $mod+x exec $menu
+   # Start your launcher
+   bindsym $mod+x exec $menu
 
-    #Drag floating windows by holding down $mod and left mouse button.
-    #Resize them with right mouse button + $mod.
-    #Despite the name, also works for non-floating windows.
-    #Change normal to inverse to use left mouse button for resizing and right
-    #mouse button for dragging.
-    floating_modifier $mod normal
+   #Drag floating windows by holding down $mod and left mouse button. Resize them with right 
+   #mouse button + $mod. Despite the name, also works for non-floating windows.
+   #Change normal to inverse to use left mouse button for resizing and right
+   #mouse button for dragging.
+   floating_modifier $mod normal
 
-    #Reload the configuration file
-    bindsym $mod+Ctrl+r reload
+   #Reload the configuration file
+   bindsym $mod+Ctrl+r reload
 
-    #Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+o exec swaynag -t warning \
-       -m 'Do you really want to exit sway? This will end your Wayland session.' \
-       -B 'Yes, exit sway' 'swaymsg exit'
+   #Exit sway (logs you out of your Wayland session)
+   bindsym $mod+Shift+o exec swaynag -t warning \
+      -m 'Do you really want to exit sway? This will end your Wayland session.' \
+      -B 'Yes, exit sway' 'swaymsg exit'
 #
 # Moving around:
 #
-    # Move your focus around
-    bindsym $mod+f focus left
-    bindsym $mod+$down focus down
-    bindsym $mod+$up focus up
-    bindsym $mod+b focus right
-    # Or use $mod+[up|down|left|right]
-    bindsym $mod+Left focus left
-    bindsym $mod+Down focus down
-    bindsym $mod+Up focus up
-    bindsym $mod+Right focus right
+   # Move your focus around
+   bindsym $mod+f focus left
+   bindsym $mod+Down focus down
+   bindsym $mod+Up focus up
+   bindsym $mod+b focus right
+   # Or use $mod+[up|down|left|right]
 
-    # Move the focused window with the same, but add Shift
-    bindsym $mod+Shift+f move left
-    bindsym $mod+Shift+$down move down
-    bindsym $mod+Shift+$up move up
-    bindsym $mod+Shift+b move right
-    # Ditto, with arrow keys
-    bindsym $mod+Shift+Left move left
-    bindsym $mod+Shift+Down move down
-    bindsym $mod+Shift+Up move up
-    bindsym $mod+Shift+Right move right
+   # Move the focused window with the same, but add Shift
+   bindsym $mod+Shift+f move left
+   bindsym $mod+Shift+Down move down
+   bindsym $mod+Shift+Up move up
+   bindsym $mod+Shift+b move right
 #
 # Workspaces:
 #
@@ -166,8 +154,6 @@ exec swayidle -w \
    #Toggle the current focus between tiling and floating mode
    bindsym $mod+Shift+space floating toggle
 
-   # Swap focus between the tiling area and the floating area
-   #bindsym $mod+space focus mode_toggle
 
    # Move focus to the parent container
    #bindsym $mod+a focus parent
@@ -180,31 +166,15 @@ exec swayidle -w \
    #Show the next scratchpad window or hide the focused scratchpad window.
    #If there are multiple scratchpad windows, this command cycles through them.
    bindsym $mod+y scratchpad show
+   
+   #Temporary floating dialogs
+   for_window [app_id="tempFloat"] floating enable, resize set 90ppt 90ppt, move position center
     
 # Resizing containers:
     
    bindsym $mod+h resize shrink width 40px
    bindsym $mod+l resize grow width 40px
    
-mode "resize" {
-   #left will shrink the containers width, right will grow the containers width
-   #up will shrink the containers height, down will grow the containers height
-   bindsym $left resize shrink width 10px
-   bindsym $down resize grow height 10px
-   bindsym $up resize shrink height 10px
-   bindsym $right resize grow width 10px
-
-   #Ditto, with arrow keys
-   bindsym Left resize shrink width 10px
-   bindsym Down resize grow height 10px
-   bindsym Up resize shrink height 10px
-   bindsym Right resize grow width 10px
-
-   # Return to default mode
-   bindsym Return mode "default"
-   bindsym Escape mode "default"
-}
-#bindsym $mod+r mode "resize"
 #
 # Utilities:
 #
@@ -224,7 +194,7 @@ bar {
 }
 
 default_border pixel 2
-#              %border %background %text %indicator %child_border
+############## %border %background %text %indicator %child_border
 client.focused #000000 #285577 #ffffff #000000 #000000
 client.unfocused #80ff80 #285577 #ffffff #80ff80 #80ff80
 

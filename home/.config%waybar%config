@@ -159,7 +159,7 @@
    },
    "custom/hotkeys": {
       "format": "󰘥",
-      "on-click": "foot --hold sh -c \". $HOME/.config/waybar/printKeys.sh\"",
+      "on-click": "foot -a \"tempFloat\" --hold sh -c \". $HOME/.config/waybar/printKeys.sh\"",
       "tooltip": true,
       "tooltip-format": "Display hotkeys (Win + c to close)"
    },
