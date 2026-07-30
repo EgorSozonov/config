@@ -384,5 +384,29 @@ function cdl {
    cd $1 && LC_COLLATE=C ls --color=always --group-directories-first -agohA
 } 
 
+function lanReceive {
+   echo $(ip -4 a show wlan0 | sed -En 's|^.*\.([0-9]+)/.*$|\1|p')
+   RSYNC_USERNAME=$(whoami) rsync --daemon --config=$HOME/.config/rsync/rsync.conf\
+      && echo $(ip -4 a show wlan0)
+}
+
+function lanSetIp {
+   export LAN_TARGET_IP="192.168.1.$1"
+}
+
+#lanSend directory
+function lanSend {
+   if [[ -z $1 ]]; then
+      echo "Input a directory to send via LAN"
+      return 1
+   fi
+   if [[ -z "$LAN_TARGET_IP" ]]; then
+      echo "Target IP address is not set. On the receiving computer, run `lanReceive`"
+      echo "Then on this machine, run `lanSetIp 12` (replacing 12 with that number)."
+      echo "Then repeat this command"
+      return 1
+   fi
+   rsync -ar --port=8730 --progress --ignore-existing -- $1 "$LAN_TARGET_IP::m/"
+}
 
 

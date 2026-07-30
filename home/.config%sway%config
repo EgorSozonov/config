@@ -152,7 +152,7 @@ exec swayidle -w \
    font pango:monospace 1
 
    #Toggle the current focus between tiling and floating mode
-   bindsym $mod+Shift+space floating toggle
+   bindsym $mod+space floating toggle
 
 
    # Move focus to the parent container
