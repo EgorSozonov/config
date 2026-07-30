@@ -385,9 +385,9 @@ function cdl {
 } 
 
 function lanReceive {
-   echo $(ip -4 a show wlan0 | sed -En 's|^.*\.([0-9]+)/.*$|\1|p')
+   pkill rsync
    RSYNC_USERNAME=$(whoami) rsync --daemon --config=$HOME/.config/rsync/rsync.conf\
-      && echo $(ip -4 a show wlan0)
+      && echo $(ip -4 a show wlan0 | sed -En 's|^.*\.([0-9]+)/.*$|\1|p')
 }
 
 function lanSetIp {
