@@ -16,16 +16,18 @@ function copyIfNotExistsOrAddToArray() {
    fi
 }
 
+
 #$1 = source dir we're looping on, $2 = target dir, $3 = "cp" command
 function updateFromDir() {
    declare -a fileNames
    declare -a compSpecificFNames
    declare -a existingTargets
-   declare -i countCopied
+   declare -i countCreated
    readarray -t fileNames < <(ls -A $1)
    local hostName="$HOSTNAME"
    readarray -t compSpecificFNames < <(ls -A _$hostName/$1 2>/dev/null)
    local targetDir="${2/%\//}"  # ensure no trailing slash in $2
+   local needToUpdateGrub="false"
    
    for fN in "${fileNames[@]}"; do
       local outFile="$targetDir/${fN//\%/\/}"
@@ -36,11 +38,24 @@ function updateFromDir() {
          fi
       done
       
-      copyIfNotExistsOrAddToArray $srcFile $outFile existingTargets "$3" countCopied
+      declare -i countCreatedSaved=$((countCreated))
+      copyIfNotExistsOrAddToArray $srcFile $outFile existingTargets "$3" countCreated
+      if [[ "$fN" == "default%grub" ]]; then
+         if (( countCreated > countCreatedSaved )); then
+            needToUpdateGrub="created"
+         else 
+            needToUpdateGrub="overwritten"
+         fi
+      fi
    done;
-   if ((countCopied > 0)); then
-      echo "Copied $countCopied files"
+   if ((countCreated > 0)); then
+      echo "Copied $countCreated files"
+      if [[ "$needToUpdateGrub" == "created" ]]; then
+         doas grub-mkconfig -o /boot/grub/grub.cfg
+      fi
+      echo ""
    fi
+   
    local countExisting="$((${#existingTargets[@]}/2))"
    if (( countExisting > 0 )) then
       echo "$countExisting files need to be updated:"
@@ -59,6 +74,10 @@ function updateFromDir() {
             $3 "${existingTargets[$i]}" "$tgt"
          done;
          echo "$countExisting files overwritten, backups in $backups"
+         if [[ "$needToUpdateGrub" == "overwritten" ]]; then
+            doas grub-mkconfig -o /boot/grub/grub.cfg
+         fi
+         echo ""
       else
          echo "File update was cancelled"
       fi
