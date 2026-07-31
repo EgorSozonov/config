@@ -37,10 +37,11 @@ function overwriteFiles() {
          $3 "${existingTgts[$i]}" "$tgt"
       done;
       echo "$cntExisting files overwritten, backups in $backups"
+      echo ""
       if [[ "$needToUpdateGrb" == "overwritten" ]]; then
          doas grub-mkconfig -o /boot/grub/grub.cfg
+         echo ""
       fi
-      echo ""
    else
       echo "File update was cancelled"
    fi
@@ -80,10 +81,11 @@ function updateFromDir() {
    done;
    if ((countCreated > 0)); then
       echo "Copied $countCreated files"
+      echo ""
       if [[ "$needToUpdateGrub" == "created" ]]; then
          doas grub-mkconfig -o /boot/grub/grub.cfg
+         echo ""
       fi
-      echo ""
    fi
    
    local countExisting="$((${#existingTargets[@]}/2))"
