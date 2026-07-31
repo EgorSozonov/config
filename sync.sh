@@ -16,6 +16,36 @@ function copyIfNotExistsOrAddToArray() {
    fi
 }
 
+#$1 = countExisting, $2 = existingTargets, $3 = "install" command, $4 = needToUpdateGrub
+function overwriteFiles() {
+   local -n cntExisting=$1
+   local -n existingTgts=$2
+   local -n needToUpdateGrb=$4
+   echo "$cntExisting files need to be updated:"
+   for ((i=1; i<2*cntExisting; i+=2)); do
+      echo "${existingTgts[$i]}"
+   done;
+   echo ""
+   
+   read -p "OK to overwrite? " -n 1 -r
+   echo
+   
+   if [[ $REPLY =~ ^[Yy]$ ]] then
+      for ((i=0; i<2*cntExisting; i+=2)); do
+         local tgt="${existingTgts[$i + 1]}"
+         $3 "$tgt" "$backups/${tgt//\//\%}"
+         $3 "${existingTgts[$i]}" "$tgt"
+      done;
+      echo "$cntExisting files overwritten, backups in $backups"
+      if [[ "$needToUpdateGrb" == "overwritten" ]]; then
+         doas grub-mkconfig -o /boot/grub/grub.cfg
+      fi
+      echo ""
+   else
+      echo "File update was cancelled"
+   fi
+}
+
 
 #$1 = source dir we're looping on, $2 = target dir, $3 = "cp" command
 function updateFromDir() {
@@ -58,37 +88,12 @@ function updateFromDir() {
    
    local countExisting="$((${#existingTargets[@]}/2))"
    if (( countExisting > 0 )) then
-      echo "$countExisting files need to be updated:"
-      for ((i=1; i<2*countExisting; i+=2)); do
-         echo "${existingTargets[$i]}"
-      done;
-      echo ""
-      
-      read -p "OK to overwrite? " -n 1 -r
-      echo
-      
-      if [[ $REPLY =~ ^[Yy]$ ]] then
-         for ((i=0; i<2*countExisting; i+=2)); do
-            local tgt="${existingTargets[$i + 1]}"
-            $3 "$tgt" "$backups/${tgt//\//\%}"
-            $3 "${existingTargets[$i]}" "$tgt"
-         done;
-         echo "$countExisting files overwritten, backups in $backups"
-         if [[ "$needToUpdateGrub" == "overwritten" ]]; then
-            doas grub-mkconfig -o /boot/grub/grub.cfg
-         fi
-         echo ""
-      else
-         echo "File update was cancelled"
-      fi
+      overwriteFiles countExisting existingTargets "$3" needToUpdateGrub
    fi
 }
 
-function initBackups() {
-   mkdir -p $backups
-}
 
-initBackups
+mkdir -p $backups
 updateFromDir home ~ "install -D"
 updateFromDir etc /etc "doas install -D"
 updateFromDir armor /etc/apparmor.d "doas install -D"

@@ -1,11 +1,12 @@
 GRUB_DEFAULT=0
 GRUB_TIMEOUT=5
-GRUB_DISTRIBUTOR="Debian"
+GRUB_DISTRIBUTOR="Arch Linux"
 GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet lsm=landlock,lockdown,yama,integrity,apparmor,bpf amdgpu.dc=1"
 GRUB_CMDLINE_LINUX=""
 
 #Preload both GPT and MBR modules so that they are not missed
 GRUB_PRELOAD_MODULES="part_gpt"
+GRUB_DISABLE_OS_PROBER=true
 
 #Set to 'countdown' or 'hidden' to change timeout behavior, press ESC key to display menu.
 GRUB_TIMEOUT_STYLE=menu
@@ -25,7 +26,7 @@ GRUB_DISABLE_RECOVERY=true
 
 #Uncomment and set to the desired menu colors.  Used by normal and wallpaper
 #modes only. Entries specified as foreground/background.
-GRUB_COLOR_NORMAL="light-green/black"
+GRUB_COLOR_NORMAL="dark-green/black"
 GRUB_COLOR_HIGHLIGHT="light-green/dark-gray"
 
 
