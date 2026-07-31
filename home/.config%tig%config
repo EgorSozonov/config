@@ -1,0 +1,4 @@
+# Copy the selected commit hash or reference
+bind diff y @sh -c "echo -n %(commit) | wl-copy"
+bind stage y @sh -c "echo -n %(commit) | wl-copy"
+bind status y @sh -c "echo -n %(directory) | wl-copy"

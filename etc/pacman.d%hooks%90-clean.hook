@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = *
+
+[Action]
+Description = Cleaning pacman cache of all but 3 latest versions of packages...
+When = PostTransaction
+Exec = /usr/bin/paccache -r -k 3
