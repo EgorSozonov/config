@@ -5,7 +5,7 @@
    "ipc": true,
    "position": "left", //top|bottom|left|right
    "width": 32, // Waybar width
-   "spacing": 16, // Gaps between modules (4px)
+   "spacing": 8, // Gaps between modules (4px)
    "margin-top": 0,
    "modules-left": [
       "custom/start", 
