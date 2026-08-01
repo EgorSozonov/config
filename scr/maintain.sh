@@ -12,6 +12,7 @@ declare -a menuEntries
 #Array of arrays. For every menu item, the array of strings behind it
 declare -a menuData
 
+declare -a insecureOnes
 
 function securityAudit() {
    local -n entries=$1
@@ -20,6 +21,7 @@ function securityAudit() {
    if (( ${#insecureOnes[@]} > 0 )); then
       entries+=("0")
       entries+=("Insecure packages")
+      data+=("insecureOnes")
       #for inse in "${insecureOnes[@]}"; do
       #   echo $inse
       #done
@@ -36,6 +38,8 @@ IFS='' read -r -d '' pkExtractor <<"EOF"
    /^Installed Size/ { printf " | " $2}
 EOF
 
+declare -a unusedOnes
+
 function unusedPackages {
    local -n entries=$1
    local -n data=$2
@@ -44,6 +48,7 @@ function unusedPackages {
    if (( ${#unusedOnes[@]} > 0 )); then
       entries+=("0")
       entries+=("Unused packages")
+      data+=("unusedOnes")
       #for unu in "${unusedOnes[@]}"; do
       #   echo $unu
       #done
@@ -54,31 +59,6 @@ function unusedPackages {
 }
 
 
-#function maintMenu() {
-#   mainMenuOptions=(
-#      0 "Run comm embedded"
-#      1 "Dummy menu"
-#      2 "Run comm literally"
-#   )
-#   
-#   result=$(dialog --clear --title "Main menu" \
-#      --backtitle "$BACKTITLE" \
-#      --cancel-label "Exit" \
-#      --stdout \
-#      --menu "Choose" 0 0 3 "${mainMenuOptions[@]}"
-#   )
-#   case $? in
-#   0) case $result in
-#      0) menu1 ;;
-#      1) menu2 ;;
-#      2) menu3 ;;
-#      esac
-#      ;;
-#   1) userExit ;;
-#   esac
-#} 
-
-
 function userExit() {
    clear
    echo "Your app has been closed successfully"
@@ -87,14 +67,20 @@ function userExit() {
 
 # $1 = index in menu
 function showMenuItem() {
-   local -n data=$2
+   declare -i dataLen=$(( ${#menuData[@]} ))
    
-   declare -n ref=data[$1]
+   local subarrayName="${menuData[1]}"
+   declare -n subarray="$subarrayName"
    
-   echo "--- Printing members of $1 ---"
-   for element in "${ref[@]}"; do
-      echo "$element"
-   done
+   for c in "${subarray[@]}"; do
+      echo $c
+   done;
+   #declare -n subarray="$data[$1]"
+   #clear
+   #echo "--- Printing members of $1 len is $dataLen item len $dataItemLen ---"
+   #for element in "${subarray[@]}"; do
+   #   echo "$element"
+   #done
 }
 
 function showMenu() {
@@ -104,10 +90,8 @@ function showMenu() {
    if $((menuLen == 0)); then
       return 0
    fi
-   entries+=("0")
-   entries+=("Quit")
    for ((i=0; i<menuLen; i+=1)); do
-      entries[$i]=$((i))
+      entries[2*$i]=$((i))
       local tgt="${entries[2*$i + 1]}"
    done;
    
@@ -118,7 +102,7 @@ function showMenu() {
       --menu "Choose" 0 0 $((menuLen)) "${entries[@]}"
    )
    case $? in
-   0) showMenuItem $result ;;
+   0) showMenuItem $((result)) ;;
    1) userExit ;;
    esac
 } 
