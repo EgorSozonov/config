@@ -1,7 +1,7 @@
 
 * {
  	/* `otf-font-awesome` is required to be installed for icons */
-	font-family: FontAwesome;
+	font-family: Linejoy;
 	font-size: 20px;
    color: white;
 	text-shadow: 0px 0px 2px @theme_text_color;
@@ -165,7 +165,7 @@ label:focus {
 }
 
 #custom-sound {
-   font-family: "Font Awesome 7";
+   /*font-family: "Font Awesome 7 Free";*/
    font-size: 24px;
 }
 

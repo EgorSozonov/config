@@ -4,7 +4,7 @@
    "mode": "dock",
    "ipc": true,
    "position": "left", //top|bottom|left|right
-   "width": 32, // Waybar width
+   "width": 36, // Waybar width
    "spacing": 8, // Gaps between modules (4px)
    "margin-top": 0,
    "modules-left": [

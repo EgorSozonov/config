@@ -365,6 +365,15 @@ function hi() {
    fi
 }
 
+function paddLocal {
+   if [[ -z $1 ]]; then
+      echo 'Nothing to add'
+      return 1
+   fi
+   doas repo-add /opt/craft/craft.db.tar.gz $1
+   doas mv $1 /opt/craft
+}
+
 # Go up n directory levels. Example: .. 3
 function ..() {
    local arg=${1:-1};
