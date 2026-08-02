@@ -69,9 +69,10 @@ function userExit() {
 function showMenuItem() {
    declare -i dataLen=$(( ${#menuData[@]} ))
    
-   local subarrayName="${menuData[1]}"
+   local subarrayName="${menuData[$1]}"
    declare -n subarray="$subarrayName"
    
+   clear
    for c in "${subarray[@]}"; do
       echo $c
    done;
