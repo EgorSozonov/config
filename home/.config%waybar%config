@@ -15,6 +15,7 @@
       "battery#bat2", 
       "group/time", 
       "group/date", 
+      "custom/sleep", 
       "custom/hotkeys", 
       "custom/firefox", 
       //"idle_inhibitor", 
@@ -153,9 +154,15 @@
    },
    "custom/start": {
       "format": "󱓞",
-      "on-click": "wofi --show drun --allow-images -a",
+      "on-click": "wofi --show drun --allow-images -a --prompt=''",
       "tooltip": true,
       "tooltip-format": "App menu (Esc to close)"
+   },
+   "custom/sleep": {
+      "format": "",
+      "on-click": "aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend",
+      "tooltip": true,
+      "tooltip-format": "Sleep (suspend)"
    },
    "custom/hotkeys": {
       "format": "󰘥",
@@ -170,6 +177,5 @@
       "interval": "once",
       "signal": 5,
       "on-click": "~/.config/waybar/toggleSound.sh"
-      
    }
 }
