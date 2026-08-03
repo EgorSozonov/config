@@ -16,6 +16,7 @@
       "group/time", 
       "group/date", 
       "custom/sleep", 
+      "custom/quit", 
       "custom/hotkeys", 
       "custom/firefox", 
       //"idle_inhibitor", 
@@ -153,7 +154,7 @@
        "bat": "BAT2"
    },
    "custom/start": {
-      "format": "󱓞",
+      "format": "",
       "on-click": "wofi --show drun --allow-images -a --prompt=''",
       "tooltip": true,
       "tooltip-format": "App menu (Esc to close)"
@@ -163,6 +164,12 @@
       "on-click": "aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend",
       "tooltip": true,
       "tooltip-format": "Sleep (suspend)"
+   },
+   "custom/quit": {
+      "format": "",
+      "on-click": "exec swaynag -t warning -m 'Do you really want to exit Sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'",
+      "tooltip": true,
+      "tooltip-format": "Exit the desktop environment"
    },
    "custom/hotkeys": {
       "format": "󰘥",
