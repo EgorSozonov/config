@@ -30,7 +30,7 @@ function flash() {
          continue
       fi
       readarray -d " " -t spl <<< $partition
-      if [[ "${spl[0]}" =~ ^sd.* ]] && ((spl[1] < 40000000000)); then
+      if [[ "${spl[0]}" =~ ^sd.* ]] && ((spl[1] < 67000000000)); then
          newName="${spl[0]}"
          local newPrefix="${newName//[0-9]/}"
          if [[ $newPrefix != $currPrefix ]]; then
