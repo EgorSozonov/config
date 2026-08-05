@@ -155,7 +155,7 @@
    },
    "custom/start": {
       "format": "",
-      "on-click": "wofi --show drun --allow-images -a --prompt=''",
+      "on-click": "pkill wofi || wofi --show drun --allow-images -a --prompt=''",
       "tooltip": true,
       "tooltip-format": "App menu (Esc to close)"
    },
@@ -172,7 +172,7 @@
       "tooltip-format": "Exit the desktop environment"
    },
    "custom/hotkeys": {
-      "format": "󰘥",
+      "format": "",
       "on-click": "foot -a \"tempFloat\" --hold sh -c \". $HOME/.config/waybar/printKeys.sh\"",
       "tooltip": true,
       "tooltip-format": "Display hotkeys (Win + c to close)"
