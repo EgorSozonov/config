@@ -29,8 +29,7 @@ abi <abi/4.0>,
 
 #}}}
 
-#profile firefox /usr/lib/firefox-esr/firefox-esr flags=(attach_disconnected) {
-profile firefox /usr/lib/firefox-esr/firefox-esr {
+profile firefox /usr/lib/firefox-esr/firefox-esr flags=(attach_disconnected) {
 
 #{{{base  
   
