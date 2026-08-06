@@ -486,8 +486,8 @@ function premove() {
          
       if [[ ${#whoRecommends[@]} -gt 0 ]]; then
       
-         read -p "$1 is recommended by some packages (use pwhoNeeds to find out). \
-                  Still want to remove it?" -n 1 -r
+         echo "$1 is recommended by some packages (use pwhoNeeds to find out which)."
+         read -p "Still want to remove it? (y/n) " -n 1 -r
          echo
          
          if ! [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -505,16 +505,16 @@ function premove() {
             <(apt-cache rdepends --installed --no-recommends --no-suggests $arg | tail -n +3)
             
          if [[ ${#whoDepends[@]} -gt 0 ]]; then
-            echo "Package $arg is depended upon by another (use pwhoNeeds to find out), \
-                  so I refuse to delete anything"
+            echo "Package $arg is depended upon by another (use pwhoNeeds to find out),"
+            echo "so I refuse to delete anything"
             return 1
          fi
          
          readarray -d '' -t whoRecommends < \
             <(apt-cache rdepends --installed --no-depends --no-suggests $arg | tail -n +3)
          if [[ ${#whoRecommends[@]} -gt 0 ]]; then
-            echo "Package $arg is recommended by something (use pwhoNeeds to find out), \
-                  so I refuse to delete anything"
+            echo "Package $arg is recommended by something (use pwhoNeeds to find out),"
+            echo "so I refuse to delete anything"
             return 1
          fi
       done
