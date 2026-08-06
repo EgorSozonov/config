@@ -1,4 +1,4 @@
-#! /bin/bash
-set color_normal=white/black
-set menu_color_normal=green/black
-set menu_color_highlight=light-green/dark-gray
+#! /usr/bin/bash
+
+echo "${1}set menu_color_normal=green/black"
+echo "${1}set menu_color_highlight=light-green/dark-gray"

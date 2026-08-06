@@ -194,7 +194,7 @@ function trash() {
    if [ ${#files[@]} -eq 0 ]; then
       echo "rm: missing operand"
       echo "Try 'rm --help' for more information."
-      exit 1
+      return 1
    fi
    
    # Process each file
@@ -206,7 +206,7 @@ function trash() {
             continue
          else
             echo "rm: cannot remove '$file': No such file or directory"
-            exit 1
+            return 1
          fi
       fi
    
@@ -223,7 +223,7 @@ function trash() {
          fi
       else
          echo "Failed to move '$file' to trash"
-         exit 1
+         return 1
       fi
    done
    
@@ -234,7 +234,7 @@ function trash() {
 function unTrash() {
    if [ $# -eq 0 ]; then
       echo "Usage: unTrash FILENAME"
-      exit 1
+      return 1
    fi
    
    ls -l ~/.local/share/trash | grep $1
@@ -291,7 +291,7 @@ function libraryDeps() {
 function plsEdit() {
   if [ -z "$1" ]; then
      echo "Usage: plsEdit /etc/file"
-     exit 1
+     return 1
   fi
   TEMP=$(mktemp)
   doas cp "$1" "$TEMP"
@@ -416,6 +416,47 @@ function lanSend {
       return 1
    fi
    rsync -ar --port=8730 --progress --ignore-existing -- $1 "$LAN_TARGET_IP::m/"
+}
+
+function pwhoNeeds() {
+   if [ -z "$1" ]; then
+      echo "Usage: pwhoNeeds package"
+      return 1
+   fi
+
+   declare -a whoDepends
+   declare -a whoRecommends
+   declare -a whoSuggests
+   readarray -d '' -t whoDepends < <(apt-cache rdepends --installed --no-recommends --no-suggests $1 | tail -n +3)
+   readarray -d '' -t whoRecommends < <(apt-cache rdepends --installed --no-depends --no-suggests $1 | tail -n +3)
+   readarray -d '' -t whoSuggests < <(apt-cache rdepends --installed --no-depends --no-recommends $1 | tail -n +3)
+   local isNeeded="false"
+   
+   if [[ ${#whoDepends[@]} -gt 0 ]]; then
+      echo "Depended upon by:"
+      isNeeded="true"
+      for needer in "${whoDepends[@]}"; do
+         echo "$needer"
+      done
+   fi
+   if [[ ${#whoRecommends[@]} -gt 0 ]]; then
+      echo "Recommended by:"
+      isNeeded="true"
+      for needer in "${whoRecommends[@]}"; do
+         echo "$needer"
+      done
+   fi
+   
+   if [[ ${#whoSuggests[@]} -gt 0 ]]; then
+      echo "Suggested by:"
+      isNeeded="true"
+      for needer in "${whoSuggests[@]}"; do
+         echo "$needer"
+      done
+   fi
+   if [[ $isNeeded == "false" ]]; then
+      echo "NOBODY"
+   fi
 }
 
 
