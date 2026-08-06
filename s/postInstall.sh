@@ -7,6 +7,7 @@ doas ln -s /usr/sbin/aa-enforce /usr/bin/aa-enforce
 doas ln -s /usr/sbin/aa-disable /usr/bin/aa-disable
 doas ln -s /usr/sbin/aa-complain /usr/bin/aa-complain
 doas ln -s /usr/sbin/apparmor_parser /usr/bin/apparmor_parser
+doas ln -s /usr/sbin/grub-mkconfig /usr/bin/grub-mkconfig
 
 doas apt remove task-marathi task-lithuanian task-khmer task-kazakh task-korean task-japanese task-irish task-icelandic
 doas apt purge task-hungarian task-hindi task-slovenian task-spanish task-swedish task-tagalog task-tamil
@@ -26,7 +27,7 @@ doas apt purge ibrazilian ibritish ibulgarian icatalan idanish idutch ifrench-gu
 
 doas apt purge aspell-hi aspell-hr aspell-hu aspell-is aspell-kk aspell-ku aspell-lt aspell-lv aspell-ml aspell-mr aspell-nl aspell-no aspell-pa aspell-pl aspell-pt-br aspell-pt-pt aspell-ro aspell-sk aspell-sl aspell-sv aspell-ta aspell-te aspell-tl hunspell-en-us hunspell-hu hunspell ingerman inorwegian
 
-doas apt purge ipolish ihungarian
+doas apt purge ipolish ihungarian zhcon
 
 
 doas apt install pipewire 
