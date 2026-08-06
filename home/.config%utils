@@ -403,7 +403,7 @@ function lanSetIp {
    export LAN_TARGET_IP="192.168.1.$1"
 }
 
-#lanSend directory
+#`lanSend directory` to send a dir to ~/incoming/rsync on the target computer over LAN
 function lanSend {
    if [[ -z $1 ]]; then
       echo "Input a directory to send via LAN"
@@ -419,7 +419,7 @@ function lanSend {
 }
 
 function pwhoNeeds() {
-   if [ -z "$1" ]; then
+   if [[ -z "$1" ]]; then
       echo "Usage: pwhoNeeds package"
       return 1
    fi
@@ -427,9 +427,12 @@ function pwhoNeeds() {
    declare -a whoDepends
    declare -a whoRecommends
    declare -a whoSuggests
-   readarray -d '' -t whoDepends < <(apt-cache rdepends --installed --no-recommends --no-suggests $1 | tail -n +3)
-   readarray -d '' -t whoRecommends < <(apt-cache rdepends --installed --no-depends --no-suggests $1 | tail -n +3)
-   readarray -d '' -t whoSuggests < <(apt-cache rdepends --installed --no-depends --no-recommends $1 | tail -n +3)
+   readarray -d '' -t whoDepends < \
+      <(apt-cache rdepends --installed --no-recommends --no-suggests $1 | tail -n +3)
+   readarray -d '' -t whoRecommends < \
+      <(apt-cache rdepends --installed --no-depends --no-suggests $1 | tail -n +3)
+   readarray -d '' -t whoSuggests < \
+      <(apt-cache rdepends --installed --no-depends --no-recommends $1 | tail -n +3)
    local isNeeded="false"
    
    if [[ ${#whoDepends[@]} -gt 0 ]]; then
@@ -456,6 +459,67 @@ function pwhoNeeds() {
    fi
    if [[ $isNeeded == "false" ]]; then
       echo "NOBODY"
+   fi
+}
+
+function premove() {
+   if [[ -z "$1" ]]; then
+      echo "Remove what?"
+      return 1
+   fi
+   if (( "$#" == 1 )); then
+      declare -a whoDepends
+      readarray -d '' -t whoDepends < \
+         <(apt-cache rdepends --installed --no-recommends --no-suggests $1 | tail -n +3)
+         
+      if [[ ${#whoDepends[@]} -gt 0 ]]; then
+         echo "I refuse to remove $1, for it is needed by:"
+         for needer in "${whoDepends[@]}"; do
+            echo "$needer"
+         done
+         return 1
+      fi
+         
+      declare -a whoRecommends
+      readarray -d '' -t whoRecommends < \
+         <(apt-cache rdepends --installed --no-depends --no-suggests $1 | tail -n +3)
+         
+      if [[ ${#whoRecommends[@]} -gt 0 ]]; then
+      
+         read -p "$1 is recommended by some packages (use pwhoNeeds to find out). \
+                  Still want to remove it?" -n 1 -r
+         echo
+         
+         if ! [[ $REPLY =~ ^[Yy]$ ]]; then
+            return 1
+         fi
+      fi
+      
+      doas apt purge $1
+   else
+      declare -a whoDepends
+      declare -a whoRecommends
+         
+      for arg in "$@"; do
+         readarray -d '' -t whoDepends < \
+            <(apt-cache rdepends --installed --no-recommends --no-suggests $arg | tail -n +3)
+            
+         if [[ ${#whoDepends[@]} -gt 0 ]]; then
+            echo "Package $arg is depended upon by another (use pwhoNeeds to find out), \
+                  so I refuse to delete anything"
+            return 1
+         fi
+         
+         readarray -d '' -t whoRecommends < \
+            <(apt-cache rdepends --installed --no-depends --no-suggests $arg | tail -n +3)
+         if [[ ${#whoRecommends[@]} -gt 0 ]]; then
+            echo "Package $arg is recommended by something (use pwhoNeeds to find out), \
+                  so I refuse to delete anything"
+            return 1
+         fi
+      done
+      
+      doas apt purge "$@"
    fi
 }
 
