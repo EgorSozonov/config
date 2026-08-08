@@ -1,8 +1,11 @@
 #GRUB boot loader configuration
 
-GRUB_DEFAULT=0
+GRUB_DEFAULT=saved
+#Make GRUB remember the last selection. This requires
+#setting 'GRUB_DEFAULT=saved' above.
+GRUB_SAVEDEFAULT=true
 GRUB_TIMEOUT=5
-GRUB_DISTRIBUTOR="Debian"
+GRUB_DISTRIBUTOR="Arch"
 GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet lsm=landlock,lockdown,yama,integrity,apparmor,bpf"
 GRUB_CMDLINE_LINUX=""
 
@@ -37,14 +40,6 @@ GRUB_DISABLE_RECOVERY=true
 GRUB_COLOR_NORMAL="green/black"
 GRUB_COLOR_HIGHLIGHT="light-green/dark-gray"
 
-# Uncomment one of them for the gfx desired, a image background or a gfxtheme
-#GRUB_BACKGROUND="/path/to/wallpaper"
-#GRUB_THEME="/path/to/gfxtheme"
 
-#Uncomment to make GRUB remember the last selection. This requires
-#setting 'GRUB_DEFAULT=saved' above.
-#GRUB_SAVEDEFAULT=true
 
-#Uncomment to disable submenus in boot menu
-#GRUB_DISABLE_SUBMENU=y
 
