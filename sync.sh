@@ -7,12 +7,14 @@ backups="$HOME/.local/state/dotfiler/"
 function copyIfNotExistsOrAddToArray() {
    local -n existingTgts=$3
    local -n cntCopied=$5
-   if [[ ! -f $2 ]]; then
+   if [[ ! -f $2 ]]; then # if target doesn't exist
       $4 $1 $2
       ((cntCopied++))
    elif ! cmp -s $1 $2; then
-      existingTgts+=($1) 
-      existingTgts+=($2) 
+      if [ -s $1 ]; then
+         existingTgts+=($1) 
+         existingTgts+=($2) 
+      fi
    fi
 }
 
