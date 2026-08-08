@@ -29,7 +29,7 @@ abi <abi/4.0>,
 
 #}}}
 
-profile firefox /usr/lib/firefox-esr/firefox-esr flags=(attach_disconnected) {
+profile firefox /usr/lib/firefox/firefox {
 
 #{{{base  
   
@@ -401,18 +401,12 @@ dbus bus=session,
    #unprivileged namespaces: needed for access to audio, video, kernel
    userns,
    
-   / r,
-   /proc/sys/user/max_user_namespaces r,
-   
    /usr/share/gtk-3.0/** r,
    /usr/share/icons/{,**} r,
    /usr/share/drirc.d/{,**} r,
    /proc/@{pid}/** r, 
 
-   /usr/bin/getopt rix,
-   /usr/bin/cut rix,
-   /usr/bin/tr rix,
-   /usr/lib/firefox-esr/glxtest ix,
+   /usr/lib/firefox/glxtest ix,
    /usr/lib/gdk-pixbuf-2.0/ r,
    /usr/lib/gdk-pixbuf-2.0/** r,
    /usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0 r,
@@ -421,7 +415,6 @@ dbus bus=session,
    /usr/share/themes/** r,
    /usr/share/pixmaps/{,**} r,
    /usr/share/applications/{,**} r,
-   /usr/share/hunspell/{,**} r,
    /usr/share/ca-certificates/trust-source/{,**} r,
    /etc/ca-certificates/trust-source/{,**} r,
    /usr/share/mime/** r,
@@ -429,13 +422,10 @@ dbus bus=session,
    /proc/sys/kernel/* r,
    /etc/ca-certificates/extracted/{,**} r,
    /etc/mailcap r,
-   /etc/firefox-esr/{,**} r,
    /etc/mime.types r,
    /etc/libva.conf r,
    /proc/sys/net/ipv6/conf/all/disable_ipv6 r,
    /proc/pressure/memory r,
-   
-   /var/tmp/ r,
    
    #deny @{HOME}/docs rwx,
    #deny @{HOME}/docs/{,**} rwx,
@@ -452,16 +442,12 @@ dbus bus=session,
    owner @{HOME}/.cache/mozilla/{,**} rw,
    
    /usr/share/glycin-loaders/** r,
-   /usr/libexec/glycin-loaders/2+/* rix,
-   /usr/bin/lsb_release rix,
-   /usr/share/mozilla/extensions/{,**} rw, 
-   /usr/share/firefox-esr/{,**} rw, 
-   #/usr/lib/glycin-loaders/2+/{,**} rix,
+   /usr/lib/glycin-loaders/2+/{,**} rix,
    /dev/ r,
    
    #Allow temporary file access
    /tmp/{,**} rw,
-   /tmp/firefox-esr/{,**} rwk,
+   /tmp/firefox/{,**} rwk,
    
    #TCP/UDP network access
    network inet  stream,
@@ -489,8 +475,8 @@ dbus bus=session,
    /usr/bin/bwrap rix,
    /sys/fs/cgroup/user.slice/** r,
    
-   /usr/share/glvnd/egl_vendor.d/{,**} r,
-   /etc/glvnd/egl_vendor.d/{,**} r,
+   /usr/share/glvnd/egl_vendor.d/** r,
+   /usr/share/glvnd/egl_vendor.d/ r,
    /usr/share/drirc.d/** r,
    /usr/share/libdrm/{,**} r,
    /dev/dri/{,**} rw,
@@ -500,14 +486,14 @@ dbus bus=session,
    
    #Allow basic execution
    /usr/bin/firefox rmix,
-   /usr/lib/firefox-esr/firefox-esr rmix,
-   /usr/lib/firefox-esr/crashhelper rmix,
-   /usr/lib/firefox-esr/crashreporter rmix,
-   /usr/lib/firefox-esr/glxtest rmix,
-   /usr/lib/firefox-esr/pingsender rmix,
-   /usr/lib/firefox-esr/firefox-bin rmix,
-   /usr/lib/firefox-esr/vaapitest rmix,
-   /usr/lib/firefox-esr/vulkantest rmix,
+   /usr/lib/firefox/firefox rmix,
+   /usr/lib/firefox/crashhelper rmix,
+   /usr/lib/firefox/crashreporter rmix,
+   /usr/lib/firefox/glxtest rmix,
+   /usr/lib/firefox/pingsender rmix,
+   /usr/lib/firefox/firefox-bin rmix,
+   /usr/lib/firefox/vaapitest rmix,
+   /usr/lib/firefox/vulkantest rmix,
    
    #Wayland display  
    owner @{run}/user/@{uid}/wayland-*[0-9] rw,
