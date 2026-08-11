@@ -155,7 +155,7 @@
    },
    "custom/start": {
       "format": "",
-      "on-click": "pkill wofi || wofi --show drun --allow-images -a --prompt=''",
+      "on-click": "pkill wofi || wofi --show drun --allow-images --columns 2 -a --prompt=''",
       "tooltip": true,
       "tooltip-format": "App menu (Esc to close)"
    },

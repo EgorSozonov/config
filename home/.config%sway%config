@@ -16,7 +16,7 @@ set $right l
 # Your preferred terminal emulator
 set $term foot -D ~
 # Your preferred application launcher
-set $menu pkill wofi || wofi --show drun --allow-images -a --prompt ""
+set $menu pkill wofi || wofi --show drun --allow-images -a --columns 2 --prompt ""
 
 ###Output configuration & things specific to a particular computer
 include specific
