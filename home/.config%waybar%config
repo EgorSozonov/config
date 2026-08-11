@@ -1,10 +1,10 @@
 {
-   "layer": "top", // Waybar at top layer
+   "layer": "top", //Waybar above all other windows
    "bar_id": "bar-0",
    "mode": "dock",
    "ipc": true,
-   "position": "left", //top|bottom|left|right
-   "width": 36, // Waybar width
+   "position": "left",
+   "width": 32, // Waybar width
    "spacing": 8, // Gaps between modules (4px)
    "margin-top": 0,
    "modules-left": [
@@ -12,17 +12,16 @@
       "sway/workspaces", 
       "group/battery", 
       "sway/language", 
-      "battery#bat2", 
       "group/time", 
       "group/date", 
-      "custom/sleep", 
-      "custom/quit", 
-      "custom/hotkeys", 
+      "custom/sound",
       "custom/wifi", 
+      "custom/hotkeys", 
       //"idle_inhibitor", 
-      "custom/sound"
+      "custom/separator",
+      "custom/quit",
+      "custom/sleep"
    ],
-
 	"group/battery": {
 		"orientation": "vertical",
 		"modules": [
@@ -34,6 +33,7 @@
 		"orientation": "vertical",
 		"modules": [
 			"clock#4",
+         "custom/clockSeparator",
          "clock#5"
 		]
    },
@@ -80,8 +80,8 @@
    },
    "sway/language": {
       "format": "{}",
-      "format-ru": "RU",
-      "format-en": "US",
+      "format-ru": "ru",
+      "format-en": "en",
       "on-click": "swaymsg input type:keyboard xkb_switch_layout next"
    }, 
    "idle_inhibitor": {
@@ -94,11 +94,11 @@
    "clock#3": {
       // month
       "interval": 60,
-      "format": "[{:%d}]",
-      "tooltip-format": "<tt><small>{calendar}</small></tt>",
+      "format": "@{:%d}",
+      "tooltip-format": "<tt><big>{calendar}</big></tt>",
       "calendar": {
          "locale": "en_GB.UTF-8", //so it starts on Monday
-         "iso8601": true, // so it starts on Monday
+         "iso8601": true, //so it starts on Monday
          "mode"          : "month",
          "mode-mon-col"  : 3,
          "on-scroll"     : 1,
@@ -114,16 +114,24 @@
       // "timezone": "America/New_York",
       "interval": 60,
       "tooltip": false,
-      "format": "{:%H}:"
+      "format": "{:%H}"
+   },
+   "custom/clockSeparator": {
+      "format": "**",
+      "tooltip": false
+   },
+   "custom/separator": {
+      "format": "--",
+      "tooltip": false
    },
    "clock#5": {
       "interval": 60,
       "tooltip": false,
-      "format": ":{:%M}"
+      "format": "{:%M}"
    },
    "battery": {
       "states": {
-          // "good": 95,
+          "good": 80,
           "warning": 30,
           "critical": 18
       },

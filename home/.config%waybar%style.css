@@ -2,10 +2,11 @@
 * {
  	/* `otf-font-awesome` is required to be installed for icons */
 	font-family: Linejoy;
-	font-size: 20px;
+	font-size: 16px;
    color: white;
 	text-shadow: 0px 0px 2px @theme_text_color;
-	padding: 0.1em;
+	padding: 0;
+   margin: 0;
 	border-radius: 8px;
 }
 
@@ -51,35 +52,43 @@ button:hover {
 }
 
 #workspaces button.urgent {
-    background-color: transparent;
-    color: #ff0000;
-    border-radius: 10px;
+   background-color: transparent;
+   color: #ff0000;
+   border-radius: 10px;
 }
 
 #workspaces button.persistent {
-    color: #555555; /* Dimmer color for idle workspaces */
-    opacity: 0.5;
+   color: #555555; /* Dimmer color for idle workspaces */
+   opacity: 0.5;
 }
 
 #mode {
-    border: 0px solid #ff0000;
-    transition-duration: 1s;
-    border-radius: 0px;
-    color: #ff0000;
-    box-shadow: inset 0px -2px #ff0000;
+   border: 0px solid #ff0000;
+   transition-duration: 1s;
+   border-radius: 0px;
+   color: #ff0000;
+   box-shadow: inset 0px -2px #ff0000;
 }
+
 #window {
 /*    border: 1px solid rgba(0,255,169,0.0); */
     padding: 0px 5px;
 }
 
+#time {
+   border: 2px solid rgba(0,255,169,0.0);
+   text-decoration-line: underline;
+   color: red;
+}
 
-#clock {
-    border: 1px solid rgba(0,255,169,0.0);
+#clock-4 {
+   border: 2px solid rgba(0,255,169,0.0);
+   text-decoration-line: underline;
+   color: red;
 }
 
 #battery {
-    border: 1px solid rgba(0,255,169,0.0);
+   border: 1px solid rgba(0,255,169,0.0);
 }
 
 #battery.charging, #battery.plugged {
