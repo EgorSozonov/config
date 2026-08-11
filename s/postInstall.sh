@@ -8,4 +8,5 @@ sys enable --now chronyd
 sys start chronyd
 
 doas pacman -Syu guile make base-devel
+doas pacman -Syu impala id3v2 ffmpeg
 
