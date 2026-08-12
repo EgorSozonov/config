@@ -1,8 +1,7 @@
 #GRUB boot loader configuration
 
 GRUB_DEFAULT=saved
-#Make GRUB remember the last selection. This requires
-#setting 'GRUB_DEFAULT=saved' above.
+#Make GRUB remember the last selection. This requires setting 'GRUB_DEFAULT=saved' above.
 GRUB_SAVEDEFAULT=true
 GRUB_TIMEOUT=5
 GRUB_DISTRIBUTOR="Arch"

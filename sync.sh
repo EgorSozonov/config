@@ -3,18 +3,24 @@
 backups="$HOME/.local/state/dotfiler/"
 
 #$1 = source filename, $2 = target, $3 = array of files that already exist, $4 = "cp" command
-#$5 = ptr to count of copied files
+#$5 = ptr to count of copied files.
+#$6 = OUT 1 if copied, 2 if overwrote something, 0 otherwise
 function copyIfNotExistsOrAddToArray() {
    local -n existingTgts=$3
    local -n cntCopied=$5
+   local -n result=$6
    if [[ ! -f $2 ]]; then # if target doesn't exist
       $4 $1 $2
       ((cntCopied++))
+      ((result=1))
    elif ! cmp -s $1 $2; then
       if [ -s $1 ]; then
          existingTgts+=($1) 
          existingTgts+=($2) 
       fi
+      ((result=2))
+   else
+      ((result=0))
    fi
 }
 
@@ -71,10 +77,11 @@ function updateFromDir() {
          fi
       done
       
-      declare -i countCreatedSaved=$((countCreated))
-      copyIfNotExistsOrAddToArray $srcFile $outFile existingTargets "$3" countCreated
-      if [[ "$fN" == "default%grub" ]]; then
-         if (( countCreated > countCreatedSaved )); then
+      declare -i currResult
+      copyIfNotExistsOrAddToArray $srcFile $outFile existingTargets "$3" countCreated currResult
+      if [[ "$fN" == "default%grub" && "$currResult" != "0" ]]; then
+         echo "CURR RESULT $currResult"
+         if (( currResult == 1 )); then
             needToUpdateGrub="created"
          else 
             needToUpdateGrub="overwritten"
