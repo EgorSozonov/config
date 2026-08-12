@@ -1,11 +1,5 @@
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
 # Read `man 5 sway` for a complete reference.
 
-### Variables
-#
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
 # Home row direction keys, like vim
@@ -33,26 +27,19 @@ exec swayidle -w \
 #resumed. It will also lock your screen before your computer goes to sleep.
 
 ### Input configuration
-#
 #   input type:touchpad {
 #       dwt enabled
 #       tap enabled
 #       natural_scroll enabled
 #       middle_emulation enabled
 #   }
-#
+
    input type:keyboard {
       xkb_layout "us,ru"
       xkb_options "ctrl:nocaps,grp:lctrl_toggle"
    }
-#
-# You can also configure each device individually.
-# Read `man 5 sway-input` for more information about this section.
 
 ### Key bindings
-#
-# Basics:
-#
    # Start a terminal
    bindsym $mod+z exec $term
 
@@ -75,9 +62,9 @@ exec swayidle -w \
    bindsym $mod+Shift+o exec swaynag -t warning \
       -m 'Do you really want to exit sway? This will end your Wayland session.' \
       -B 'Yes, exit sway' 'swaymsg exit'
-#
+
 # Moving around:
-#
+
    # Move your focus around
    bindsym $mod+f focus left
    bindsym $mod+Down focus down
@@ -90,20 +77,11 @@ exec swayidle -w \
    bindsym $mod+Shift+Down move down
    bindsym $mod+Shift+Up move up
    bindsym $mod+Shift+b move right
-#
+
 # Workspaces:
 #
 #   workspace 1 output eDP-1
-#   workspace 2 output eDP-1
-#   workspace 3 output eDP-1
-#   workspace 4 output eDP-1
 #   workspace 6 output HDMI-A-1 eDP-1
-#   workspace 7 output HDMI-A-1 eDP-1
-#   workspace 8 output eDP-1
-#   workspace 9 output eDP-1
-#   workspace 10 output eDP-1
-#   workspace 11 output eDP-1
-#   workspace 12 output eDP-1
 
    # Switch to workspace
    bindsym $mod+1 workspace number 1
@@ -175,7 +153,6 @@ exec swayidle -w \
    bindsym $mod+h resize shrink width 40px
    bindsym $mod+l resize grow width 40px
    
-#
 # Utilities:
 #
    bindsym --locked XF86AudioLowerVolume exec amixer set Master 3dB-
@@ -200,4 +177,5 @@ client.focused #80ff80 #285577 #ffffff #80ff80 #80ff80
 smart_borders on
 
 focus_follows_mouse no
-include /etc/sway/config.d/*
+#xwayland disable
+

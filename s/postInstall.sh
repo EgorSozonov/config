@@ -1,12 +1,12 @@
 #! /usr/bin/bash
 
-doas pacman -Syu apparmor pacman-contrib wl-clipboard
+doas pacman -Syu apparmor pacman-contrib wl-clipboard sway-contrib
 doas pacman -Syu alsa-utils pipewire tree man which jq
 
 doas pacman -Syu chrony
 sys enable --now chronyd
 sys start chronyd
 
-doas pacman -Syu guile make base-devel
+doas pacman -Syu guile make base-devel devtools
 doas pacman -Syu impala id3v2 ffmpeg
 
