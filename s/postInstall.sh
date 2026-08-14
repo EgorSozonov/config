@@ -12,5 +12,5 @@ sys start dnsmasq
 sys start iwd
 
 doas pacman -Syu guile make base-devel devtools tig
-doas pacman -Syu impala id3v2 ffmpeg
+doas pacman -Syu impala id3v2 ffmpeg xdg-desktop-portal-wlr
 

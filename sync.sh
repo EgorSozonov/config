@@ -80,7 +80,6 @@ function updateFromDir() {
       declare -i currResult
       copyIfNotExistsOrAddToArray $srcFile $outFile existingTargets "$3" countCreated currResult
       if [[ "$fN" == "default%grub" && "$currResult" != "0" ]]; then
-         echo "CURR RESULT $currResult"
          if (( currResult == 1 )); then
             needToUpdateGrub="created"
          else 

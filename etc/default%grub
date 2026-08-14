@@ -12,6 +12,10 @@ GRUB_DISABLE_OS_PROBER=true
 #Flat list instead of submenus
 GRUB_DISABLE_SUBMENU=y
 
+#To create this font, do this:
+#pls grub-mkfont -s 24 -o /boot/grub/fonts/linejoy.pf2 ~/.local/share/fonts/Linejoy-Regular.ttf
+GRUB_FONT="/boot/grub/fonts/linejoy.pf2"
+
 #Set to 'countdown' or 'hidden' to change timeout behavior, press ESC key to display menu.
 GRUB_TIMEOUT_STYLE=menu
 
