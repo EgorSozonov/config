@@ -399,7 +399,7 @@ dbus bus=session,
 #}}}
 
    #unprivileged namespaces: needed for access to audio, video, kernel
-   userns,
+   #userns,
    
    /usr/share/gtk-3.0/** r,
    /usr/share/icons/{,**} r,

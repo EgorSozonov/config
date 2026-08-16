@@ -177,5 +177,6 @@ client.focused #80ff80 #285577 #ffffff #80ff80 #80ff80
 smart_borders on
 
 focus_follows_mouse no
-#xwayland disable
+
+exec_always wlsunset -S 07:00 -s 19:00 -t 3500 -T 6500
 

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Cmus music player
+Comment=A cool music player
+Exec=foot -e sh -c /usr/bin/cmus
+Icon=utilities-terminal
+Terminal=false
+Categories=AudioVideo

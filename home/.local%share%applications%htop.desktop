@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Htop
+GenericName=Process Viewer
+GenericName[en_GB]=Process Viewer
+GenericName[ru]=Монитор процессов
+Comment=Show System Processes
+Comment[en_GB]=Show System Processes
+Comment[ru]=Просмотр списка процессов в системе
+Icon=htop
+Exec=foot -e sh -c htop
+Terminal=false
+Categories=System;Monitor;ConsoleOnly;
+Keywords=system;process;task;resources;monitoring;performance;
