@@ -430,7 +430,7 @@ dbus bus=session,
    #deny @{HOME}/docs rwx,
    #deny @{HOME}/docs/{,**} rwx,
    
-   owner @{HOME}/.mozilla/{,**} rwk,
+   owner @{HOME}/.config/mozilla/{,**} rwk,
    owner @{HOME}/.config/mimeapps.list r,
    owner @{HOME}/incoming/{,**} rw,
    owner @{HOME}/software/{,**} rw,
