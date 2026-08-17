@@ -18,3 +18,4 @@ mkdir -p ~/.local/share/tig
 mkdir -p ~/.config/mozilla
 mkdir -p ~/.config/git
 
+doas grub-mkfont -s 24 -o /boot/grub/fonts/linejoy.pf2 ~/.local/share/fonts/Linejoy-Regular.ttf
