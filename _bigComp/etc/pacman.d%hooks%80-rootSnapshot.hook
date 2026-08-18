@@ -1,0 +1,9 @@
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = * 
+
+[Action]
+Description = Generating root partition snapshot
+When = PreTransaction
+Exec = /etc/pacman.d/scripts/rootSnapshot.sh

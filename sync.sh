@@ -47,7 +47,7 @@ function overwriteFiles() {
       echo "$cntExisting files overwritten, backups in $backups"
       echo ""
       if [[ "$needToUpdateGrb" == "overwritten" ]]; then
-         doas grub-mkconfig -o /boot/grub/grub.cfg
+         #doas grub-mkconfig -o /boot/grub/grub.cfg
          echo ""
       fi
    else
@@ -91,7 +91,7 @@ function updateFromDir() {
       echo "Copied $countCreated files"
       echo ""
       if [[ "$needToUpdateGrub" == "created" ]]; then
-         doas grub-mkconfig -o /boot/grub/grub.cfg
+         #doas grub-mkconfig -o /boot/grub/grub.cfg
          echo ""
       fi
    fi

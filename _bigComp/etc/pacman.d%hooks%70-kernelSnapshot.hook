@@ -1,0 +1,9 @@
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = linux 
+
+[Action]
+Description = Generating kernel snapshot
+When = PreTransaction
+Exec = /etc/pacman.d/scripts/kernelSnapshot.sh
