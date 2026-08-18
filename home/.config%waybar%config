@@ -175,13 +175,13 @@
    },
    "custom/hotkeys": {
       "format": "",
-      "on-click": "foot -a \"tempFloat\" --hold sh -c \". $HOME/.config/waybar/printKeys.sh\"",
+      "on-click": "foot -a \"leDialog\" --hold sh -c \". $HOME/.config/waybar/printKeys.sh\"",
       "tooltip": true,
       "tooltip-format": "Display hotkeys (Win + c to close)"
    },
    "custom/wifi": {
       "format": "",
-      "on-click": "foot -a \"tempFloat\" --hold sh -c impala",
+      "on-click": "foot -a \"leDialog\" sh -c impala",
       "tooltip": true,
       "tooltip-format": "Display wifi control (impala)"
    },

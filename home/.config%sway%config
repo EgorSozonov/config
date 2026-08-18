@@ -58,9 +58,9 @@ exec swayidle -w \
    #Reload the configuration file
    bindsym $mod+Ctrl+r reload
 
-   #Exit sway (logs you out of your Wayland session)
+   #Log out from Sway
    bindsym $mod+Shift+o exec swaynag -t warning \
-      -m 'Do you really want to exit sway? This will end your Wayland session.' \
+      -m 'Do you really want to exit Sway? This will end your Wayland session.' \
       -B 'Yes, exit sway' 'swaymsg exit'
 
 # Moving around:
@@ -146,8 +146,10 @@ exec swayidle -w \
    bindsym $mod+y scratchpad show
    
    #Temporary floating dialogs
-   for_window [app_id="tempFloat"] floating enable, resize set 90ppt 90ppt, move position center
-   for_window [app_id="leDialog"] floating enable, resize set 100ppt 100ppt, move position center
+   for_window [app_id="leDialog"] floating enable, resize set 100ppt 100ppt, move absolute position 32 0, border none, fullscreen enable
+   #default_floating_border none
+   #for_window [floating] border none
+
     
 # Resizing containers:
     
@@ -171,7 +173,7 @@ bar {
    #mode invisible
 }
 
-default_border pixel 2
+default_border pixel 1
 ############## %border %background %text %indicator %child_border
 client.unfocused #000000 #285577 #ffffff #000000 #000000
 client.focused #80ff80 #285577 #ffffff #80ff80 #80ff80
