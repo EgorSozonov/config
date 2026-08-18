@@ -69,19 +69,20 @@ function flash() {
 
 
 function help() {
-   echo "Generate code projects from templates: projector"
+   echo "Generate code projects from templates: projer"
    echo "Mount all flash sticks: flasher"
-   echo "Back stuff up to mounted flash sticks: bup file.tar.gz"
+   echo "Back stuff up to mounted flash sticks: closha"
    echo "See default bash help: command help"
-   echo "Postgres doesn't work: startPg"
+   echo "Postgres doesn't work: ~/s/pgInstall.sh"
    echo "Top subdirectories by size on disk: spaceHogs"
-   echo "Install package: pkInstall"
-   echo "Remove package: pkRemove"
-   echo "Top packages by size on disk: pkStats"
+   echo "Install package: pinstall"
+   echo "Remove package: pRemove"
+   echo "Top packages by size on disk: psize"
    echo "Search Man pages: mans tar extract"
    echo "Find files: ff .pdf"
    echo "Find directories: fdi"
    echo "Update fonts: updateFonts, update boot loader: updateBoot" 
+   echo ""
    echo "All these useful functions are defined in ~/.config/utils"
 }
 

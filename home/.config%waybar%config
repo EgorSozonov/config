@@ -12,15 +12,16 @@
       "sway/workspaces", 
       "group/battery", 
       "sway/language", 
+      "custom/separator",
       "group/time", 
       "group/date", 
+      "custom/separator",
       "custom/sound",
       "custom/wifi", 
       "custom/hotkeys", 
       //"idle_inhibitor", 
       "custom/separator",
-      "custom/quit",
-      "custom/sleep"
+      "custom/logout"
    ],
 	"group/battery": {
 		"orientation": "vertical",
@@ -49,6 +50,7 @@
       "disable-scroll": false,
       "all-outputs": true,
       "format": "{icon}", 
+      "cursor": true,
       "format-icons": {
          "1": "1",
          "2": "2",
@@ -79,9 +81,8 @@
       }
    },
    "sway/language": {
-      "format": "{}",
-      "format-ru": "ru",
-      "format-en": "en",
+      "format": "{short}",
+      "tooltip-format": "{long}",
       "on-click": "swaymsg input type:keyboard xkb_switch_layout next"
    }, 
    "idle_inhibitor": {
@@ -94,7 +95,7 @@
    "clock#3": {
       // month
       "interval": 60,
-      "format": "@{:%d}",
+      "format": "{:%d}",
       "tooltip-format": "<tt><big>{calendar}</big></tt>",
       "calendar": {
          "locale": "en_GB.UTF-8", //so it starts on Monday
@@ -132,10 +133,10 @@
    "battery": {
       "states": {
           "good": 80,
-          "warning": 30,
+          "warning": 25,
           "critical": 18
       },
-      "interval": 300,
+      "interval": 240,
       "format": "{capacity}%",
       "format-charging": "{capacity}%",
       "format-plugged": "{capacity}%",
@@ -167,17 +168,10 @@
       "tooltip": true,
       "tooltip-format": "App menu (Esc to close)"
    },
-   "custom/sleep": {
+   "custom/logout": {
       "format": "",
-      "on-click": "aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend",
-      "tooltip": true,
+      "on-click": "foot -a \"leDialog\" sh -c \". $HOME/.config/waybar/logout.sh\"", "tooltip": true,
       "tooltip-format": "Sleep (suspend)"
-   },
-   "custom/quit": {
-      "format": "",
-      "on-click": "exec swaynag -t warning -m 'Do you really want to exit Sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'",
-      "tooltip": true,
-      "tooltip-format": "Exit the desktop environment"
    },
    "custom/hotkeys": {
       "format": "",
