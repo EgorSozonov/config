@@ -6,5 +6,5 @@ PRESETS=('default')
 
 #default_config="/etc/mkinitcpio.conf"
 default_image="/boot/initramfs-linux-lts.img"
-default_uki="/efi/EFI/Linux/archLtsLinux.efi"
+default_uki="/boot/EFI/Linux/archLtsLinux.efi"
 #default_options="--splash /usr/share/systemd/bootctl/splash-arch.bmp"

@@ -3,7 +3,7 @@
    "bar_id": "bar-0",
    "mode": "dock",
    "ipc": true,
-   "position": "left",
+   "position": "right",
    "width": 32, // Waybar width
    "spacing": 8, // Gaps between modules (4px)
    "margin-top": 0,

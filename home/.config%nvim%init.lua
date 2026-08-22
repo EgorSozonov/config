@@ -10,6 +10,7 @@ local o = vim.o -- get or set options
 local go = vim.go -- get or set global options
 local wo = vim.wo -- window-scoped options
 local bo = vim.bo -- buffer-scoped options
+
 --}}}
 --{{{ Settings
 
@@ -62,6 +63,8 @@ map("i", "<C-space>", "<space><space><space>") -- indentation insert
 map("i", "<C-s>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("v", "<C-c>", "\"+y")
 map("n", "<C-v>", "\"*p")
+map("n", ";", ":")
+map("v", ";", ":")
 map("i", "<C-v>", "\"*p")
 map("n", "<C-/>", ":set hlsearch!<CR>") -- toggle coloring of searches
 map("n", "<space>", "i<space><esc>") -- space in normal mode

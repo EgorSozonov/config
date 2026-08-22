@@ -3,7 +3,7 @@
 # Contributor: Tom Newsom <Jeepster@gmx.co.uk>
 
 pkgbase=void
-pkgname=(mercurial subversion breezy linux-firmware-nvidia)
+pkgname=(mercurial subversion breezy linux-firmware-nvidia linux-firmware-atheros linux-firmware-broadcom)
 
 pkgver=3.0.11
 pkgrel=1
@@ -29,5 +29,13 @@ function package_breezy() {
 }
 
 function package_linux-firmware-nvidia() {
+   echo ""
+}
+
+function package_linux-firmware-atheros() {
+   echo ""
+}
+
+function package_linux-firmware-broadcom() {
    echo ""
 }
