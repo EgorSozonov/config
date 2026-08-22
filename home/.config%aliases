@@ -20,6 +20,7 @@ alias pmakeExplicit="doas pacman -D --asexplicit"
 alias pexplicit="pacman -Qqe"
 alias pwhichFiles="pacman -Ql"
 alias pwhichPackage="pacman -Qo"
+alias pgetBuild="pkgctl repo clone --protocol=https"
 alias paur="pacman -Qme"
  
 
