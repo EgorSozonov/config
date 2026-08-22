@@ -11,11 +11,10 @@
       "custom/start", 
       "sway/workspaces", 
       "group/battery", 
-      "sway/language", 
-      "custom/separator",
       "group/time", 
       "group/date", 
       "custom/separator",
+      "sway/language", 
       "custom/sound",
       "custom/wifi", 
       "custom/hotkeys", 
@@ -27,7 +26,8 @@
 		"orientation": "vertical",
 		"modules": [
 			"battery",
-			"battery#2"
+			"battery#2",
+         "custom/separator"
 		]
    },
 	"group/time": {
@@ -137,9 +137,9 @@
           "critical": 18
       },
       "interval": 240,
-      "format": "{capacity}%",
-      "format-charging": "{capacity}%",
-      "format-plugged": "{capacity}%",
+      "format": "{capacity}",
+      "format-charging": "{capacity}",
+      "format-plugged": "{capacity}",
       "format-alt": "{time} {icon}",
       // "format-good": "", // An empty format will hide the module
       // "format-full": "",
@@ -151,7 +151,7 @@
          "warning": 30,
          "critical": 18
       },
-      "format": "{icon} ",
+      "format": "{icon}",
       "format-charging": "",
       "format-plugged": "",
       "format-alt": "{time} {icon} ",

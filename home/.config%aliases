@@ -78,6 +78,7 @@ alias tech="e ~/vault/techInfo.txt"
 alias calendar="calcurse"
 alias partitions="df -Th"
 alias mp3="id3v2"
+alias free="free -h"
 alias music="cmus"
 alias tree="tree -n"
 alias stickWindows="doas mount -o uid=$(id -u),gid=$(id -g),umask=000 -t vfat --mkdir \
