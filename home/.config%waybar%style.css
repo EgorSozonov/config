@@ -3,7 +3,7 @@
  	/* `otf-font-awesome` is required to be installed for icons */
 	font-family: Linejoy;
 	font-size: 18px;
-   color: white;
+   color: #80ff80;
 	text-shadow: 0px 0px 2px @theme_text_color;
 	padding: 0;
    margin: 0;
@@ -11,7 +11,6 @@
 
 window#waybar {
    background: #000000;
-   color: white;
 }
 
 tooltip {
@@ -125,7 +124,7 @@ label:focus {
 }
 
 #language {
-   color: white;
+   color: #80ff80;
    min-width: 16px;
 }
 
@@ -166,6 +165,6 @@ label:focus {
 }
 
 #custom-sound.off {
-   color: #00ff00;
+   color: #ffffff;
 }
 
