@@ -46,7 +46,7 @@ depends=(
 )
 makedepends=(
     'catch2'
-    'cmake'
+    #'cmake'
     'meson'
     'glib2-devel' # gdbus-codegen
     'scdoc' # For generating manpages

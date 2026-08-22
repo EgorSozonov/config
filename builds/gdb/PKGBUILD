@@ -49,8 +49,6 @@ build() {
     --disable-source-highlight \
     --enable-tui \
     --target=x86_64-linux-gnu \
-    --disable-ld \
-    --disable-gas \
     --enable-languages=all \
     --enable-multilib \
     --enable-interwork \
@@ -58,6 +56,7 @@ build() {
     --without-guile \
     --with-python=/usr/bin/python \
     --with-system-gdbinit=/etc/gdb/gdbinit \
+    --disable-gdbserver \
     MAKEINFO=true  # disable documentation
     #--enable-targets=all \
     #--enable-source-highlight \
@@ -103,7 +102,7 @@ package_gdb() {
 
   cd gdb-$pkgver/build
   make -C gdb DESTDIR="$pkgdir" install
-  make -C gdbserver DESTDIR="$pkgdir" install
+  #make -C gdbserver DESTDIR="$pkgdir" install
 
   # install "custom" system gdbinit
   install -dm 755 "$pkgdir/etc/gdb"
@@ -111,5 +110,6 @@ package_gdb() {
 
   # comes from gdb-common
   rm -r "$pkgdir/usr/share/gdb/"
+  ln -s "$pkgdir/$prefix/bin/x86_64-linux-gnu-gdb" "$pkgdir/$prefix/bin/gdb"
 }
 
