@@ -11,7 +11,9 @@ sys start chronyd
 sys start dnsmasq
 sys start iwd
 
-doas pacman -Syu guile make base-devel devtools tig
+doas apt install debconf
+
+doas pacman -Syu guile make base-devel devtools tig devtools
 doas pacman -Syu impala id3v2 ffmpeg xdg-desktop-portal-wlr
 
 mkdir -p ~/.local/share/tig

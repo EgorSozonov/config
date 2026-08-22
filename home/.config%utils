@@ -70,14 +70,15 @@ function flash() {
 
 function help() {
    echo "Generate code projects from templates: projer"
-   echo "Mount all flash sticks: flasher"
    echo "Back stuff up to mounted flash sticks: closha"
+   echo "Mount all flash sticks: flasher"
    echo "See default bash help: command help"
    echo "Postgres doesn't work: ~/s/pgInstall.sh"
    echo "Top subdirectories by size on disk: spaceHogs"
    echo "Install package: pinstall"
    echo "Remove package: pRemove"
    echo "Top packages by size on disk: psize"
+   echo "All installed packages: pall"
    echo "Search Man pages: mans tar extract"
    echo "Find files: ff .pdf"
    echo "Find directories: fdi"
@@ -273,6 +274,12 @@ function serve() {
 function psize() {
    pacman -Qi | awk 'BEGIN {OFS=","} /^Name/{name=$3} /^Installed Size/{print $4$5,name}' \
       | sort -h | awk 'BEGIN {FS=","; OFS=" : "} {print $2, $1}' 
+}
+
+function pall() {
+   pacman -Qq \
+      | fzf --preview 'pacman -Qil {} | grep -v "/$"' --layout=reverse \
+         --bind 'enter:execute(pacman -Qil {} | grep -v "/$" | less)'
 }
 
 # `exciseBlock marker file` outputs the lines between `{``{{marker` and `}}``}` from the file

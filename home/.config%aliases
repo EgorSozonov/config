@@ -9,7 +9,7 @@ alias mv="mv -i"
 alias realMv="/usr/bin/mv"
 
 alias pinstall="doas pacman -Syu --needed"
-#Hard reinstall = doas pacman -Syu
+alias preinstall="doas pacman -Syu"
 alias premove="doas pacman -Rn"
 #Hard remove = doas pacman -Rdd
 alias pupdate="doas pacman -Sy archlinux-keyring && doas pacman -Su"
