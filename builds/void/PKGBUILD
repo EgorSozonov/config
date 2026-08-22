@@ -1,0 +1,37 @@
+# Contributor: Jan de Groot <jgc@archlinux.org>
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Tom Newsom <Jeepster@gmx.co.uk>
+
+pkgbase=void
+pkgname=(guile mercurial subversion breezy linux-firmware-nvidia)
+
+pkgver=3.0.11
+pkgrel=1
+pkgdesc='[empty husk]'
+url=''
+arch=(x86_64)
+license=(GPL)
+depends=()
+makedepends=()
+source=()
+sha256sums=()
+
+function package_guile() {
+   echo ""
+}
+
+function package_mercurial() {
+   echo ""
+}
+
+function package_subversion() {
+   echo ""
+}
+
+function package_breezy() {
+   echo ""
+}
+
+function package_linux-firmware-nvidia() {
+   echo ""
+}
