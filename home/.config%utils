@@ -373,13 +373,21 @@ function hi() {
    fi
 }
 
-function paddLocal {
+function plocalAdd {
    if [[ -z $1 ]]; then
       echo 'Nothing to add'
       return 1
    fi
    doas repo-add /opt/craft/craft.db.tar.gz $1
    doas mv $1 /opt/craft
+}
+
+function plocalRemove {
+   if [[ -z $1 ]]; then
+      echo 'Nothing to remove'
+      return 1
+   fi
+   doas repo-remove /opt/craft/craft.db.tar.gz $1
 }
 
 # Go up n directory levels. Example: .. 3

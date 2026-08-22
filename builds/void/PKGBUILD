@@ -3,7 +3,7 @@
 # Contributor: Tom Newsom <Jeepster@gmx.co.uk>
 
 pkgbase=void
-pkgname=(guile mercurial subversion breezy linux-firmware-nvidia)
+pkgname=(mercurial subversion breezy linux-firmware-nvidia)
 
 pkgver=3.0.11
 pkgrel=1
@@ -15,10 +15,6 @@ depends=()
 makedepends=()
 source=()
 sha256sums=()
-
-function package_guile() {
-   echo ""
-}
 
 function package_mercurial() {
    echo ""
