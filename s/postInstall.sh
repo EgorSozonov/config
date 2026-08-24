@@ -14,7 +14,7 @@ sys start iwd
 doas apt install debconf
 
 doas pacman -Syu guile make base-devel devtools tig devtools
-doas pacman -Syu impala id3v2 ffmpeg xdg-desktop-portal-wlr
+doas pacman -Syu impala id3v2 ffmpeg xdg-desktop-portal-wlr fzy
 
 mkdir -p ~/.local/share/tig
 mkdir -p ~/.config/mozilla

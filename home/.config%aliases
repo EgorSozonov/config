@@ -94,6 +94,7 @@ alias v="zathura"
 alias i="swayimg -g ."
 
 alias burnIso="pls dd bs=4M conv=fsync oflag=direct status=progress"
+alias diskSubdirs="pls du -h --max-depth=1 2>/dev/null . | sort -hr"
 
 alias aaEnable="doas aa-enforce"
 alias aaDisable="doas aa-disable"
