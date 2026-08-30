@@ -1,7 +1,7 @@
 #! /usr/bin/bash
 
 doas pacman -Syu apparmor pacman-contrib wl-clipboard sway-contrib otf-font-awesome
-doas pacman -Syu alsa-utils pipewire pipewire-pulse tree man which jq rsync openssh
+doas pacman -Syu alsa-utils pipewire pipewire-pulse tree man which jq rsync openssh swaybg
 
 doas pacman -Syu chrony
 sys enable --now chronyd
