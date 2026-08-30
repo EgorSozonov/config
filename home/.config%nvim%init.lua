@@ -39,8 +39,8 @@ vim.opt.clipboard = "unnamedplus" -- normal copy and paste via X clipboard
 g.mapleader=','
 g.maplocalleader = ','
 
-wo.nu = true -- line numbers
-wo.rnu = true -- relative line numbers
+vim.opt.number = true -- line numbers
+vim.opt.relativenumber = true -- relative line numbers
 vim.cmd(":hi LineNr guibg=#000000 guifg=#ffffff") -- gutter colors ?
 
 vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" }) -- Fix hideous pink menus
@@ -623,6 +623,11 @@ end
 
 --}}}
 
+local function goToDef()
+    local currWord = vim.fn.expand("<cword>")
+    print(currWord)
+    vim.cmd("silent! vimgrep /:" .. currWord .. "/ **/*")
+end
 
 --map("n", "<C-m>", "vipk:'<,'>s/$/,/<CR>")
 map("n", "<C-,>", 

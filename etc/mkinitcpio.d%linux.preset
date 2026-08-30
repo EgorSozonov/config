@@ -9,8 +9,8 @@ PRESETS=('default')
 
 #default_config="/etc/mkinitcpio.conf"
 default_image="/boot/initramfs-linux.img"
-#default_uki="/efi/EFI/Linux/arch-linux.efi"
-default_options="--splash /usr/share/systemd/bootctl/splash-arch.bmp"
+default_uki="/boot/EFI/Linux/archLinux.efi"
+default_options="--splash /usr/share/mkinitcpio/splash.bmp"
 
 #fallback_config="/etc/mkinitcpio.conf"
 #fallback_image="/boot/initramfs-linux-fallback.img"
