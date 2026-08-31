@@ -83,7 +83,6 @@ alias music="cmus"
 alias tree="tree -n"
 alias stickWindows="doas mount -o uid=$(id -u),gid=$(id -g),umask=000 -t vfat --mkdir \
    /dev/sda1 /mnt/stick"
-alias stick="doas mount -o noatime,sync --mkdir /dev/sda1 /mnt/stick"
 alias g="grep -rn --exclude-dir={.git,proto}"
 alias updateBoot="doas grub-mkconfig -o /boot/grub/grub.cfg"
 alias updateInitramfs="doas mkinitcpio -P"

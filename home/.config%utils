@@ -370,3 +370,15 @@ function lanSend {
    rsync -ar --port=8730 --progress --ignore-existing -- $1 "$LAN_TARGET_IP::m/"
 }
 
+
+function stick() {
+   declare -a unmounted
+   readarray -t unmounted < <(lsblk -J | jq -r '[.blockdevices.[] | select (.rm == true)] 
+      | select(.[].children[0].mountpoints | length == 0) | map("/dev/" + .children[0].name).[]')
+      
+   if (( "${#unmounted}" > 0 )) then
+      local um="${unmounted[0]}"
+      echo "mounting $um"
+      doas /usr/bin/mount -o noatime,sync --mkdir "$um" /mnt/stick
+   fi
+}
