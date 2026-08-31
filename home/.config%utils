@@ -372,13 +372,17 @@ function lanSend {
 
 
 function stick() {
-   declare -a unmounted
-   readarray -t unmounted < <(lsblk -J | jq -r '[.blockdevices.[] | select (.rm == true)] 
-      | select(.[].children[0].mountpoints | length == 0) | map("/dev/" + .children[0].name).[]')
-      
-   if (( "${#unmounted}" > 0 )) then
-      local um="${unmounted[0]}"
-      echo "mounting $um"
-      doas /usr/bin/mount -o noatime,sync --mkdir "$um" /mnt/stick
+   if [[ -z $1 ]]; then
+      declare -a unmounted
+      readarray -t unmounted < <(lsblk -J | jq -r '[.blockdevices.[] | select (.rm == true)] 
+         | select(.[].children[0].mountpoints | length == 0) | map("/dev/" + .children[0].name).[]')
+         
+      if (( "${#unmounted}" > 0 )) then
+         local um="${unmounted[0]}"
+         echo "mounting $um"
+         doas /usr/bin/mount -o noatime,sync --mkdir "/dev/$um" /mnt/stick
+      fi
+   else
+      doas /usr/bin/mount -o noatime,sync --mkdir "$1" /mnt/stick
    fi
 }
