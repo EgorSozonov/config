@@ -22,6 +22,7 @@ alias pwhichFiles="pacman -Ql"
 alias pwhichPackage="pacman -Qo"
 alias pgetBuild="pkgctl repo clone --protocol=https"
 alias paur="pacman -Qme"
+alias makepkg="makepkg -c"
  
 
 alias sys="doas systemctl"
@@ -91,6 +92,7 @@ alias updateFonts="fc-cache -fv"
 alias fileTypes="find . -type f | xargs file"
 alias v="zathura"
 alias i="swayimg -g ."
+alias wifi="impala"
 
 alias burnIso="pls dd bs=4M conv=fsync oflag=direct status=progress"
 alias diskSubdirs="pls du -h --max-depth=1 2>/dev/null . | sort -hr"
