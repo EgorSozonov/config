@@ -10,4 +10,3 @@ else
    amixer -q set Headphone on
 fi
 swaymsg -t send_tick
-#pkill -SIGUSR1 -f statusBar.sh

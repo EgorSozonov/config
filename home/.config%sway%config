@@ -179,6 +179,7 @@ bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
 # Special key to take a screenshot with grim
 bindsym Print exec grimshot save output ~/pictures/screenshots/scr.png
 bindsym Shift+Print exec grimshot copy area
+
     
 bar {
    swaybar_command swaybar
@@ -192,12 +193,10 @@ bar {
    height 16
    font Linejoy 14
    strip_workspace_numbers yes
-   #mode invisible
 }
 
-
-#bindsym $mod+n input type:keyboard xkb_switch_layout next && pkill -RTMIN+2 -f statusBar.sh
-#bindsym --release Control_L exec pkill -SIGUSR1 -f statusBar.sh
+#Time-based status bar refreshing
+exec while true; do swaymsg -t send_tick; sleep 60; done
 
 default_border pixel 1
 ############## %border %background %text %indicator %child_border
