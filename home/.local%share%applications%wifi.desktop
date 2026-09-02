@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Wifi (impala)
+Comment=Wifi network connections
+Exec=foot -a "leDialog" sh -c /usr/bin/impala
+Icon=utilities-terminal
+Terminal=false
+Categories=System
