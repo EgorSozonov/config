@@ -43,12 +43,12 @@ function output() {
    
    cat <<EOF
 [
-{"name":"start", "full_text": "  | "},
-{"name":"keyboard", "full_text": "$keyLayout | "},
-{"name":"sound", "full_text": "$soundActive | "},
-{"name":"logout", "full_text": "  | "},
-{"name":"battery", "full_text":"$batterySymb $charge% | "},
-{"name":"time", "full_text":"$currTime ($monthDay)"}
+{"name":"start", "full_text": " ", "separator": true, "separator_block_width": 30},
+{"name":"keyboard", "full_text": "$keyLayout", "separator": true, "separator_block_width": 30},
+{"name":"sound", "full_text": "$soundActive", "separator": true, "separator_block_width": 30},
+{"name":"logout", "full_text": "? ", "separator": true, "separator_block_width": 30},
+{"name":"battery", "full_text":"$charge% $batterySymb", "separator": true, "separator_block_width": 30},
+{"name":"time", "full_text":"$currTime ($monthDay)", "separator": true, "separator_block_width": 30}
 ],
 EOF
 }

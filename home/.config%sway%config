@@ -26,13 +26,6 @@ exec swayidle -w \
 #your displays after another 300 seconds, and turn your screens back on when
 #resumed. It will also lock your screen before your computer goes to sleep.
 
-### Input configuration
-#   input type:touchpad {
-#       dwt enabled
-#       tap enabled
-#       natural_scroll enabled
-#       middle_emulation enabled
-#   }
 
 input type:keyboard {
    xkb_layout "us,ru"
@@ -144,7 +137,6 @@ font pango:monospace 1
 #Toggle the current focus between tiling and floating mode
 bindsym $mod+space floating toggle
 
-
 # Move focus to the parent container
 #bindsym $mod+a focus parent
 
@@ -189,6 +181,7 @@ bar {
       focused_workspace #ffff00 #000000 #00ff00
       inactive_workspace #000000 #000000 #00ff00
       active_workspace #000000 #000000 #00ff00
+      separator #00ff00
    } 
    height 16
    font Linejoy 14
