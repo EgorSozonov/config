@@ -151,6 +151,7 @@ bindsym $mod+y scratchpad show
 
 #Temporary floating dialogs
 for_window [app_id="leDialog"] floating enable, resize set 100ppt 100ppt, move absolute position 32 0, border none, fullscreen enable
+for_window [app_id="scratch"] move scratchpad, scratchpad show, fullscreen enable
 #default_floating_border none
 #for_window [floating] border none
 
@@ -186,6 +187,8 @@ bar {
    height 16
    font Linejoy 14
    strip_workspace_numbers yes
+   tray_output *
+   tray_padding 2
 }
 
 #Time-based status bar refreshing

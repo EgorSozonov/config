@@ -89,6 +89,19 @@ map("n", "]q", ":cnext<CR>")
 map("n", "x", '"_x') -- don't clobber the register
 
 --}}}
+--{{{Autocommands
+
+vim.api.nvim_create_autocmd("VimEnter", {
+   pattern = "*",
+   callback = function()
+      -- Only change directory if it's a normal file
+      if vim.bo.buftype == "" then
+         vim.cmd("cd " .. vim.fn.expand("%:p:h"))
+      end
+   end,
+})
+
+--}}}
 --{{{ My custom functions
 --{{{ Utils
 
@@ -629,11 +642,30 @@ local function goToDef()
    vim.cmd("silent! vimgrep /:" .. currWord .. "/ **/*")
 end
 
-function runDevelopedProgram()
-   vim.fn.system("swaymsg exec -- foot --hold -e echo 'hw'")
+
+vim.keymap.set("n", "<leader>d", function() goToDef() end, sil)
+
+local function runProg(mode)
+   local wd = vim.fn.getcwd()
+   if mode == "debug" then
+      vim.system(
+         {"bash", "-c", 
+         "swaymsg exec -- foot --app-id=scratch --hold -D " .. wd .. " -e ./dev/debug.sh"
+         }, 
+         {text = true}
+      )
+   else
+      vim.system(
+         {"bash", "-c", 
+         "swaymsg exec -- foot --app-id=scratch --hold -D " .. wd .. " -e ./dev/run.sh"
+         }, 
+         {text = true}
+      )
+   end
 end
 
-vim.keymap.set("n", "<A-r>", function() runDevelopedProgram() end, sil)
+vim.keymap.set("n", "<A-c>", function() runProg("debug") end, sil)
+vim.keymap.set("n", "<A-r>", function() runProg("run") end, sil)
 
 --map("n", "<C-m>", "vipk:'<,'>s/$/,/<CR>")
 map("n", "<C-,>", 
