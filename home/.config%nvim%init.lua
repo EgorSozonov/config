@@ -624,10 +624,16 @@ end
 --}}}
 
 local function goToDef()
-    local currWord = vim.fn.expand("<cword>")
-    print(currWord)
-    vim.cmd("silent! vimgrep /:" .. currWord .. "/ **/*")
+   local currWord = vim.fn.expand("<cword>")
+   print(currWord)
+   vim.cmd("silent! vimgrep /:" .. currWord .. "/ **/*")
 end
+
+function runDevelopedProgram()
+   vim.fn.system("swaymsg exec -- foot --hold -e echo 'hw'")
+end
+
+vim.keymap.set("n", "<A-r>", function() runDevelopedProgram() end, sil)
 
 --map("n", "<C-m>", "vipk:'<,'>s/$/,/<CR>")
 map("n", "<C-,>", 

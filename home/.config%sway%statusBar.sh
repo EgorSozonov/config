@@ -5,7 +5,7 @@ soundActive=""
 declare -i charge
 
 function update() {
-   monthDay=$(date "+%m")
+   monthDay=$(date "+%d")
    currTime=$(date "+%H:%M")
 
    #Battery

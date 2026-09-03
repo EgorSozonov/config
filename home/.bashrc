@@ -8,7 +8,7 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 shopt -s globstar # the /**/ pattern to select files from all depths
 shopt -s extglob # extended globbing like !(*.jpg|*.gif)
-set -o mark-directories
+bind 'set mark-directories on'
 
 HISTSIZE=1000
 HISTFILESIZE=2000
@@ -17,15 +17,11 @@ HISTTIMEFORMAT="%Y-%m-%d %T "
 stty -ixon # Disable XON/XOFF crap (terminal freezing)
 
 
-setxkbmap -layout us,ru -option 'grp:nocaps,grp:lctrl_toggle'
 #export TERM=alacritty
 #export FZF_DEFAULT_COMMAND=
 
 
-#aliases in ~/.config/aliases, shell functions in ~/.config/utils
-
 umask 077
-
 source ~/.config/utils
 source ~/.config/aliases
-clear
+
