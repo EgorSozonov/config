@@ -17,10 +17,6 @@ HISTTIMEFORMAT="%Y-%m-%d %T "
 stty -ixon # Disable XON/XOFF crap (terminal freezing)
 
 
-#export TERM=alacritty
-#export FZF_DEFAULT_COMMAND=
-
-
 umask 077
 source ~/.config/utils
 source ~/.config/aliases

@@ -647,6 +647,7 @@ vim.keymap.set("n", "<leader>d", function() goToDef() end, sil)
 
 local function runProg(mode)
    local wd = vim.fn.getcwd()
+   vim.cmd.write()
    if mode == "debug" then
       vim.system(
          {"bash", "-c", 

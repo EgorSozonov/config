@@ -157,7 +157,6 @@ for_window [app_id="scratch"] move scratchpad, scratchpad show, fullscreen enabl
 
  
 # Resizing containers:
- 
 bindsym $mod+h resize shrink width 40px
 bindsym $mod+l resize grow width 40px
 
@@ -167,8 +166,8 @@ bindsym --locked XF86AudioLowerVolume exec amixer set Master 3dB-
 bindsym --locked XF86AudioRaiseVolume exec amixer set Master 3dB+
 bindsym --locked XF86AudioMute exec "~/.config/sway/toggleSound.sh"
 # Special keys to adjust brightness via brightnessctl
-bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
-bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+#bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+#bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
 # Special key to take a screenshot with grim
 bindsym Print exec grimshot save output ~/pictures/screenshots/scr.png
 bindsym Shift+Print exec grimshot copy area
@@ -192,7 +191,7 @@ bar {
 }
 
 #Time-based status bar refreshing
-exec while true; do swaymsg -t send_tick; sleep 60; done
+exec_always while true; do swaymsg -t send_tick; sleep 60; done
 
 default_border pixel 1
 ############## %border %background %text %indicator %child_border
