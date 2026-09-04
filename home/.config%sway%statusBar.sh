@@ -16,7 +16,7 @@ function update() {
    if [[ $batteryStatus = "discharging" ]]; then
       if (( charge > 80 )); then 
          batterySymb=" "
-      elif (( charge > 60 )); then
+      elif (( charge > 50 )); then
          batterySymb=" "
       elif (( charge > 20 )); then
          batterySymb=''
@@ -24,14 +24,14 @@ function update() {
          batterySymb='⚠'  
       fi
    else
-      batterySymb='⚡'
+      batterySymb="⚡"
    fi
    
    local audioIsOn=$(amixer sget Master | grep '\[on')
    if [[ $audioIsOn == "" ]]; then
-      soundActive='  '
+      soundActive="  "
    else
-      soundActive='🔊 '
+      soundActive="🔊 "
    fi
    
    keyLayout=$(swaymsg -t get_inputs | \
@@ -40,14 +40,23 @@ function update() {
 
 function output() {
    #echo "$keyLayout  $soundActive | $batterySymb $charge% |  $currTime ($monthDay) "
-   
+   local batteryColor="#00FF00"
+   if [[ $batterySymb == "⚡" ]]; then
+      batteryColor="#E0FF00"
+   fi
+   local soundColor="#00FF00"
+   if [[ $soundActive == "  " ]]; then
+      soundColor="#C0C0C0"
+   fi
    cat <<EOF
 [
 {"name":"start", "full_text": " ", "separator": true, "separator_block_width": 30},
 {"name":"keyboard", "full_text": "$keyLayout", "separator": true, "separator_block_width": 30},
-{"name":"sound", "full_text": "$soundActive", "separator": true, "separator_block_width": 30},
+{"name":"sound", "full_text": "$soundActive", "color": "$soundColor",
+   "separator": true, "separator_block_width": 30},
 {"name":"logout", "full_text": "? ", "separator": true, "separator_block_width": 30},
-{"name":"battery", "full_text":"$charge% $batterySymb", "separator": true, "separator_block_width": 30},
+{"name":"battery", "full_text":"$charge% $batterySymb", "color": "$batteryColor",
+   "separator": true, "separator_block_width": 30},
 {"name":"time", "full_text":"$currTime ($monthDay)", "separator": true, "separator_block_width": 30}
 ],
 EOF
