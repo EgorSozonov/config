@@ -15,13 +15,13 @@ function update() {
       | grep -E "state" | awk '{print $2}')
    if [[ $batteryStatus = "discharging" ]]; then
       if (( charge > 80 )); then 
-         batterySymb=" "
+         batterySymb="  "
       elif (( charge > 50 )); then
-         batterySymb=" "
+         batterySymb="  "
       elif (( charge > 20 )); then
-         batterySymb=''
+         batterySymb=" "
       else
-         batterySymb='⚠'  
+         batterySymb="⚠ "  
       fi
    else
       batterySymb="⚡"

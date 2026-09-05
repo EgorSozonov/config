@@ -8,7 +8,8 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term foot -D ~
+exec foot --server
+set $term footclient -D ~
 # Your preferred application launcher
 set $menu pkill wofi || wofi --show drun --allow-images -a --columns 2 --prompt ""
 
