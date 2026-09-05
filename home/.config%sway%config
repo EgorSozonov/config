@@ -8,7 +8,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-exec foot --server
+exec pkill foot; foot --server
 set $term footclient -D ~
 # Your preferred application launcher
 set $menu pkill wofi || wofi --show drun --allow-images -a --columns 2 --prompt ""
@@ -190,9 +190,6 @@ bar {
    tray_output *
    tray_padding 2
 }
-
-#Time-based status bar refreshing
-exec_always while true; do swaymsg -t send_tick; sleep 60; done
 
 default_border pixel 1
 ############## %border %background %text %indicator %child_border

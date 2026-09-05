@@ -272,7 +272,7 @@ function serve() {
 }
 
 function pwhichFiles() {
-   pacman -Ql $1 | grep "/$" | awk 'BEGIN { FS=" " } {print $2}'
+   pacman -Ql $1 | grep -v "/$" | awk 'BEGIN { FS=" " } {print $2}'
 }
 
 function psize() {

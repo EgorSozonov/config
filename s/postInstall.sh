@@ -15,10 +15,8 @@ doas apt install debconf
 
 doas pacman -Syu guile make base-devel devtools tig devtools
 doas pacman -Syu impala id3v2 ffmpeg xdg-desktop-portal-wlr fzy
-doas pacman -Syu calcurse upower
+doas pacman -Syu calcurse upower fcron
 
 mkdir -p ~/.local/share/tig
 mkdir -p ~/.config/mozilla
 mkdir -p ~/.config/git
-
-doas grub-mkfont -s 24 -o /boot/grub/fonts/linejoy.pf2 ~/.local/share/fonts/Linejoy-Regular.ttf
