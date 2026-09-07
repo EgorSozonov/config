@@ -21,7 +21,7 @@ function update() {
       elif (( charge > 20 )); then
          batterySymb=" "
       else
-         batterySymb="⚠ "  
+         batterySymb="!!"
       fi
    else
       batterySymb="⚡"
@@ -43,6 +43,8 @@ function output() {
    local batteryColor="#00FF00"
    if [[ $batterySymb == "⚡" ]]; then
       batteryColor="#E0FF00"
+   elif (( charge <= 20 )); then 
+      batteryColor="#FF3030"
    fi
    local soundColor="#00FF00"
    if [[ $soundActive == "  " ]]; then
