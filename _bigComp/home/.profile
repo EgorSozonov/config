@@ -11,11 +11,11 @@ export CGDB_DIR="$HOME/.config/cgdb"
 export PARALLEL_HOME="$HOME/.config/parallel"
 
 if [[ $XDG_RUNTIME_DIR == "" ]]; then
-    export XDG_RUNTIME_DIR=/tmp/${UID}-runtime-dir
-    if ! [[ -d $XDG_RUNTIME_DIR ]]; then
-        mkdir "$XDG_RUNTIME_DIR"
-        chmod 0700 "$XDG_RUNTIME_DIR"
-    fi
+   export XDG_RUNTIME_DIR=/run/user/$(id -u)
+   if ! [[ -d $XDG_RUNTIME_DIR ]]; then
+      mkdir -p "$XDG_RUNTIME_DIR"
+      chmod 0700 "$XDG_RUNTIME_DIR"
+   fi
 fi
 
 
@@ -24,5 +24,5 @@ export XDG_CURRENT_DESKTOP=sway
 export SVDIR=$HOME/.local/sv
 
 if [[ -z "$WAYLAND_DISPLAY" ]] && [[ -n "$XDG_VTNR" ]] && [[ "$XDG_VTNR" -eq 1 ]] ; then
-    exec sway
+   exec sway
 fi
