@@ -1,5 +1,6 @@
 #! /usr/bin/bash
 
 export HOME="/home/$(id -un)"
-exec 2>&1
-exec /usr/bin/foot --server
+export XDG_RUNTIME_DIR=/tmp/user/$(id -u)
+
+exec /usr/bin/foot --server 2>$HOME/.local/state/foot.log
