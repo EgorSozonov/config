@@ -3,5 +3,3 @@
 #output * bg ~/pictures/wpArch.png fill
 output HDMI-A-1 resolution 1920x1080 position 0,0
 
-
-exec "ln -s ~/.config/sv/foot ~/.local/sv/foot && sv start foot"

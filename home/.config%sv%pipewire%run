@@ -3,4 +3,4 @@
 export HOME="/home/$(id -un)"
 export XDG_RUNTIME_DIR=/tmp/user/$(id -u)
 
-exec /usr/bin/foot --server 2>$HOME/.local/state/foot.log
+exec pipewire

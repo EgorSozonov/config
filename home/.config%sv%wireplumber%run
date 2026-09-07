@@ -3,4 +3,5 @@
 export HOME="/home/$(id -un)"
 export XDG_RUNTIME_DIR=/tmp/user/$(id -u)
 
-exec /usr/bin/foot --server 2>$HOME/.local/state/foot.log
+sv check "$HOME/.local/sv/pipewire" >/dev/null 2>&1 || exit 1
+exec wireplumber
