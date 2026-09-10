@@ -115,6 +115,7 @@ alias ww="firefox"
 alias battery="acpi -b"
 alias zzz="aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend"
 alias zz="aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend"
+alias shutdown="swaymsg exit && doas poweroff"
 
 alias openEyr="v --cmd 'cd ~/proj/eyr' ~/proj/eyr/*.c ~/proj/eyr/test/parserTest.c ~/proj/eyr/libeyr.h" 
 alias openAz="nvim --cmd 'cd ~/proj/azimuth/src/azimuth' ~/proj/azimuth/src/azimuth/tick/ship.c" 
