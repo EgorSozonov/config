@@ -666,9 +666,9 @@ local function runProg(mode)
 end
 
 vim.keymap.set("n", "<A-c>", function() runProg("debug") end, sil)
-vim.keymap.set("i", "<A-c>", function() runProg("debug") end, sil)
+vim.keymap.set("i", "<A-c>", function() vim.cmd('stopinsert') runProg("debug") end, sil)
 vim.keymap.set("n", "<A-r>", function() runProg("run") end, sil)
-vim.keymap.set("i", "<A-r>", function() runProg("run") end, sil)
+vim.keymap.set("i", "<A-r>", function() vim.cmd('stopinsert') runProg("run") end, sil)
 
 --map("n", "<C-m>", "vipk:'<,'>s/$/,/<CR>")
 map("n", "<C-,>", 
