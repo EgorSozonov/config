@@ -106,7 +106,7 @@ function bup() {
 
 
 
-# replaces text in this dir and subdirs
+# replace text in this dir and subdirs
 # Examples:
 # replaceText 's/ddd/eee/g' '*.txt'
 # replaceText 's/ddd/eee/g'
@@ -116,20 +116,17 @@ function replaceText() {
    eval "$command"
 }
 
+#`countLoc` or `countLoc c rs`
 function countLoc() {
-   declare -a foundFiles
-
-   # Use find with -print0 and readarray with a null delimiter
-   readarray -d '' foundFiles < <(find . -type f -name "*.[ch]" -print0)
-
-   declare -i sumLc=0
-   # Loop through each element
-   for f in "${foundFiles[@]}"; do
-      # Apply a shell command to each item
-      lineCount=$(sed -e '\|^\s*//.*$|d' -e '/^\s*\*/d' -e '\|^\s*/\*|d' -e '/^\s*$/d' $f | wc -l)
-      sumLc=$sumLc+$((lineCount))
-   done
-   echo $sumLc 
+   if (( $# == 0 )); then
+      flt="-name '*.[ch]'"
+   else 
+      flt="-name '*.$1'"
+      for ((i=2; i<=$#; i++)); do
+         flt+=" -o -name '*.${!i}'"
+      done
+   fi
+   eval "find . -type f \( $flt \) -exec /usr/bin/awk -f ~/s/countLoc.awk {} +"
 }
 
 function mkcd() {

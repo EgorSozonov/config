@@ -34,12 +34,12 @@ o.smarttab = true
 o.expandtab = true
 o.smartindent = true
 o.ignorecase = true
-vim.opt.clipboard = "unnamedplus" -- normal copy and paste via X clipboard
+--vim.opt.clipboard = "unnamedplus" -- normal copy and paste via X clipboard
 
 g.mapleader=','
 g.maplocalleader = ','
 
-vim.opt.number = true -- line numbers
+vim.opt.number = false -- line numbers
 vim.opt.relativenumber = true -- relative line numbers
 vim.cmd(":hi LineNr guibg=#000000 guifg=#ffffff") -- gutter colors ?
 
