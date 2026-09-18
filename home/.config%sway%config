@@ -163,9 +163,9 @@ bindsym $mod+l resize grow width 40px
 
 # Utilities:
 #
-bindsym --locked XF86AudioLowerVolume exec amixer set Master 3dB-
-bindsym --locked XF86AudioRaiseVolume exec amixer set Master 3dB+
-bindsym --locked XF86AudioMute exec "~/.config/sway/toggleSound.sh"
+bindsym --locked F2 exec amixer set Master 3dB-
+bindsym --locked F3 exec amixer set Master 3dB+
+bindsym --locked F1 exec "~/.config/sway/toggleSound.sh"
 # Special keys to adjust brightness via brightnessctl
 #bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 #bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+

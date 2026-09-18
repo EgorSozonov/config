@@ -61,11 +61,11 @@ map("i", "<C-;>", "<Esc>")
 map("i", "<Tab>", "<Esc>")
 map("i", "<C-space>", "<space><space><space>") -- indentation insert
 map("i", "<C-s>", "<Esc>:wa<CR>") -- save all and enter normal mode
-map("v", "<C-c>", "\"+y")
-map("n", "<C-v>", "\"*p")
+map("v", "<C-c>", '"*y')
+map("n", "<C-v>", '"*p')
+map("i", "<C-v>", "<C-r>*")
 map("n", ";", ":")
 map("v", ";", ":")
-map("i", "<C-v>", "\"*p")
 map("n", "<C-/>", ":set hlsearch!<CR>") -- toggle coloring of searches
 map("n", "<space>", "i<space><esc>") -- space in normal mode
 map("n", "<C-n>", ":bn<CR>") -- next buffer
@@ -665,10 +665,10 @@ local function runProg(mode)
    end
 end
 
-vim.keymap.set("n", "<A-c>", function() runProg("debug") end, sil)
-vim.keymap.set("i", "<A-c>", function() vim.cmd('stopinsert') runProg("debug") end, sil)
-vim.keymap.set("n", "<A-r>", function() runProg("run") end, sil)
-vim.keymap.set("i", "<A-r>", function() vim.cmd('stopinsert') runProg("run") end, sil)
+vim.keymap.set("n", "<F9>", function() runProg("debug") end, sil)
+vim.keymap.set("i", "<F9>", function() vim.cmd('stopinsert') runProg("debug") end, sil)
+vim.keymap.set("n", "<F5>", function() runProg("run") end, sil)
+vim.keymap.set("i", "<F5>", function() vim.cmd('stopinsert') runProg("run") end, sil)
 
 --map("n", "<C-m>", "vipk:'<,'>s/$/,/<CR>")
 map("n", "<C-,>", 

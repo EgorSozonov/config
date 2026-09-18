@@ -14,7 +14,7 @@ insideForwDecls == 0 && $0 !~ /^\s*$/ && $0 !~ /^\s*\/\// && $0 !~ /^\s*\*/ && $
 }
 
 insideForwDecls == 1 && $0 ~ /\/\/}}}/ {
-   insideForwDecls = 1
+   insideForwDecls = 0
 }
 
 END {
