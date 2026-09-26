@@ -34,7 +34,7 @@ o.smarttab = true
 o.expandtab = true
 o.smartindent = true
 o.ignorecase = true
---vim.opt.clipboard = "unnamedplus" -- normal copy and paste via X clipboard
+vim.opt.clipboard = "unnamedplus" -- normal copy and paste via X clipboard
 
 g.mapleader=','
 g.maplocalleader = ','

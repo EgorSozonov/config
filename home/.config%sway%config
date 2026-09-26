@@ -64,6 +64,7 @@ bindsym $mod+v focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+b focus right
+bindsym Alt_R focus right
 # Or use $mod+[up|down|left|right]
 
 # Move the focused window with the same, but add Shift
