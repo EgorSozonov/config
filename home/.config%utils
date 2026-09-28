@@ -408,3 +408,24 @@ function safeRm() {
    done
 }
 
+# `unpdf a.pdf` => `a.pdf.webp`
+# Requires poppler, libwebp-utils, and GEGL
+# View the resulting file with swayimg, press "f" to stop animagion and use a,d keys
+function unpdf() {
+   tempDir=$(mktemp -d)
+
+   cleanup() {
+      /usr/bin/rm -r "$tempDir"
+   }
+   trap cleanup EXIT
+
+
+   pdftoppm -png -r 150 $1 "$tempDir/a"
+   for png in "$tempDir"/*.png; do
+      gegl -i "$png" -o "$png" -- invert
+   done
+
+   img2webp -o "$1.webp" "$tempDir"/*.png
+
+}
+
