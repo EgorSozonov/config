@@ -1,0 +1,19 @@
+#! /usr/bin/bash
+
+undeletable=("/bin" "/boot" "/dev" "/etc" "/home" "/lib" "/lib64" "/mnt" "/opt"
+   "/proc" "/root" "/run" "/sbin" "/srv" "/sys" "/tmp" "/usr" "/var" "/"
+)
+for arg in "$@"; do
+   canDelete=1
+   for un in "${undeletable[@]}"; do
+      if [[ "$arg" == "$un" || "$arg" == "$un/" ]]; then
+         echo "nono! $arg $un"
+         canDelete=0
+         break
+      fi
+   done
+   if [[ "$canDelete" == "1" ]]; then
+      /usr/bin/rm "$arg"
+   fi
+done
+
