@@ -126,7 +126,7 @@ function countLoc() {
          flt+=" -o -name '*.${!i}'"
       done
    fi
-   eval "find . -type f \( $flt \) -exec /usr/bin/awk -f ~/s/countLoc.awk {} +"
+   eval "find . -type f \( $flt \) -exec ~/s/countLoc.lua {} +"
 }
 
 function mkcd() {
