@@ -17,21 +17,23 @@ set $menu pkill wofi || wofi --show drun --allow-images -a --columns 2 --prompt 
 include specific
 
 ### Idle configuration
-
+#This will lock your screen after 300 seconds of inactivity, then turn off
+#your displays after another 300 seconds, and turn your screens back on when
+#resumed. It will also lock your screen before your computer goes to sleep.
 exec swayidle -w \
 #         timeout 600 'swaylock -f -c 000000' \
          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"'
 #         before-sleep 'swaylock -f -c 000000'
 
-#This will lock your screen after 300 seconds of inactivity, then turn off
-#your displays after another 300 seconds, and turn your screens back on when
-#resumed. It will also lock your screen before your computer goes to sleep.
 
 
 input type:keyboard {
    xkb_layout "us,ru"
-   xkb_options "ctrl:nocaps,grp:lctrl_toggle"
+   xkb_options "ctrl:nocaps"
+   #xkb_options "ctrl:nocaps,grp:lctrl_toggle"
 }
+
+bindsym Control_L input type:keyboard xkb_switch_layout next; exec pkill -SIGRTMIN+1 i3blocks
 
 ### Key bindings
 # Start a terminal
@@ -43,7 +45,7 @@ bindsym $mod+c kill
 # Start your launcher
 bindsym $mod+x exec $menu
 
-#Drag floating windows by holding down $mod and left mouse button. Resize them with right 
+#Drag floating windows by holding down $mod and left mouse button. Resize them with right
 #mouse button + $mod. Despite the name, also works for non-floating windows.
 #Change normal to inverse to use left mouse button for resizing and right
 #mouse button for dragging.
@@ -137,7 +139,7 @@ bindsym $mod+m splith
 bindsym $mod+Shift+t fullscreen
 bindsym $mod+t layout toggle tabbed split
 
-#Make the titlebar in tabbed layout as small as possible 
+#Make the titlebar in tabbed layout as small as possible
 titlebar_padding 1
 titlebar_border_thickness 0
 font pango:monospace 1
@@ -163,7 +165,7 @@ for_window [app_id="scratch"] move scratchpad, scratchpad show, fullscreen enabl
 #default_floating_border none
 #for_window [floating] border none
 
- 
+
 # Resizing containers:
 bindsym $mod+h resize shrink width 40px
 bindsym $mod+l resize grow width 40px
@@ -180,17 +182,17 @@ bindsym --locked F1 exec "~/.config/sway/toggleSound.sh"
 bindsym Print exec grimshot save output ~/pictures/screenshots/scr.png
 bindsym Shift+Print exec grimshot copy area
 
-    
+
 bar {
-   swaybar_command swaybar
-   status_command ~/.config/sway/statusBar.sh;
+   #swaybar_command swaybar
+   status_command i3blocks
    colors {
       statusline #00ff00
       focused_workspace #ffff00 #000000 #00ff00
       inactive_workspace #000000 #000000 #00ff00
       active_workspace #000000 #000000 #00ff00
       separator #00ff00
-   } 
+   }
    height 16
    font Linejoy 14
    strip_workspace_numbers yes

@@ -1,0 +1,25 @@
+# Global properties
+align=center
+separator=true
+separator_block_width=15
+markup=pango
+
+[keyboard]
+command=swaymsg -t get_inputs | jq -r '.[] | select(.type == "keyboard") | .xkb_active_layout_name' | head -n 1 | cut -c 1-2
+interval=once
+signal=1
+
+[sound]
+command=if [[ $(amixer sget Master | grep '\[on') ]]; then echo "  "; else echo "🔊 "; fi
+interval=60
+
+# Date and Time
+[battery]
+command=~/.config/sway/battery.sh
+interval=60
+
+# Date and Time
+[time]
+command=date '+%H:%M (%d)'
+interval=30
+color=#ffffff

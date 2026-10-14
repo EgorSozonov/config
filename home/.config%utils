@@ -1,7 +1,7 @@
 
 function unflash() {
    local mountDir="/mnt/flash"
-   
+
    i=0
    while [ -d "$mountDir$i" ]; do
       local backupDir="$mountDir$i"
@@ -15,15 +15,15 @@ function flash() {
    unflash
 
    declare -a usbSticks
-   
+
    # get the list of USB stick partitions
    local theCommand="lsblk -lntbo NAME,SIZE,MOUNTPOINT | tr -s ' '"
    readarray -t partitions < <(eval $theCommand)
-   
+
    #filter out unmounted, small partitions starting with "sd" like "sdb1"
    local currPrefix=""
    local currName=""
-   local newName="" 
+   local newName=""
    local isNew="false"
    for partition in "${partitions[@]}"; do
       if (( "${#partition}" == 0 )); then
@@ -37,7 +37,7 @@ function flash() {
             if [[ $isNew == "true" ]]; then
                usbSticks+=("/dev/$currName")
             fi
-            
+
             currPrefix=$newPrefix
             currName="${spl[0]}"
             isNew="true"
@@ -52,7 +52,7 @@ function flash() {
    if [[ $isNew == "true" ]]; then
       usbSticks+=("/dev/$newName")
    fi
-   
+
    declare -a mountCommands
    local i=0
    for stick in "${usbSticks[@]}"; do
@@ -82,7 +82,7 @@ function help() {
    echo "Search Man pages: mans tar extract"
    echo "Find files: ff .pdf"
    echo "Find directories: fdi"
-   echo "Update fonts: updateFonts, update boot loader: updateBoot" 
+   echo "Update fonts: updateFonts, update boot loader: updateBoot"
    echo ""
    echo "All these useful functions are defined in ~/.config/utils"
 }
@@ -92,12 +92,12 @@ function bup() {
    local mountDir="/mnt/flash"
    local today
    printf -v today '%(%Y-%m-%d)T' -1
-   
+
    i=0
    while [ -d "$mountDir$i" ]; do
       local backupDir="$mountDir$i/backup/$today"
       mkdir -p "$backupDir"
-      
+
       echo "Backing up to $backupDir"
       cp $1 "$backupDir"
       ((i++))
@@ -120,7 +120,7 @@ function replaceText() {
 function countLoc() {
    if (( $# == 0 )); then
       flt="-name '*.[ch]'"
-   else 
+   else
       flt="-name '*.$1'"
       for ((i=2; i<=$#; i++)); do
          flt+=" -o -name '*.${!i}'"
@@ -158,16 +158,16 @@ function tre() {
 function trash() {
    #mv "$@" ~/.local/share/trash/
    #echo "Moved to ~/.local/share/trash/"
-   
+
    # Get the current date and time for uniqueness
    local DATE=$(date +%Y%m%d_%H%M%S)
-   
+
    # Process command line arguments
    local force=false
    local recursive=false
    local verbose=false
    local files=()
-   
+
    # Parse arguments
    for arg in "$@"; do
       case $arg in
@@ -188,14 +188,14 @@ function trash() {
          ;;
       esac
    done
-   
+
    # Check if no files were specified
    if [ ${#files[@]} -eq 0 ]; then
       echo "rm: missing operand"
       echo "Try 'rm --help' for more information."
       return 1
    fi
-   
+
    # Process each file
    for file in "${files[@]}"; do
       # Check if file exists
@@ -208,13 +208,13 @@ function trash() {
             return 1
          fi
       fi
-   
+
       # Get the filename without path
       filename=$(basename "$file")
-   
+
       # Create a unique name in case of duplicates in trash
       trashName="${filename}_${DATE}"
-   
+
       # Actually move the file to trash
       if mv "$file" "~/.local/share/trash/$trashName"; then
          if [ "$verbose" = true ]; then
@@ -225,7 +225,7 @@ function trash() {
          return 1
       fi
    done
-   
+
    exit 0
 }
 
@@ -235,11 +235,11 @@ function unTrash() {
       echo "Usage: unTrash FILENAME"
       return 1
    fi
-   
+
    ls -l ~/.local/share/trash | grep $1
    echo "Enter the exact filename to restore: "
    read filename
-   
+
    if [ -f "~/.local/share/trash/$filename" ]; then
       # Extract original filename before the timestamp
       original=$(echo $filename | sed 's/_[0-9]\{8\}_[0-9]\{6\}$//')
@@ -248,7 +248,7 @@ function unTrash() {
    else
       echo "File not found in trash"
    fi
-} 
+}
 
 #Remove files older than 7 days from trash
 function takeOutTheTrash() {
@@ -274,7 +274,7 @@ function pwhichFiles() {
 
 function psize() {
    pacman -Qi | awk 'BEGIN {OFS=","} /^Name/{name=$3} /^Installed Size/{print $4$5,name}' \
-      | sort -h | awk 'BEGIN {FS=","; OFS=" : "} {print $2, $1}' 
+      | sort -h | awk 'BEGIN {FS=","; OFS=" : "} {print $2, $1}'
 }
 
 function pall() {
@@ -343,7 +343,7 @@ function newFiles() {
 
 function cdl {
    cd $1 && LC_COLLATE=C ls --color=always --group-directories-first -agohA
-} 
+}
 
 function lanReceive {
    mkdir -p $HOME/.local/state/rsync
@@ -375,19 +375,18 @@ function lanSend {
 function stick() {
    if [[ -z $1 ]]; then
       declare -a unmounted
-      readarray -t unmounted < <(lsblk -J | jq -r '[.blockdevices.[] | select (.rm == true)] 
+      readarray -t unmounted < <(lsblk -J | jq -r '[.blockdevices.[] | select (.rm == true)]
          | select(.[].children[0].mountpoints | length == 0) | map("/dev/" + .children[0].name).[]')
-         
+
       if (( "${#unmounted}" > 0 )) then
          local um="${unmounted[0]}"
          echo "mounting $um"
-         doas /usr/bin/mount -o noatime,sync --mkdir "/dev/$um" /mnt/stick
+         doas /usr/bin/mount -o noatime,sync --mkdir "$um" /mnt/stick
       fi
    else
       doas /usr/bin/mount -o noatime,sync --mkdir "$1" /mnt/stick
    fi
 }
-
 
 function safeRm() {
    local undeletable=("/bin" "/boot" "/dev" "/etc" "/home" "/lib" "/lib64" "/mnt" "/opt"
