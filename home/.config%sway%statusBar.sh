@@ -9,9 +9,9 @@ case $1 in
    ;;
 2)
    if [[ $(amixer sget Master | grep '\[on') ]]; then
-      echo "  "
-   else
       echo "🔊 "
+   else
+      echo "  "
    fi
    echo ""
    echo "#F0F0F0"
