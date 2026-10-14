@@ -29,7 +29,7 @@ exec swayidle -w \
 
 input type:keyboard {
    xkb_layout "us,ru"
-   xkb_options "ctrl:nocaps"
+   xkb_options "caps:ctrl_modifier"
    #xkb_options "ctrl:nocaps,grp:lctrl_toggle"
 }
 
@@ -191,7 +191,7 @@ bar {
       focused_workspace #ffff00 #000000 #00ff00
       inactive_workspace #000000 #000000 #00ff00
       active_workspace #000000 #000000 #00ff00
-      separator #00ff00
+      separator #f0f0f0
    }
    height 16
    font Linejoy 14

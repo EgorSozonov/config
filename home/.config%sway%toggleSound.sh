@@ -9,4 +9,5 @@ else
    amixer -q set Speaker on
    amixer -q set Headphone on
 fi
-swaymsg -t send_tick
+#swaymsg -t send_tick
+pkill -SIGRTMIN+2 i3blocks
