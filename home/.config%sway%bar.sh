@@ -7,14 +7,16 @@ function output() {
       | grep -E "percentage" | grep -oE '[0-9]+')
    batteryStatus=$(upower --show-info $(upower --enumerate | grep 'BAT') \
       | grep -E "state" | cut -F 3)
-   batteryColor="#00FF00"
    if [[ $batteryStatus = "discharging" ]]; then
       if (( charge > 80 )); then
          batterySymb="   $charge%"
+         batteryColor="#00FF00"
       elif (( charge > 50 )); then
          batterySymb="   $charge%"
+         batteryColor="#00FF00"
       elif (( charge > 20 )); then
          batterySymb="   $charge%"
+         batteryColor="#F0F0F0"
       else
          batterySymb="   $charge%"
          batteryColor="#FF3030"
@@ -27,11 +29,11 @@ function output() {
    cat <<EOF
 [
 {"name":"start", "full_text": "   ", "separator": true, "separator_block_width": 30},
-{"name":"layout", "full_text": "[en|ru]", "separator": true, "separator_block_width": 30},
+{"name":"layout", "full_text": "en/ru", "separator": true, "separator_block_width": 30},
 {"name":"keyboard", "full_text": "   ", "separator": true, "separator_block_width": 30},
-{"name":"sound", "full_text": "  ", "separator": true, "separator_block_width": 30},
+{"name":"sound", "full_text": "  ", "separator": true, "separator_block_width": 30},
 {"name":"wifi", "full_text": " ", "separator": true, "separator_block_width": 30},
-{"name":"logout", "full_text": "? ", "separator": true, "separator_block_width": 30},
+{"name":"help", "full_text": "? ", "separator": true, "separator_block_width": 30},
 {"name":"battery", "full_text":"$batterySymb", "color": "$batteryColor",
    "separator": true, "separator_block_width": 30},
 {"name":"time", "full_text":"$(date '+%H:%M (%d)')", "separator": true, "separator_block_width": 30}
@@ -51,8 +53,8 @@ function handleClicks() {
          foot sh -c alsamixer 1>/dev/null 2>/dev/null
       elif [[ "$widgetName" == "wifi" ]]; then
          foot -a "leDialog" sh -c impala 1>/dev/null 2>/dev/null
-      elif [[ "$widgetName" == "logout" ]]; then
-         foot -a "leDialog" sh -c "$HOME/.config/sway/logout.sh" 1>/dev/null 2>/dev/null
+      elif [[ "$widgetName" == "help" ]]; then
+         "$HOME/.config/sway/help.sh" 2>/dev/null
       elif  [[ "$widgetName" == "layout" ]]; then
          swaymsg input "*" xkb_switch_layout next 1>/dev/null 2>/dev/null
       elif [[ "$widgetName" == "keyboard" ]]; then

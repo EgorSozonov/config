@@ -25,15 +25,10 @@ exec swayidle -w \
          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"'
 #         before-sleep 'swaylock -f -c 000000'
 
-
-
 input type:keyboard {
    xkb_layout "us,ru"
-   #xkb_options "caps:ctrl_modifier"
    xkb_options "ctrl:nocaps,grp:lctrl_toggle"
 }
-
-#bindsym Control_L input type:keyboard xkb_switch_layout next; exec pkill -SIGRTMIN+1 i3blocks
 
 ### Key bindings
 # Start a terminal
@@ -59,14 +54,13 @@ bindsym $mod+Shift+o exec swaynag -t warning \
    -m 'Do you really want to exit Sway? This will end your Wayland session.' \
    -B 'Yes, exit sway' 'swaymsg exit'
 
-# Moving around:
-
 # Move your focus around
 bindsym $mod+v focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+b focus right
 bindsym Alt_R focus right
+bindsym Control_R focus left
 # Or use $mod+[up|down|left|right]
 
 # Move the focused window with the same, but add Shift
@@ -165,7 +159,6 @@ for_window [app_id="scratch"] move scratchpad, scratchpad show, fullscreen enabl
 #default_floating_border none
 #for_window [floating] border none
 
-
 # Resizing containers:
 bindsym $mod+h resize shrink width 40px
 bindsym $mod+l resize grow width 40px
@@ -184,8 +177,7 @@ bindsym Shift+Print exec grimshot copy area
 
 
 bar {
-   #status_command i3blocks
-   status_command ~/.config/sway/swayBar.sh
+   status_command ~/.config/sway/bar.sh
 
    colors {
       statusline #f0f0f0
@@ -211,10 +203,7 @@ focus_follows_mouse no
 
 exec_always wlsunset -S 07:00 -s 19:00 -t 3500 -T 6500
 
-animation_duration_ms 300
+animation_duration_ms 600
 shadows disable
-corner_radius 8
-#inactive_window_dim 50
-#workspace_switch_anim enable
-
+corner_radius 0
 

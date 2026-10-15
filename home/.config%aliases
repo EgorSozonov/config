@@ -92,7 +92,7 @@ alias updateFonts="fc-cache -fv"
 #alias fileTypes="find . -type f | xargs file | awk -F, '{print $1}' | awk '{$1=NULL; print $0}' | sort | uniq -c | sort -nr"
 alias fileTypes="find . -type f | xargs file"
 alias v="zathura"
-alias i="swayimg -g ."
+alias i="swayimg --appid='leDialog' -g ."
 alias wifi="impala"
 
 alias burnIso="pls dd bs=4M conv=fsync oflag=direct status=progress"
@@ -121,4 +121,4 @@ alias openEyr="v --cmd 'cd ~/proj/eyr' ~/proj/eyr/*.c ~/proj/eyr/test/parserTest
 alias openAz="nvim --cmd 'cd ~/proj/azimuth/src/azimuth' ~/proj/azimuth/src/azimuth/tick/ship.c"
 alias de="gdb ../bin/eegl"
 
-alias screenKeyboard="wvkbd-mobintl -l full,cyrillic"
+alias screenKeyboard="pkill -9 wvkbd-mobintl || wvkbd-mobintl -l full,cyrillic"
