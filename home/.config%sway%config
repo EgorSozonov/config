@@ -29,11 +29,11 @@ exec swayidle -w \
 
 input type:keyboard {
    xkb_layout "us,ru"
-   xkb_options "caps:ctrl_modifier"
-   #xkb_options "ctrl:nocaps,grp:lctrl_toggle"
+   #xkb_options "caps:ctrl_modifier"
+   xkb_options "ctrl:nocaps,grp:lctrl_toggle"
 }
 
-bindsym Control_L input type:keyboard xkb_switch_layout next; exec pkill -SIGRTMIN+1 i3blocks
+#bindsym Control_L input type:keyboard xkb_switch_layout next; exec pkill -SIGRTMIN+1 i3blocks
 
 ### Key bindings
 # Start a terminal
@@ -173,8 +173,8 @@ bindsym $mod+l resize grow width 40px
 # Utilities:
 #
 bindsym --locked F2 exec amixer set Master 3dB-
-bindsym --locked F3 exec amixer set Master 3dB+
-bindsym --locked F1 exec "~/.config/sway/toggleSound.sh"
+bindsym --locked F3 exec "~/.config/sway/soundUp.sh"
+bindsym --locked F1 exec "amixer -q set Master off; amixer -q set Speaker off"
 # Special keys to adjust brightness via brightnessctl
 #bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 #bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
@@ -184,9 +184,11 @@ bindsym Shift+Print exec grimshot copy area
 
 
 bar {
-   status_command i3blocks
+   #status_command i3blocks
+   status_command ~/.config/sway/swayBar.sh
+
    colors {
-      statusline #00ff00
+      statusline #f0f0f0
       focused_workspace #ffff00 #000000 #00ff00
       inactive_workspace #000000 #000000 #00ff00
       active_workspace #000000 #000000 #00ff00
@@ -208,4 +210,11 @@ smart_borders on
 focus_follows_mouse no
 
 exec_always wlsunset -S 07:00 -s 19:00 -t 3500 -T 6500
+
+animation_duration_ms 300
+shadows disable
+corner_radius 8
+#inactive_window_dim 50
+#workspace_switch_anim enable
+
 

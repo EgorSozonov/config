@@ -22,7 +22,7 @@ alias pwhichPackage="pacman -Qo"
 alias pgetBuild="pkgctl repo clone --protocol=https"
 alias paur="pacman -Qme"
 alias makepkg="makepkg -c"
- 
+
 
 alias sys="doas systemctl"
 alias running="systemctl --state=running --type=service"
@@ -32,8 +32,8 @@ alias v="~/proj/eegl/bin/eegl"
 alias cl="clear"
 alias up="cd .."
 alias m="make"
-alias nvimConfig="e ~/.config/nvim/init.lua" 
-alias vimConfig="e ~/.config/vim/vimrc" 
+alias nvimConfig="e ~/.config/nvim/init.lua"
+alias vimConfig="e ~/.config/vim/vimrc"
 alias bashrc="e ~/.bashrc"
 alias aliases="e ~/.config/aliases"
 alias utils="e ~/.config/utils"
@@ -44,7 +44,7 @@ alias myGroups="groups"
 alias allGroups="cat /etc/group"
 alias gitTags="git tag | xargs -n1 git rev-list -n 1"
 alias genTags='ctags-universal --exclude=node_modules $(cat ~/.config/ctags/ctags.conf)'
-alias trailingSpaces="sed -i 's/[ ]*$//'"    
+alias trailingSpaces="sed -i 's/[ ]*$//'"
 alias l="LC_COLLATE=C ls --color=always --group-directories-first -agohA"
 alias lss='ls --color=always -agohA'
 alias la='ls -A'
@@ -56,7 +56,7 @@ alias decompress="tar -xf"
 alias backup=". ~/scr/backupVault.txt"
 
 alias startPg="~/s/pgInstall.sh 8855"
-alias stopPg="doas -u postgres pg_ctl stop -D /home/pg/data" 
+alias stopPg="doas -u postgres pg_ctl stop -D /home/pg/data"
 alias runPg="psql -U dev -d devdb -p 8855 -f"
 alias adminPg="psql -U devdb_admin -d devdb -p 8855"
 alias pg="psql -U devdb_dev -d devdb -p 8855"
@@ -105,7 +105,7 @@ alias aaRefresh="doas apparmor_parser -r"
 
 alias gj="cd ~/repos/gcc/gcc/jit/ && e jit-recording.cc jit-recording.h"
 
-alias gj2="cd ~/repos/gcc/gcc/ && v fold-const.cc" 
+alias gj2="cd ~/repos/gcc/gcc/ && v fold-const.cc"
 alias ascii="e -R ~/backup/ascii.txt"
 alias refresh="source ~/.bashrc"
 
@@ -117,6 +117,8 @@ alias battery="acpi -b"
 alias zzz="aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend"
 alias zz="aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend"
 
-alias openEyr="v --cmd 'cd ~/proj/eyr' ~/proj/eyr/*.c ~/proj/eyr/test/parserTest.c ~/proj/eyr/libeyr.h" 
-alias openAz="nvim --cmd 'cd ~/proj/azimuth/src/azimuth' ~/proj/azimuth/src/azimuth/tick/ship.c" 
+alias openEyr="v --cmd 'cd ~/proj/eyr' ~/proj/eyr/*.c ~/proj/eyr/test/parserTest.c ~/proj/eyr/libeyr.h"
+alias openAz="nvim --cmd 'cd ~/proj/azimuth/src/azimuth' ~/proj/azimuth/src/azimuth/tick/ship.c"
 alias de="gdb ../bin/eegl"
+
+alias screenKeyboard="wvkbd-mobintl -l full,cyrillic"
