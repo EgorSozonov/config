@@ -13,7 +13,7 @@ function output() {
          batteryColor="#00FF00"
       elif (( charge > 50 )); then
          batterySymb="   $charge%"
-         batteryColor="#00FF00"
+         batteryColor="#F0F0F0"
       elif (( charge > 20 )); then
          batterySymb="   $charge%"
          batteryColor="#F0F0F0"

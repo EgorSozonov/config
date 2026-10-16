@@ -8,8 +8,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-exec foot --server
-set $term footclient -D ~
+set $term foot -D ~
 # Your preferred application launcher
 set $menu pkill wofi || wofi --show drun --allow-images -a --columns 2 --prompt ""
 
@@ -132,6 +131,7 @@ bindsym $mod+m splith
 # Make the current focus fullscreen
 bindsym $mod+Shift+t fullscreen
 bindsym $mod+t layout toggle tabbed split
+bindsym $mod+u layout toggle stacked split
 
 #Make the titlebar in tabbed layout as small as possible
 titlebar_padding 1
@@ -193,17 +193,23 @@ bar {
    tray_padding 2
 }
 
+gaps inner 0
+gaps outer 0
 default_border pixel 1
+default_floating_border pixel 1
 ############## %border %background %text %indicator %child_border
-client.unfocused #000000 #80ff80 #ffffff #000000 #000000
-client.focused #80ff80 #80ff80 #ffffff #80ff80 #80ff80
+client.unfocused #000000 #80ff80 #ffffff #000000ff #000000ff
+client.focused #80ff80ff #80ff80ff #ffffffff #800000ff #80ff80ff
 smart_borders on
 
 focus_follows_mouse no
 
 exec_always wlsunset -S 07:00 -s 19:00 -t 3500 -T 6500
 
-animation_duration_ms 600
-shadows disable
-corner_radius 0
+#animation_duration_ms 600
+#default_dim_inactive 0.0
+#shadows disable
+#blur disable
+#blur_xray disable
+#corner_radius 0
 

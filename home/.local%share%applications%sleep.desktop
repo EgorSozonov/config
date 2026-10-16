@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=System
+Name=Sleep
+Comment=Suspend the computer
+Exec=systemctl suspend
+Icon=utilities-terminal
+Terminal=false
+Categories=AudioVideo
+

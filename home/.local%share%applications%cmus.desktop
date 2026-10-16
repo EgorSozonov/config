@@ -7,3 +7,4 @@ Exec=foot -e sh -c /usr/bin/cmus
 Icon=utilities-terminal
 Terminal=false
 Categories=AudioVideo
+
