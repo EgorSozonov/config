@@ -36,7 +36,8 @@ function output() {
 {"name":"help", "full_text": "? ", "separator": true, "separator_block_width": 30},
 {"name":"battery", "full_text":"$batterySymb", "color": "$batteryColor",
    "separator": true, "separator_block_width": 30},
-{"name":"time", "full_text":"$(date '+%H:%M (%d)')", "separator": true, "separator_block_width": 30}
+{"name":"time", "full_text":"$(date '+%H:%M (%d)')", "separator": true,
+   "separator_block_width": 30}
 ],
 EOF
 }
