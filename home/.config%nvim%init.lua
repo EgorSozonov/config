@@ -21,8 +21,8 @@ vim.opt.linebreak = true -- Stop words from being broken on wrap
 vim.opt.showmode = false -- Don't display current mode
 vim.g.loaded_matchparen = true
 vim.g.loaded_matchparen = true
-vim.g.loaded_matchbracket = true 
-vim.opt.termguicolors = true 
+vim.g.loaded_matchbracket = true
+vim.opt.termguicolors = true
 
 vim.o.shada = nil -- turn off the useless saving of every piece of state
 
@@ -64,6 +64,7 @@ map("i", "<C-space>", "<space><space><space>") -- indentation insert
 map("i", "<C-s>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("v", "<C-c>", '"+y')
 map("n", "<C-v>", '"+p')
+map("n", "q", ':quit<CR>') -- easier than ever to quit Vim!
 map("i", "<C-v>", "<C-r>+")
 map("n", ";", ":")
 map("v", ";", ":")
@@ -78,10 +79,12 @@ vim.keymap.set("v", "<leader>j", ":m '<-2<CR>gv") -- move line down
 vim.keymap.set("v", "<leader>k", ":m '>+1<CR>gv") -- move line up
 vim.keymap.set("n", "<leader>j", ":m-2<CR>")
 vim.keymap.set("n", "<leader>k", ":m+<CR>")
-map("n", "H", "21h")
-map("n", "L", "21l")
-map("n", "<C-h>", "21h")
-map("n", "<C-l>", "21l")
+map("n", "H", "24h")
+map("n", "L", "24l")
+map("n", "<C-h>", "24h")
+map("n", "<C-l>", "24l")
+map("v", "H", "24h")
+map("v", "L", "24l")
 map("n", "<M-c>", ":q<CR>")
 -- quickfix list navigation
 map("n", "[q", ":cprev<CR>")
@@ -201,7 +204,7 @@ end
 
 local function setLine(ind, content)
     vim.api.nvim_buf_set_lines(0, ind - 1, ind, false, {content})
-end 
+end
 
 function windowAtCenter(inputWidth)
 	return {
@@ -238,18 +241,18 @@ local function formatCommas()
           j = j + 1
           currLen = 0
           lineBuilder = ""
-       end   
+       end
        i = i + 1
     end
     if lineBuilder:len() > 0 then
        vim.api.nvim_buf_set_lines(0, j - 1, j, false, {lineBuilder})
        j = j + 1
-   end 
+   end
    while j < limits.endd do
       vim.api.nvim_buf_set_lines(0, j - 1, j, false, {""})
       j = j + 1
    end
-   
+
    vim.api.nvim_win_set_cursor(0, {limits.start, 1})
 end
 
@@ -280,7 +283,7 @@ local function asciiCodeToSymbol()
    if startCol == -1 then
       startCol = 1
    end
-   
+
    for j = cursorCol, #currentLine, 1 do
       local charCode = string.byte(currentLine:sub(j, j))
       if charCode < 48 or charCode > 57 then
@@ -291,14 +294,14 @@ local function asciiCodeToSymbol()
    if endCol == -1 then
       endCol = #currentLine
    end
-   
+
    if startCol == endCol then
       return
    end
    local fullAsciiNumber = currentLine:sub(startCol, endCol)
    print(fullAsciiNumber)
-   local newLine = currentLine:sub(1, startCol - 1) 
-      .. string.char(tonumber(fullAsciiNumber)) 
+   local newLine = currentLine:sub(1, startCol - 1)
+      .. string.char(tonumber(fullAsciiNumber))
       .. currentLine:sub(endCol + 1, #currentLine)
    vim.api.nvim_buf_set_lines(0, lineN - 1, lineN, false, { newLine})
 end
@@ -432,15 +435,15 @@ local function safeGetVar(window, varName)
 end
 
 local function openTerminalAndCleanUpWindows()
-   -- Opens up a window for the terminal if there isn't one, and 
+   -- Opens up a window for the terminal if there isn't one, and
    -- leaves only two windows (the current and the terminal). All other windows are closed
-   
+
    local currentState = safeGetTabVar(0, "termState")
    if currentState == "code" then
       local codeWin = vim.api.nvim_get_current_win()
       local termBuf = vim.api.nvim_tabpage_get_var(0, "termBuf")
       local termWin = vim.api.nvim_open_win(termBuf, false, {split = 'left', win = 0})
-      
+
       vim.api.nvim_tabpage_set_win(0, termWin)
       vim.api.nvim_win_hide(codeWin)
       vim.api.set_tabpage_var(0, "termState", "code")
@@ -449,24 +452,24 @@ local function openTerminalAndCleanUpWindows()
       local codeBuf = vim.api.nvim_tabpage_get_var(0, "codeBuf")
       local termWin = vim.api.nvim_get_current_win()
       local codeWin = vim.api.nvim_open_win(codeBuf, false, {split = 'left', win = 0})
-      
+
       vim.api.nvim_tabpage_set_win(0, codeWin)
       vim.api.nvim_win_hide(termWin)
       vim.api.set_tabpage_var(0, "termState", "terminal")
    else
       local codeWin = vim.api.nvim_get_current_win()
-      
+
       local termBuf = vim.api.nvim_create_buf(false, false)
       local termWin = vim.api.nvim_open_win(termBuf, false, {split = 'left', win = 0})
       vim.api.nvim_win_set_buf(termWin, termBuf)
       local chanId = vim.api.nvim_open_term(termBuf, {})
-      
+
       vim.api.nvim_tabpage_set_var(0, "termState", "terminal")
       vim.api.nvim_tabpage_set_var(0, "termChanId", chanId)
       vim.api.nvim_tabpage_set_var(0, "termBuf", termBuf)
       vim.api.nvim_tabpage_set_var(0, "codeBuf", vim.api.nvim_win_get_buf(codeWin))
       vim.api.nvim_tabpage_set_win(0, termWin)
-   
+
       vim.api.nvim_win_hide(codeWin)
       vim.api.set_tabpage_var(0, "termState", "terminal")
       sendSmth()
@@ -475,44 +478,44 @@ end
 
 
 --~local function openTerminalAndCleanUpWindows()
---~   -- Opens up a window for the terminal if there isn't one, and 
+--~   -- Opens up a window for the terminal if there isn't one, and
 --~   -- leaves only two windows (the current and the terminal). All other windows are closed
---~   
+--~
 --~   local ou = 1
---~   
+--~
 --~   local mainWin = vim.api.nvim_get_current_win()
 --~   setLine(ou, tostring(mainWin))
 --~   ou = ou + 1
---~   
---~   
+--~
+--~
 --~   local windowType = safeGetVar(mainWin, "windowType")
 --~   if windowType ~= "mainWindow" then
 --~      setLine(ou, "setting var")
 --~      ou = ou + 1
 --~      vim.api.nvim_win_set_var(mainWin, "windowType", "mainWindow")
 --~   end
---~   
---~   
+--~
+--~
 --~   -- close extra windows
 --~   local windows = vim.api.nvim_tabpage_list_wins(0)
 --~   local metTerminal = false
 --~   for _, window in ipairs(windows) do
---~   
+--~
 --~      setLine(ou, "encountered window  " .. tostring(window))
 --~      ou = ou + 1
---~      
+--~
 --~      if window ~= mainWin then
---~      
+--~
 --~         windowType = vim.api.nvim_win_get_var(window, "windowType")
 --~         if windowType == "termWindow" then
 --~            if metTerminal then
 --~               vim.api.nvim_win_hide(window)
---~            else 
+--~            else
 --~               metTerminal = true
 --~            end
 --~         else
 --~            vim.api.nvim_win_close(window, true)
---~         end 
+--~         end
 --~      end
 --~   end
 --~   if not metTerminal then
@@ -549,7 +552,7 @@ end
 
 local function newTerminal()
    local currWin = vim.api.nvim_get_current_win()
-   
+
    vim.cmd("wincmd v")
    vim.api.nvim_tabpage_set_win(0, currWin)
 
@@ -573,16 +576,16 @@ end
 local function sendSmth()
    local currWin = vim.api.nvim_get_current_win()
    local chanId = vim.api.nvim_tabpage_get_var(currWin, "termChanId")
-   
+
    vim.fn.jobstart('ls -al', {
         cwd = '/home/onr/proj',
         on_exit = function(j, d, e)  end,
-        on_stdout = 
-           function(j, d, e) 
+        on_stdout =
+           function(j, d, e)
               for i, line in ipairs(d) do
                  vim.api.nvim_chan_send(chanId, line .. "\n")
               end
-           end, 
+           end,
         on_stderr = someFunction
    })
 end
@@ -661,16 +664,16 @@ local function runProg(mode)
    vim.cmd.write()
    if mode == "debug" then
       vim.system(
-         {"bash", "-c", 
+         {"bash", "-c",
          "swaymsg exec -- foot --app-id=scratch --hold -D " .. wd .. " -e ./dev/debug.sh"
-         }, 
+         },
          {text = true}
       )
    else
       vim.system(
-         {"bash", "-c", 
+         {"bash", "-c",
          "swaymsg exec -- foot --app-id=scratch --hold -D " .. wd .. " -e ./dev/run.sh"
-         }, 
+         },
          {text = true}
       )
    end
@@ -682,20 +685,20 @@ vim.keymap.set("n", "<F5>", function() runProg("run") end, sil)
 vim.keymap.set("i", "<F5>", function() vim.cmd('stopinsert') runProg("run") end, sil)
 
 --map("n", "<C-m>", "vipk:'<,'>s/$/,/<CR>")
-map("n", "<C-,>", 
+map("n", "<C-,>",
    [[ :normal vipk<CR> <bar> :s/$/,/<CR> ]]
  --  [[:normal! vipk<CR> <bar> :'<,'>s/$/,/<CR>]]
 )
 --//~vim.keymap.set("n", "<C-,>",
---//~   function() 
---//~      floatingSelect("Choose action (`q` to quit)", 
---//~         {"Append commas to all lines in block", 
---//~          "Append commas and rectangularize text", 
+--//~   function()
+--//~      floatingSelect("Choose action (`q` to quit)",
+--//~         {"Append commas to all lines in block",
+--//~          "Append commas and rectangularize text",
 --//~          "Convert ASCII code under cursor to symbol"
 --//~         },
 --//~         {appendCommas, formatCommas, asciiCodeToSymbol}
 --//~      )
---//~   end 
+--//~   end
 --//~, sil)
 
 vim.keymap.set("i", "<C-]>", function() insertBlock("{", "}") end, sil)
