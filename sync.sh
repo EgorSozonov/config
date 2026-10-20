@@ -81,7 +81,6 @@ function updateFromDir() {
    local targetDir="${1/%\//}"  # ensure no trailing slash in $2
 
    for fN in "${fileNames[@]}"; do
-      echo "||$fN||"
       local outFile="$targetDir/${fN//\%/\/}"
       local srcFile="$2/$fN"
       for compSpec in "${compSpecificFNames[@]}"; do

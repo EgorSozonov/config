@@ -24,10 +24,15 @@ exec swayidle -w \
          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"'
 #         before-sleep 'swaylock -f -c 000000'
 
+#toggle keyboard layouts with right Alt
 input type:keyboard {
    xkb_layout "us,ru"
-   xkb_options "ctrl:nocaps,grp:lctrl_toggle"
+   xkb_options "ctrl:hyper_capscontrol,grp:toggle"
+   #xkb_options "ctrl:nocaps,grp:toggle"
 }
+
+#The "hyper" key, which is left Control
+bindsym Hyper_L focus right
 
 ### Key bindings
 # Start a terminal
@@ -58,8 +63,7 @@ bindsym $mod+v focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+b focus right
-bindsym Alt_R focus right
-bindsym Control_R focus left
+bindsym Control_R focus right
 # Or use $mod+[up|down|left|right]
 
 # Move the focused window with the same, but add Shift
@@ -77,15 +81,15 @@ set $ws1 "1:2"
 set $ws2 "2:3"
 set $ws3 "3:4"
 set $ws4 "4:5"
-set $ws5 "5:q"
-set $ws6 "6:w"
-set $ws7 "7:e"
-set $ws8 "8:r"
-set $ws9 "9:a"
-set $ws10 "10:s"
-set $ws11 "11:d"
-set $ws12 "12:f"
-set $ws13 "13:g"
+set $ws5 "5:Q"
+set $ws6 "6:W"
+set $ws7 "7:E"
+set $ws8 "8:R"
+set $ws9 "9:A"
+set $ws10 "10:S"
+set $ws11 "11:D"
+set $ws12 "12:F"
+set $ws13 "13:G"
 
 # Switch to workspace
 bindsym $mod+1 workspace $ws0
