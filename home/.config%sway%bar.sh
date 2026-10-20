@@ -56,7 +56,7 @@ function handleClicks() {
       elif [[ "$widgetName" == "help" ]]; then
          "$HOME/.config/sway/help.sh" 2>/dev/null
       elif  [[ "$widgetName" == "layout" ]]; then
-         swaymsg input "*" xkb_switch_layout next 1>/dev/null 2>/dev/null
+         swaymsg input type:keyboard xkb_switch_layout next 1>/dev/null 2>/dev/null
       elif [[ "$widgetName" == "keyboard" ]]; then
          wvkbd-mobintl -l simple,cyrillic
       elif [[ "$widgetName" == "time" ]]; then
@@ -73,6 +73,6 @@ echo '{"version": 1, "click_events": true, "cont_signal": 18, "stop_signal": 19}
 echo '['
 while true; do
    output
-   sleep 0.75
+   sleep 0.5
 done
 
