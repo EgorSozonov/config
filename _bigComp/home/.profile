@@ -21,7 +21,6 @@ fi
 
 export XDG_SESSION_TYPE=wayland
 export XDG_CURRENT_DESKTOP=sway
-export SVDIR=$HOME/.local/sv
 
 if [[ -z "$WAYLAND_DISPLAY" ]] && [[ -n "$XDG_VTNR" ]] && [[ "$XDG_VTNR" -eq 1 ]] ; then
    exec sway
