@@ -85,6 +85,8 @@ alias tree="tree -n"
 alias bc="bc -l"
 alias stickWindows="doas mount -o uid=$(id -u),gid=$(id -g),umask=000 -t vfat --mkdir \
    /dev/sda1 /mnt/stick"
+alias sdRpi="doas mount -o uid=$(id -u),gid=$(id -g),umask=000 -t vfat --mkdir \
+   /dev/sda1 /mnt/rpi"
 alias g="grep -rn --exclude-dir={.git,proto}"
 alias updateBoot="doas grub-mkconfig -o /boot/grub/grub.cfg"
 alias updateInitramfs="doas mkinitcpio -P"

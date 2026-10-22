@@ -64,7 +64,7 @@ map("i", "<C-space>", "<space><space><space>") -- indentation insert
 map("i", "<C-s>", "<Esc>:wa<CR>") -- save all and enter normal mode
 map("v", "<C-c>", '"+y')
 map("n", "<C-v>", '"+p')
-map("n", "q", ':quit<CR>') -- easier than ever to quit Vim!
+map("n", "q", ':bd<CR>')
 map("i", "<C-v>", "<C-r>+")
 map("n", ";", ":")
 map("v", ";", ":")
