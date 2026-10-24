@@ -9,38 +9,38 @@ function output() {
       | grep -E "state" | cut -F 3)
    if [[ $batteryStatus = "discharging" ]]; then
       if (( charge > 80 )); then
-         batterySymb="   $charge%"
+         batterySymb="  $charge%"
          batteryColor="#00FF00"
       elif (( charge > 50 )); then
-         batterySymb="   $charge%"
+         batterySymb="  $charge%"
          batteryColor="#F0F0F0"
       elif (( charge > 20 )); then
-         batterySymb="   $charge%"
+         batterySymb="  $charge%"
          batteryColor="#F0F0F0"
       else
-         batterySymb="   $charge%"
+         batterySymb="  $charge%"
          batteryColor="#FF3030"
       fi
    else
-      batterySymb="⚡ $charge%"
+      batterySymb="⚡$charge%"
       batteryColor="#F0F000"
    fi
 
    cat <<EOF
 [
-{"name":"start", "full_text": "   ", "separator": true, "separator_block_width": 30},
+{"name":"start", "full_text": "   ", "separator": true, "separator_block_width": 20},
 {"name":"minim", "full_text": "  ", "separator": false},
 {"name":"maxim", "full_text": "  ", "separator": false},
-{"name":"close", "full_text": "  ", "separator": true, "separator_block_width": 30},
-{"name":"layout", "full_text": "en/ru", "separator": true, "separator_block_width": 30},
-{"name":"keyboard", "full_text": "   ", "separator": true, "separator_block_width": 30},
-{"name":"sound", "full_text": "  ", "separator": true, "separator_block_width": 30},
-{"name":"wifi", "full_text": " ", "separator": true, "separator_block_width": 30},
-{"name":"help", "full_text": "? ", "separator": true, "separator_block_width": 30},
+{"name":"close", "full_text": "  ", "separator": true, "separator_block_width": 20},
+{"name":"layout", "full_text": "la:ru", "separator": true, "separator_block_width": 20},
+{"name":"keyboard", "full_text": "   ", "separator": true, "separator_block_width": 20},
+{"name":"sound", "full_text": "  ", "separator": true, "separator_block_width": 20},
+{"name":"wifi", "full_text": " ", "separator": true, "separator_block_width": 20},
+{"name":"help", "full_text": "? ", "separator": true, "separator_block_width": 20},
 {"name":"battery", "full_text":"$batterySymb", "color": "$batteryColor",
-   "separator": true, "separator_block_width": 30},
+   "separator": true, "separator_block_width": 20},
 {"name":"time", "full_text":"$(date '+%H:%M (%d)')", "separator": true,
-   "separator_block_width": 30}
+   "separator_block_width": 20}
 ],
 EOF
 }
@@ -52,7 +52,7 @@ function handleClicks() {
       local widgetName=$(echo "$line" | sed 's/^,//' | jq -r '.name // empty')
 
       if [[ "$widgetName" == "start" ]]; then
-         pkill wofi || wofi --show drun --allow-images -a --columns 2 --prompt ""
+         killall wofi || wofi --show drun --allow-images -a --columns 2 --prompt "" &>/dev/null
       elif [[ "$widgetName" == "minim" ]]; then
          swaymsg layout splith &>/dev/null
       elif [[ "$widgetName" == "maxim" ]]; then
@@ -60,13 +60,14 @@ function handleClicks() {
       elif [[ "$widgetName" == "close" ]]; then
          swaymsg kill &>/dev/null
       elif [[ "$widgetName" == "sound" ]]; then
-         foot sh -c alsamixer 1>/dev/null 2>/dev/null
+         foot sh -c alsamixer &>/dev/null
       elif [[ "$widgetName" == "wifi" ]]; then
          foot -a "leDialog" sh -c impala 1>/dev/null 2>/dev/null
       elif [[ "$widgetName" == "help" ]]; then
-         "$HOME/.config/sway/help.sh" 2>/dev/null
+         foot -a "leDialog" sh -c \
+            'less --header=2,0,1 --use-color --color=Hkg $HOME/.config/sway/help' &>/dev/null
       elif  [[ "$widgetName" == "layout" ]]; then
-         swaymsg input type:keyboard xkb_switch_layout next 1>/dev/null 2>/dev/null
+         swaymsg input type:keyboard xkb_switch_layout next &>/dev/null
       elif [[ "$widgetName" == "keyboard" ]]; then
          wvkbd-mobintl -l simple,cyrillic
       elif [[ "$widgetName" == "time" ]]; then

@@ -119,7 +119,7 @@ alias battery="acpi -b"
 alias zzz="aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend"
 alias zz="aplay -q ~/music/xpMus/shutdown.wav; systemctl suspend"
 
-alias лат="swaymsg input type:keyboard xkb_switch_layout next"
+alias ла="swaymsg input type:keyboard xkb_switch_layout next"
 alias ru="swaymsg input type:keyboard xkb_switch_layout next"
 
 alias openEyr="v --cmd 'cd ~/proj/eyr' ~/proj/eyr/*.c ~/proj/eyr/test/parserTest.c ~/proj/eyr/libeyr.h"

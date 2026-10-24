@@ -1,0 +1,11 @@
+
+[[[   S W A Y  K E Y B I N D I N G S   ]]]
+
+Workspaces: win+1, ..., win+5, win+q, ..., win+r, win+a, ..., win+g
+Open window: win+x
+Open terminal: win+z
+Next window: win+v, win+b, right Alt
+Close window: win+c
+
+[Close THIS window: win+c or q]
+
