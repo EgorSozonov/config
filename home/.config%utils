@@ -1,3 +1,10 @@
+function e() {
+   if [[ -f "$1" ]]; then
+      nvim "$@"
+   elif [[ -d "$1" ]]; then
+      cd "$1"
+   fi
+}
 
 function unflash() {
    local mountDir="/mnt/flash"

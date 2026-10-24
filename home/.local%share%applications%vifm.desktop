@@ -1,0 +1,16 @@
+[Desktop Entry]
+Categories=System;FileManager;FileTools;ConsoleOnly;
+Comment=Vim-like ncurses based file manager
+Comment[ru]=Файловый менеджер на базе ncurses в стиле Vim
+TryExec=vifm
+Exec=foot sh -c '/usr/bin/vifm %F'
+GenericName=File Manager
+GenericName[ru]=Файловый менеджер
+Icon=vifm
+Name=Vifm
+Name[ru]=Vifm
+Terminal=false
+Type=Application
+Keywords=File;Directory;Browse;
+Keywords[ru]=Файл;Каталог;Обзор;
+MimeType=inode/directory;
