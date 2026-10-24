@@ -29,6 +29,9 @@ function output() {
    cat <<EOF
 [
 {"name":"start", "full_text": "   ", "separator": true, "separator_block_width": 30},
+{"name":"minim", "full_text": "  ", "separator": false},
+{"name":"maxim", "full_text": "  ", "separator": false},
+{"name":"close", "full_text": "  ", "separator": true, "separator_block_width": 30},
 {"name":"layout", "full_text": "en/ru", "separator": true, "separator_block_width": 30},
 {"name":"keyboard", "full_text": "   ", "separator": true, "separator_block_width": 30},
 {"name":"sound", "full_text": "  ", "separator": true, "separator_block_width": 30},
@@ -50,6 +53,12 @@ function handleClicks() {
 
       if [[ "$widgetName" == "start" ]]; then
          pkill wofi || wofi --show drun --allow-images -a --columns 2 --prompt ""
+      elif [[ "$widgetName" == "minim" ]]; then
+         swaymsg layout splith &>/dev/null
+      elif [[ "$widgetName" == "maxim" ]]; then
+         swaymsg layout tabbed &>/dev/null
+      elif [[ "$widgetName" == "close" ]]; then
+         swaymsg kill &>/dev/null
       elif [[ "$widgetName" == "sound" ]]; then
          foot sh -c alsamixer 1>/dev/null 2>/dev/null
       elif [[ "$widgetName" == "wifi" ]]; then

@@ -54,6 +54,10 @@ vim.api.nvim_set_hl(0, "Comment", { fg = "#00FF00" })
 vim.api.nvim_set_hl(0, "Folded", { bg = "#303030" })
 vim.api.nvim_set_hl(0, "Statement", { fg = "#FFFF00" })
 
+-- Disable netrw (built-in directory explorer) if desired
+vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrw = 1
+
 --}}}
 --{{{ Core keybindings
 

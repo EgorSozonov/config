@@ -181,6 +181,7 @@ bindsym Shift+Print exec grimshot copy area
 
 bar {
    status_command ~/.config/sway/bar.sh
+   separator_symbol "|"
 
    colors {
       statusline #f0f0f0
@@ -189,7 +190,7 @@ bar {
       active_workspace #000000 #000000 #00ff00
       separator #f0f0f0
    }
-   height 16
+   height 18
    font Linejoy 14
    strip_workspace_numbers yes
    tray_output *
