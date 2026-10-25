@@ -60,18 +60,18 @@ function handleClicks() {
       elif [[ "$widgetName" == "close" ]]; then
          swaymsg kill &>/dev/null
       elif [[ "$widgetName" == "sound" ]]; then
-         foot sh -c alsamixer &>/dev/null
+         swaymsg exec 'foot sh -c alsamixer' &>/dev/null
       elif [[ "$widgetName" == "wifi" ]]; then
-         foot -a "leDialog" sh -c impala 1>/dev/null 2>/dev/null
+         swaymsg exec "foot sh -c impala" &>/dev/null
       elif [[ "$widgetName" == "help" ]]; then
-         foot -a "leDialog" sh -c \
-            'less --header=2,0,1 --use-color --color=Hkg $HOME/.config/sway/help' &>/dev/null
+         swaymsg exec "foot sh -c \
+            'less --header=2,0,1 --use-color --color=Hkg $HOME/.config/sway/help'" &>/dev/null
       elif  [[ "$widgetName" == "layout" ]]; then
          swaymsg input type:keyboard xkb_switch_layout next &>/dev/null
       elif [[ "$widgetName" == "keyboard" ]]; then
          wvkbd-mobintl -l simple,cyrillic
       elif [[ "$widgetName" == "time" ]]; then
-         foot -a "leDialog" sh -c "calcurse" 1>/dev/null 2>/dev/null
+         swaymsg exec 'foot sh -c "calcurse"' &>/dev/null
       fi
    done
 }

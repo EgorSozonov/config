@@ -93,6 +93,7 @@ alias updateFonts="fc-cache -fv"
 alias fileTypes="find . -type f | xargs file"
 alias v="zathura"
 alias i="swayimg --appid='leDialog' -g ."
+alias vid="mpv -fs . &>/dev/null"
 alias wifi="impala"
 
 alias burnIso="pls dd bs=4M conv=fsync oflag=direct status=progress"
