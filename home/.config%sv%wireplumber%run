@@ -1,7 +1,0 @@
-#! /usr/bin/bash
-
-export HOME="/home/$(id -un)"
-export XDG_RUNTIME_DIR=/tmp/user/$(id -u)
-
-sv check "$HOME/.local/sv/pipewire" >/dev/null 2>&1 || exit 1
-exec wireplumber
