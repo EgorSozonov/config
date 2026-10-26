@@ -136,11 +136,6 @@ bindsym $mod+Shift+t fullscreen
 bindsym $mod+t layout toggle tabbed split
 bindsym $mod+u layout toggle stacked split
 
-#Make the titlebar in tabbed layout as small as possible
-titlebar_padding 1
-titlebar_border_thickness 0
-font pango:monospace 1
-
 #Toggle the current focus between tiling and floating mode
 bindsym $mod+space floating toggle
 
@@ -181,7 +176,7 @@ bindsym Shift+Print exec grimshot copy area
 
 bar {
    status_command ~/.config/sway/bar.sh
-   separator_symbol "|"
+   separator_symbol " "
 
    colors {
       statusline #f0f0f0
@@ -190,7 +185,7 @@ bar {
       active_workspace #000000 #000000 #00ff00
       separator #f0f0f0
    }
-   height 18
+   height 14
    font Linejoy 14
    strip_workspace_numbers yes
    tray_output *
@@ -199,10 +194,16 @@ bar {
 
 gaps inner 0
 gaps outer 0
-default_border pixel 1
-default_floating_border pixel 1
+
+#Make the titlebar in tabbed layout as small as possible
+titlebar_padding 1 1
+titlebar_border_thickness 0
+font pango:monospace 1
+default_border normal 0
+default_floating_border normal 0
+
 ############## %border %background %text %indicator %child_border
-client.unfocused #000000 #80ff80 #ffffff #000000ff #000000ff
+client.unfocused #000000 #000000 #ffffff #000000ff #000000ff
 client.focused #80ff80ff #80ff80ff #ffffffff #800000ff #80ff80ff
 smart_borders on
 
