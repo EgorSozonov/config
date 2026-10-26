@@ -8,11 +8,11 @@ alias realCp="/usr/bin/cp"
 alias mv="mv -i"
 alias realMv="/usr/bin/mv"
 
-alias pinstall="doas pacman -Syu --needed"
+alias pinstall="doas pacman -S --needed"
 alias preinstall="doas pacman -Syu"
 alias premove="doas pacman -Rn"
 #Hard remove = doas pacman -Rdd
-alias pupdate="doas pacman -Sy archlinux-keyring && doas pacman -Su"
+alias pupdate="doas pacman -Sy archlinux-keyring && doas pacman -Syu"
 alias pinfo="pacman -Qi"
 alias punused="pacman -Qqdt"
 alias poptional="pacman -Qqttd" # packages that were installed only as optional dependencies

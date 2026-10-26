@@ -52,7 +52,8 @@ function handleClicks() {
       local widgetName=$(echo "$line" | sed 's/^,//' | jq -r '.name // empty')
 
       if [[ "$widgetName" == "start" ]]; then
-         killall wofi || wofi --show drun --allow-images -a --columns 2 --prompt "" &>/dev/null
+         swaymsg exec 'pkill wofi || wofi --show drun --allow-images -a --columns 2 --prompt ""' \
+               &>/dev/null
       elif [[ "$widgetName" == "minim" ]]; then
          swaymsg layout splith &>/dev/null
       elif [[ "$widgetName" == "maxim" ]]; then
