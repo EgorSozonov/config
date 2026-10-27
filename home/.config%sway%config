@@ -30,8 +30,7 @@ input type:keyboard {
    xkb_options "ctrl:nocaps,grp:lctrl_toggle"
 }
 
-#The "hyper" key, which is left Control
-bindsym Hyper_L focus right
+bindsym Alt_R focus right
 
 ### Key bindings
 # Start a terminal
@@ -165,7 +164,7 @@ bindsym $mod+l resize grow width 40px
 #
 bindsym --locked F2 exec amixer set Master 3dB-
 bindsym --locked F3 exec "~/.config/sway/soundUp.sh"
-bindsym --locked F1 exec "amixer -q set Master off; amixer -q set Speaker off"
+bindsym --locked F1 exec "amixer -q set Speaker off"
 # Special keys to adjust brightness via brightnessctl
 #bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
 #bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
@@ -176,20 +175,21 @@ bindsym Shift+Print exec grimshot copy area
 
 bar {
    status_command ~/.config/sway/bar.sh
-   separator_symbol " "
+   separator_symbol ""
 
    colors {
       statusline #f0f0f0
       focused_workspace #ffff00 #000000 #00ff00
       inactive_workspace #000000 #000000 #00ff00
       active_workspace #000000 #000000 #00ff00
-      separator #f0f0f0
+      #separator #f0f0f0
    }
-   height 14
-   font Linejoy 14
+   height 15
+   font Linejoy 12
    strip_workspace_numbers yes
    tray_output *
-   tray_padding 2
+   tray_padding 1
+   gaps 0
 }
 
 gaps inner 0

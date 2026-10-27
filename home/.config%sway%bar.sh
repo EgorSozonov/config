@@ -9,38 +9,68 @@ function output() {
       | grep -E "state" | cut -F 3)
    if [[ $batteryStatus = "discharging" ]]; then
       if (( charge > 80 )); then
-         batterySymb="{  $charge%}"
+         batterySymb="   $charge% "
          batteryColor="#00FF00"
       elif (( charge > 50 )); then
-         batterySymb="{  $charge%}"
+         batterySymb="   $charge% "
          batteryColor="#F0F0F0"
       elif (( charge > 20 )); then
-         batterySymb="{  $charge%}"
+         batterySymb="   $charge% "
          batteryColor="#F0F0F0"
       else
-         batterySymb="{  $charge%}"
+         batterySymb="   $charge% "
          batteryColor="#FF3030"
       fi
    else
-      batterySymb="{⚡ $charge%}"
+      batterySymb=" ⚡ $charge% "
       batteryColor="#F0F000"
    fi
 
    cat <<EOF
 [
-{"name":"start", "full_text": "   ", "separator": true, "separator_block_width": 20},
-{"name":"time", "full_text":"$(date '+%H:%M (%d)')", "separator": true,
-   "separator_block_width": 20},
-{"name":"minim", "full_text": "  ", "separator": false},
-{"name":"maxim", "full_text": "  ", "separator": false},
-{"name":"close", "full_text": "  ", "separator": true, "separator_block_width": 20},
+{"name":"start", "full_text": "   ",
+   "separator": false, "separator_block_width": 0,
+   "border": "#00f000ff", "border_top": 1, "border_right":1, "border_bottom": 0},
+{"name":"time", "full_text":" $(date '+%H:%M (%d)') ",
+   "separator": false, "separator_block_width": 0,
+   "border": "#00f000ff", "border_top": 1, "border_right":1, "border_bottom": 0,
+   "border_left": 0 },
+{"name":"minim", "full_text": "   ",
+   "separator": false, "separator_block_width": 0,
+   "border": "#00f000ff", "border_top": 1, "border_right":0, "border_bottom": 0,
+   "border_left": 0 },
+{"name":"maxim", "full_text": "   ",
+   "separator": false, "separator_block_width": 0,
+   "border": "#00f000ff", "border_top": 1, "border_right":0, "border_bottom": 0,
+   "border_left": 0 },
+{"name":"close", "full_text": "  ",
+   "separator": false, "separator_block_width": 0,
+   "border": "#00f000ff", "border_top": 1, "border_right": 1, "border_bottom": 0,
+   "border_left": 0 },
 {"name":"battery", "full_text":"$batterySymb", "color": "$batteryColor",
-   "separator": true, "separator_block_width": 20},
-{"name":"layout", "full_text": "la:ru", "separator": true, "separator_block_width": 20},
-{"name":"keyboard", "full_text": "   ", "separator": true, "separator_block_width": 20},
-{"name":"sound", "full_text": "  ", "separator": true, "separator_block_width": 20},
-{"name":"wifi", "full_text": " ", "separator": true, "separator_block_width": 20},
-{"name":"help", "full_text": "? ", "separator": true, "separator_block_width": 20}
+   "separator": false, "separator_block_width": 0,
+   "border": "#00f000ff", "border_top": 1, "border_right": 1, "border_bottom": 0,
+   "border_left": 0 },
+{"name":"layout", "full_text": " la:ru ",
+   "separator": false, "separator_block_width": 0,
+   "border": "#00f000ff", "border_top": 1, "border_right": 1, "border_bottom": 0,
+   "border_left": 0 },
+{"name":"keyboard", "full_text": "  ",
+   "separator": false, "separator_block_width": 0,
+   "border": "#00f000ff", "border_top": 1, "border_right": 1, "border_bottom": 0,
+   "border_left": 0 },
+{"name":"sound", "full_text": "  ",
+   "separator": false, "separator_block_width": 0,
+   "border": "#00f000ff", "border_top": 1, "border_right": 1, "border_bottom": 0,
+   "border_left": 0 },
+{"name":"wifi", "full_text": "  ",
+   "separator": false, "separator_block_width": 0,
+   "border": "#00f000ff", "border_top": 1, "border_right": 1, "border_bottom": 0,
+   "border_left": 0 },
+{"name":"help", "full_text": " ? ",
+   "separator": false, "separator_block_width": 0,
+   "border": "#00f000ff", "border_top": 1, "border_right": 0, "border_bottom": 0,
+   "border_left": 0 }
 ],
 EOF
 }
@@ -70,7 +100,7 @@ function handleClicks() {
       elif  [[ "$widgetName" == "layout" ]]; then
          swaymsg input type:keyboard xkb_switch_layout next &>/dev/null
       elif [[ "$widgetName" == "keyboard" ]]; then
-         wvkbd-mobintl -l simple,cyrillic
+         swaymsg exec 'pkill wvkbd-mobintl || wvkbd-mobintl -l simple,cyrillic' &>/dev/null
       elif [[ "$widgetName" == "time" ]]; then
          swaymsg exec 'foot sh -c "calcurse"' &>/dev/null
       fi
