@@ -91,9 +91,9 @@ function handleClicks() {
       elif [[ "$widgetName" == "close" ]]; then
          swaymsg kill &>/dev/null
       elif [[ "$widgetName" == "sound" ]]; then
-         swaymsg exec 'foot sh -c alsamixer' &>/dev/null
+         swaymsg exec 'pkill alsamixer || foot sh -c alsamixer' &>/dev/null
       elif [[ "$widgetName" == "wifi" ]]; then
-         swaymsg exec "foot sh -c impala" &>/dev/null
+         swaymsg exec "pkill impala || foot sh -c impala" &>/dev/null
       elif [[ "$widgetName" == "help" ]]; then
          swaymsg exec "foot sh -c \
             'less --header=2,0,1 --use-color --color=Hkg $HOME/.config/sway/help'" &>/dev/null
@@ -102,7 +102,7 @@ function handleClicks() {
       elif [[ "$widgetName" == "keyboard" ]]; then
          swaymsg exec 'pkill wvkbd-mobintl || wvkbd-mobintl -l simple,cyrillic' &>/dev/null
       elif [[ "$widgetName" == "time" ]]; then
-         swaymsg exec 'foot sh -c "calcurse"' &>/dev/null
+         swaymsg exec 'pkill calcurse || foot sh -c "calcurse"' &>/dev/null
       fi
    done
 }
