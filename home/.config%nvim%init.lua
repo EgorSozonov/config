@@ -23,6 +23,8 @@ vim.g.loaded_matchparen = true
 vim.g.loaded_matchparen = true
 vim.g.loaded_matchbracket = true
 vim.opt.termguicolors = true
+vim.opt.listchars = "tab:. "
+vim.opt.list = true
 
 vim.o.shada = nil -- turn off the useless saving of every piece of state
 
@@ -31,7 +33,7 @@ o.tabstop = 3
 o.softtabstop = 0
 o.shiftwidth = 3
 o.smarttab = true
-o.expandtab = true
+o.expandtab = false
 o.smartindent = true
 o.ignorecase = true
 o.textwidth = 96

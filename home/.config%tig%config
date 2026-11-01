@@ -2,3 +2,4 @@
 bind diff y @sh -c "git show %(commit) | wl-copy"
 bind stage y @sh -c "git show %(commit) | wl-copy"
 bind status y @sh -c "echo -n %(directory) | wl-copy"
+set tab-size = 3

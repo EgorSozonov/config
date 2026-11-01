@@ -184,8 +184,8 @@ bar {
       active_workspace #000000 #000000 #00ff00
       #separator #f0f0f0
    }
-   height 15
-   font Linejoy 12
+   height 18
+   font Linejoy 14
    strip_workspace_numbers yes
    tray_output *
    tray_padding 1
@@ -199,10 +199,10 @@ gaps outer 0
 titlebar_padding 1 1
 titlebar_border_thickness 0
 font pango:monospace 1
-default_border normal 0
-default_floating_border normal 0
+default_border normal 1
+default_floating_border normal 1
 
-############## %border %background %text %indicator %child_border
+############## %border %backgroundOfTitlebar %text %indicator %child_border
 client.unfocused #000000 #000000 #ffffff #000000ff #000000ff
 client.focused #80ff80ff #80ff80ff #ffffffff #800000ff #80ff80ff
 smart_borders on
