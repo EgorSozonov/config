@@ -472,6 +472,8 @@ filetype *.deb echo "$(dpkg-deb -I %c; echo; dpkg-deb -c %c)" | less
 " Start shell in current directory
 nnoremap s :shell<cr>
 nnoremap ; :
+nnoremap e :!nvim "%f"<cr>
+nnoremap q :q<cr>
 
 " Display sorting dialog
 nnoremap S :sort<cr>

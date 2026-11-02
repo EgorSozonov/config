@@ -121,6 +121,12 @@ vim.api.nvim_create_autocmd("BufWritePre", {
    end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function()
+    pcall(vim.treesitter.stop)
+  end,
+})
+
 --}}}
 --{{{ My custom functions
 --{{{ Utils

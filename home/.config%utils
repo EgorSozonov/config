@@ -495,3 +495,9 @@ function premove() {
       doas apt purge "$@"
    fi
 }
+
+function newVersion() {
+	if ! [[ -z "$1" ]]; then
+		git tag -a $1 -m "v$1"
+	fi
+}
