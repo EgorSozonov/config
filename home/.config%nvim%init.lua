@@ -1,9 +1,9 @@
 --{{{ Utils
 
 function map(mode, lhs, rhs)
-    local options = { noremap = true }
-    options = vim.tbl_extend("force", options, {silent = true})
-    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+	 local options = { noremap = true }
+	 options = vim.tbl_extend("force", options, {silent = true})
+	 vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 local g = vim.g -- global variables
 local o = vim.o -- get or set options
@@ -35,6 +35,7 @@ o.shiftwidth = 3
 o.smarttab = true
 o.expandtab = false
 o.smartindent = true
+o.autoindent = true
 o.ignorecase = true
 o.textwidth = 96
 vim.opt.clipboard = "unnamedplus" -- normal copy and paste via X clipboard
@@ -102,28 +103,28 @@ map("n", "x", '"_x') -- don't clobber the register
 --{{{Autocommands
 
 vim.api.nvim_create_autocmd("VimEnter", {
-   pattern = "*",
-   callback = function()
-      -- Only change directory if it's a normal file
-      if vim.bo.buftype == "" then
-         vim.cmd("cd " .. vim.fn.expand("%:p:h"))
-      end
-   end,
+	pattern = "*",
+	callback = function()
+		-- Only change directory if it's a normal file
+		if vim.bo.buftype == "" then
+			vim.cmd("cd " .. vim.fn.expand("%:p:h"))
+		end
+	end,
 })
 
 --Delete trailing spaces on save
 vim.api.nvim_create_autocmd("BufWritePre", {
-   pattern = "*",
-   callback = function()
-      local save_cursor = vim.fn.getpos(".")
-      vim.cmd([[%s;\s\+$;;e]])
-      vim.fn.setpos(".", save_cursor)
-   end,
+	pattern = "*",
+	callback = function()
+		local save_cursor = vim.fn.getpos(".")
+		vim.cmd([[%s;\s\+$;;e]])
+		vim.fn.setpos(".", save_cursor)
+	end,
 })
 
 vim.api.nvim_create_autocmd("FileType", {
   callback = function()
-    pcall(vim.treesitter.stop)
+	 pcall(vim.treesitter.stop)
   end,
 })
 
@@ -132,90 +133,92 @@ vim.api.nvim_create_autocmd("FileType", {
 --{{{ Utils
 
 local function countIndentation(currentLine)
-    local numSpaces = 0
-    for i = 1, #currentLine do
-        local char = currentLine:sub(i, i)
-        if char == ' ' then
-            numSpaces = numSpaces + 1
-        else
-            return numSpaces
-        end
-    end
-    return numSpaces
+	local numSpaces = 0
+	for i = 1, #currentLine do
+		local char = currentLine:sub(i, i)
+		if char == ' ' then
+			numSpaces = numSpaces + 1
+		elseif char == '\t' then
+			numSpaces = numSpaces + 1
+		else
+			return numSpaces
+		end
+	end
+	return numSpaces
 end
 
 
 local function isLineEmpty(line)
-    local stripped = string.gsub(line, "%s+", "")
-    return #stripped == 0
+	local stripped = string.gsub(line, "%s+", "")
+	return #stripped == 0
 end
 
 
 local function getLimitsOfCurrentBlock()
-    -- returns start and end line of the current block of lines (delimited by empty lines)
+	-- returns start and end line of the current block of lines (delimited by empty lines)
 
-    local currLine = vim.api.nvim_win_get_cursor(0)[1] -- current line number
-    local i = currLine
-    while i > 0 do
-        local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
-        if not currLine or isLineEmpty(currLine) then
-            break
-        end
-        i = i - 1
-    end
-    local lineStart = i + 1
+	local currLine = vim.api.nvim_win_get_cursor(0)[1] -- current line number
+	local i = currLine
+	while i > 0 do
+		local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+		if not currLine or isLineEmpty(currLine) then
+				break
+		end
+		i = i - 1
+	end
+	local lineStart = i + 1
 
-    local countLines = vim.api.nvim_buf_line_count(0)
-    i = currLine
-    while i <= countLines do
-        local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
-        if not currLine or isLineEmpty(currLine) then
-            break
-        end
-        i = i + 1
-    end
-    return {start = lineStart, endd = i}
+	local countLines = vim.api.nvim_buf_line_count(0)
+	i = currLine
+	while i <= countLines do
+		local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+		if not currLine or isLineEmpty(currLine) then
+				break
+		end
+		i = i + 1
+	 end
+	 return {start = lineStart, endd = i}
 end
 
 
 local function toNormalMode()
-    local ky = vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true)
-    vim.api.nvim_feedkeys(ky, 'n', false)
+	local ky = vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, false, true)
+	vim.api.nvim_feedkeys(ky, 'n', false)
 end
 
 
 local function getLineContent(lineNum)
-    return vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+	 return vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
 end
 
 
 local function getCurrLineContent()
-    local lineNum = vim.api.nvim_win_get_cursor(0)[1]
-    return getLineContent(lineNum)
+	 local lineNum = vim.api.nvim_win_get_cursor(0)[1]
+	 return getLineContent(lineNum)
 end
 
 
 local function getCurrentIndentation()
-    -- returns string with the same # of spaces as current line has at start
-    local currentLine = getCurrLineContent()
-    local numSpaces = countIndentation(currentLine)
-    return string.sub(currentLine, 1, numSpaces)
+	 -- returns string with the same # of spaces as current line has at start
+	 local currentLine = getCurrLineContent()
+	 local numSpaces = countIndentation(currentLine)
+	 return string.sub(currentLine, 1, numSpaces)
 end
 
 
 local function insertBlock(delimiter, closingDelimiter)
-    -- inserts a block, with indentation and closing delimiter
-    local spaces = getCurrentIndentation()
-    local lineNum = vim.api.nvim_win_get_cursor(0)[1]
-    local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
-    vim.api.nvim_buf_set_lines(0, lineNum - 1, lineNum, false, { currentLine .. " " .. delimiter})
-    vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. closingDelimiter})
-    vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. "   "})
-    vim.api.nvim_win_set_cursor(0, { lineNum + 1, #spaces + 4 })
+	 -- inserts a block, with indentation and closing delimiter
+	 local spaces = getCurrentIndentation()
+	 local lineNum = vim.api.nvim_win_get_cursor(0)[1]
+	 local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+	 vim.api.nvim_buf_set_lines(0, lineNum - 1, lineNum, false, { currentLine .. " " .. delimiter})
+	 vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. closingDelimiter})
+	 vim.api.nvim_buf_set_lines(0, lineNum, lineNum, false, {spaces .. "   "})
+	 vim.api.nvim_win_set_cursor(0, { lineNum + 1, #spaces + 4 })
 end
 
 local function setLine(ind, content)
-    vim.api.nvim_buf_set_lines(0, ind - 1, ind, false, {content})
+	 vim.api.nvim_buf_set_lines(0, ind - 1, ind, false, {content})
 end
 
 function windowAtCenter(inputWidth)
@@ -234,258 +237,258 @@ end
 local function formatCommas()
 -- Add commas to every line (if it doesn't end in a comma yet) and arranges them
 -- in groups so that lines are no more than 100 symbols
-    local limits = getLimitsOfCurrentBlock()
+	 local limits = getLimitsOfCurrentBlock()
 
-    local i = limits.start
-    local j = i
-    local currLen = 0
-    local lineBuilder = ""
-    while i < limits.endd do
-       local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
-       existingLine = string.gsub(existingLine, "%s+", "")
-       if existingLine[-1] ~= "," then
-          existingLine = existingLine .. ","
-       end
-       currLen = currLen + existingLine:len()
-       lineBuilder = lineBuilder .. existingLine
-       if currLen >= 100 then
-          vim.api.nvim_buf_set_lines(0, j - 1, j, false, {lineBuilder})
-          j = j + 1
-          currLen = 0
-          lineBuilder = ""
-       end
-       i = i + 1
-    end
-    if lineBuilder:len() > 0 then
-       vim.api.nvim_buf_set_lines(0, j - 1, j, false, {lineBuilder})
-       j = j + 1
-   end
-   while j < limits.endd do
-      vim.api.nvim_buf_set_lines(0, j - 1, j, false, {""})
-      j = j + 1
-   end
+	 local i = limits.start
+	 local j = i
+	 local currLen = 0
+	 local lineBuilder = ""
+	 while i < limits.endd do
+		 local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+		 existingLine = string.gsub(existingLine, "%s+", "")
+		 if existingLine[-1] ~= "," then
+			 existingLine = existingLine .. ","
+		 end
+		 currLen = currLen + existingLine:len()
+		 lineBuilder = lineBuilder .. existingLine
+		 if currLen >= 100 then
+			 vim.api.nvim_buf_set_lines(0, j - 1, j, false, {lineBuilder})
+			 j = j + 1
+			 currLen = 0
+			 lineBuilder = ""
+		 end
+		 i = i + 1
+	 end
+	 if lineBuilder:len() > 0 then
+		 vim.api.nvim_buf_set_lines(0, j - 1, j, false, {lineBuilder})
+		 j = j + 1
+	end
+	while j < limits.endd do
+		vim.api.nvim_buf_set_lines(0, j - 1, j, false, {""})
+		j = j + 1
+	end
 
-   vim.api.nvim_win_set_cursor(0, {limits.start, 1})
+	vim.api.nvim_win_set_cursor(0, {limits.start, 1})
 end
 
 local function appendCommas()
-    local limits = getLimitsOfCurrentBlock()
+	 local limits = getLimitsOfCurrentBlock()
 
-    i = limits.start
-    while i < (limits.endd - 1) do
-        local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
-        vim.api.nvim_buf_set_lines(0, i - 1, i, false, {existingLine .. ","})
-        i = i + 1
-    end
+	 i = limits.start
+	 while i < (limits.endd - 1) do
+		  local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+		  vim.api.nvim_buf_set_lines(0, i - 1, i, false, {existingLine .. ","})
+		  i = i + 1
+	 end
 end
 
 local function asciiCodeToSymbol()
-   local currentLine = getCurrLineContent()
-   local lineN = vim.api.nvim_win_get_cursor(0)[1]
-   local cursorCol = vim.api.nvim_win_get_cursor(0)[2] + 1 -- +1 because the Neovim API is stupid
-   local startCol = -1
-   local endCol = -1
-   for j = cursorCol, 1, -1 do
-      local charCode = string.byte(currentLine:sub(j, j))
-      if charCode < 48 or charCode > 57 then
-         startCol = j + 1
-         break
-      end
-   end
-   if startCol == -1 then
-      startCol = 1
-   end
+	local currentLine = getCurrLineContent()
+	local lineN = vim.api.nvim_win_get_cursor(0)[1]
+	local cursorCol = vim.api.nvim_win_get_cursor(0)[2] + 1 -- +1 because the Neovim API is stupid
+	local startCol = -1
+	local endCol = -1
+	for j = cursorCol, 1, -1 do
+		local charCode = string.byte(currentLine:sub(j, j))
+		if charCode < 48 or charCode > 57 then
+			startCol = j + 1
+			break
+		end
+	end
+	if startCol == -1 then
+		startCol = 1
+	end
 
-   for j = cursorCol, #currentLine, 1 do
-      local charCode = string.byte(currentLine:sub(j, j))
-      if charCode < 48 or charCode > 57 then
-         endCol = j - 1
-         break
-      end
-   end
-   if endCol == -1 then
-      endCol = #currentLine
-   end
+	for j = cursorCol, #currentLine, 1 do
+		local charCode = string.byte(currentLine:sub(j, j))
+		if charCode < 48 or charCode > 57 then
+			endCol = j - 1
+			break
+		end
+	end
+	if endCol == -1 then
+		endCol = #currentLine
+	end
 
-   if startCol == endCol then
-      return
-   end
-   local fullAsciiNumber = currentLine:sub(startCol, endCol)
-   print(fullAsciiNumber)
-   local newLine = currentLine:sub(1, startCol - 1)
-      .. string.char(tonumber(fullAsciiNumber))
-      .. currentLine:sub(endCol + 1, #currentLine)
-   vim.api.nvim_buf_set_lines(0, lineN - 1, lineN, false, { newLine})
+	if startCol == endCol then
+		return
+	end
+	local fullAsciiNumber = currentLine:sub(startCol, endCol)
+	print(fullAsciiNumber)
+	local newLine = currentLine:sub(1, startCol - 1)
+		.. string.char(tonumber(fullAsciiNumber))
+		.. currentLine:sub(endCol + 1, #currentLine)
+	vim.api.nvim_buf_set_lines(0, lineN - 1, lineN, false, { newLine})
 end
 
 --}}}
 --{{{ o improvement
 
 vim.keymap.set("n", "o",
-    function()
-        local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
-        local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
-        local numSpaces = countIndentation(currentLine)
-        vim.fn.append(vim.fn.line("."), string.sub(currentLine, 1, numSpaces))
-        vim.cmd("norm! j$")
-    end,
-    sil
+	 function()
+		local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
+		local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+		local numSpaces = countIndentation(currentLine)
+		vim.fn.append(vim.fn.line("."), string.sub(currentLine, 1, numSpaces))
+		vim.cmd("norm! j$")
+	 end,
+	 sil
 )
 
 
 vim.keymap.set("n", "O",
-    function()
-        local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
-        local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
-        local numSpaces = countIndentation(currentLine)
-        vim.fn.append(vim.fn.line(".") - 1, string.sub(currentLine, 1, numSpaces))
-        vim.cmd("norm! k")
-    end,
-    sil
+	 function()
+		local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
+		local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+		local numSpaces = countIndentation(currentLine)
+		vim.fn.append(vim.fn.line(".") - 1, string.sub(currentLine, 1, numSpaces))
+		vim.cmd("norm! k")
+	 end,
+	 sil
 )
 
 --}}}
 --{{{ Comments
 
 vim.keymap.set("v", "<C-e>",
-    function()
-        local line1 = vim.fn.line('v') -- current visual line
-        local line2 = vim.api.nvim_win_get_cursor(0)[1] -- current line
-        local lineStart
-        local lineEnd
-        if (line1 < line2) then
-            lineStart = line1
-            lineEnd = line2
-        else
-            lineStart = line2
-            lineEnd = line1
-        end
-        local i = lineStart
-        while (i <= lineEnd) do
-            local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
-            vim.api.nvim_buf_set_lines(0, i - 1, i, false, {"//~" .. existingLine})
-            i = i + 1
-        end
-        toNormalMode()
-    end,
-    sil
+	 function()
+		  local line1 = vim.fn.line('v') -- current visual line
+		  local line2 = vim.api.nvim_win_get_cursor(0)[1] -- current line
+		  local lineStart
+		  local lineEnd
+		  if (line1 < line2) then
+				lineStart = line1
+				lineEnd = line2
+		  else
+				lineStart = line2
+				lineEnd = line1
+		  end
+		  local i = lineStart
+		  while (i <= lineEnd) do
+				local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+				vim.api.nvim_buf_set_lines(0, i - 1, i, false, {"//~" .. existingLine})
+				i = i + 1
+		  end
+		  toNormalMode()
+	 end,
+	 sil
 )
 
 
 local function commentBlock(comm)
-    local limits = getLimitsOfCurrentBlock()
-    local i = limits.start
-    while i < limits.endd do
-        local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
-        vim.api.nvim_buf_set_lines(0, i - 1, i, false, {comm .. existingLine})
-        i = i + 1
-    end
+	 local limits = getLimitsOfCurrentBlock()
+	 local i = limits.start
+	 while i < limits.endd do
+		  local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+		  vim.api.nvim_buf_set_lines(0, i - 1, i, false, {comm .. existingLine})
+		  i = i + 1
+	 end
 end
 
 
 local function uncommentBlock(comm)
-    -- implying the comment length is 3
+	 -- implying the comment length is 3
 
-    local currLine = vim.api.nvim_win_get_cursor(0)[1] -- current line
-    local i = currLine
-    while i > 0 do
-        local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
-        if not currLine or currLine:sub(0, 3) ~= comm then
-            break
-        end
-        i = i - 1
-    end
-    local lineStart = i + 1
+	 local currLine = vim.api.nvim_win_get_cursor(0)[1] -- current line
+	 local i = currLine
+	 while i > 0 do
+		  local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+		  if not currLine or currLine:sub(0, 3) ~= comm then
+				break
+		  end
+		  i = i - 1
+	 end
+	 local lineStart = i + 1
 
-    local countLines = vim.api.nvim_buf_line_count(0)
-    i = currLine
-    while i <= countLines do
-        local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
-        print(currLine:sub(0, 3))
-        if not currLine or currLine:sub(0, 3) ~= comm then
-            break
-        end
-        i = i + 1
-    end
-    local lineEnd = i
-    i = lineStart
-    while i < lineEnd do
-        local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
-        vim.api.nvim_buf_set_lines(0, i - 1, i, false, {existingLine:sub(4)})
-        i = i + 1
-    end
+	 local countLines = vim.api.nvim_buf_line_count(0)
+	 i = currLine
+	 while i <= countLines do
+		  local currLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+		  print(currLine:sub(0, 3))
+		  if not currLine or currLine:sub(0, 3) ~= comm then
+				break
+		  end
+		  i = i + 1
+	 end
+	 local lineEnd = i
+	 i = lineStart
+	 while i < lineEnd do
+		  local existingLine = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+		  vim.api.nvim_buf_set_lines(0, i - 1, i, false, {existingLine:sub(4)})
+		  i = i + 1
+	 end
 end
 
 
 vim.keymap.set("n", "<C-e>",
-    function()
-        local comm = "//~"
+	 function()
+		  local comm = "//~"
 
-        local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
-        local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
-        local alreadyCommented = currentLine:sub(0, 3) == comm
+		  local lineNum = vim.api.nvim_win_get_cursor(0)[1] -- current line
+		  local currentLine = vim.api.nvim_buf_get_lines(0, lineNum - 1, lineNum, false)[1]
+		  local alreadyCommented = currentLine:sub(0, 3) == comm
 
-        if alreadyCommented then
-            uncommentBlock(comm)
-        else
-            commentBlock(comm)
-        end
-    end,
-    sil)
+		  if alreadyCommented then
+				uncommentBlock(comm)
+		  else
+				commentBlock(comm)
+		  end
+	 end,
+	 sil)
 
 --}}}
 --{{{ Views (what Vim calls "windows")
 
 local function safeGetTabVar(tabpage, varName)
-   s, v = pcall(function() return vim.api.nvim_tab_get_var(tabpage, varName) end)
-   if s then return v else return nil end
+	s, v = pcall(function() return vim.api.nvim_tab_get_var(tabpage, varName) end)
+	if s then return v else return nil end
 end
 
 local function safeGetVar(window, varName)
-   s, v = pcall(function() return vim.api.nvim_win_get_var(window, varName) end)
-   if s then return v else return nil end
+	s, v = pcall(function() return vim.api.nvim_win_get_var(window, varName) end)
+	if s then return v else return nil end
 end
 
 local function openTerminalAndCleanUpWindows()
-   -- Opens up a window for the terminal if there isn't one, and
-   -- leaves only two windows (the current and the terminal). All other windows are closed
+	-- Opens up a window for the terminal if there isn't one, and
+	-- leaves only two windows (the current and the terminal). All other windows are closed
 
-   local currentState = safeGetTabVar(0, "termState")
-   if currentState == "code" then
-      local codeWin = vim.api.nvim_get_current_win()
-      local termBuf = vim.api.nvim_tabpage_get_var(0, "termBuf")
-      local termWin = vim.api.nvim_open_win(termBuf, false, {split = 'left', win = 0})
+	local currentState = safeGetTabVar(0, "termState")
+	if currentState == "code" then
+		local codeWin = vim.api.nvim_get_current_win()
+		local termBuf = vim.api.nvim_tabpage_get_var(0, "termBuf")
+		local termWin = vim.api.nvim_open_win(termBuf, false, {split = 'left', win = 0})
 
-      vim.api.nvim_tabpage_set_win(0, termWin)
-      vim.api.nvim_win_hide(codeWin)
-      vim.api.set_tabpage_var(0, "termState", "code")
-      sendSmth()
-   elseif currentState == "terminal" then
-      local codeBuf = vim.api.nvim_tabpage_get_var(0, "codeBuf")
-      local termWin = vim.api.nvim_get_current_win()
-      local codeWin = vim.api.nvim_open_win(codeBuf, false, {split = 'left', win = 0})
+		vim.api.nvim_tabpage_set_win(0, termWin)
+		vim.api.nvim_win_hide(codeWin)
+		vim.api.set_tabpage_var(0, "termState", "code")
+		sendSmth()
+	elseif currentState == "terminal" then
+		local codeBuf = vim.api.nvim_tabpage_get_var(0, "codeBuf")
+		local termWin = vim.api.nvim_get_current_win()
+		local codeWin = vim.api.nvim_open_win(codeBuf, false, {split = 'left', win = 0})
 
-      vim.api.nvim_tabpage_set_win(0, codeWin)
-      vim.api.nvim_win_hide(termWin)
-      vim.api.set_tabpage_var(0, "termState", "terminal")
-   else
-      local codeWin = vim.api.nvim_get_current_win()
+		vim.api.nvim_tabpage_set_win(0, codeWin)
+		vim.api.nvim_win_hide(termWin)
+		vim.api.set_tabpage_var(0, "termState", "terminal")
+	else
+		local codeWin = vim.api.nvim_get_current_win()
 
-      local termBuf = vim.api.nvim_create_buf(false, false)
-      local termWin = vim.api.nvim_open_win(termBuf, false, {split = 'left', win = 0})
-      vim.api.nvim_win_set_buf(termWin, termBuf)
-      local chanId = vim.api.nvim_open_term(termBuf, {})
+		local termBuf = vim.api.nvim_create_buf(false, false)
+		local termWin = vim.api.nvim_open_win(termBuf, false, {split = 'left', win = 0})
+		vim.api.nvim_win_set_buf(termWin, termBuf)
+		local chanId = vim.api.nvim_open_term(termBuf, {})
 
-      vim.api.nvim_tabpage_set_var(0, "termState", "terminal")
-      vim.api.nvim_tabpage_set_var(0, "termChanId", chanId)
-      vim.api.nvim_tabpage_set_var(0, "termBuf", termBuf)
-      vim.api.nvim_tabpage_set_var(0, "codeBuf", vim.api.nvim_win_get_buf(codeWin))
-      vim.api.nvim_tabpage_set_win(0, termWin)
+		vim.api.nvim_tabpage_set_var(0, "termState", "terminal")
+		vim.api.nvim_tabpage_set_var(0, "termChanId", chanId)
+		vim.api.nvim_tabpage_set_var(0, "termBuf", termBuf)
+		vim.api.nvim_tabpage_set_var(0, "codeBuf", vim.api.nvim_win_get_buf(codeWin))
+		vim.api.nvim_tabpage_set_win(0, termWin)
 
-      vim.api.nvim_win_hide(codeWin)
-      vim.api.set_tabpage_var(0, "termState", "terminal")
-      sendSmth()
-   end
+		vim.api.nvim_win_hide(codeWin)
+		vim.api.set_tabpage_var(0, "termState", "terminal")
+		sendSmth()
+	end
 end
 
 
@@ -541,65 +544,65 @@ end
 --~end
 
 local function moveWindow(key)
-   -- Move to a window (one of hjkl) or create a split if none exist in the direction
-   -- @arg key: One of h, j, k, l. A direction to move or create a split
-   vim.cmd("wincmd " .. key) -- attempt to move
+	-- Move to a window (one of hjkl) or create a split if none exist in the direction
+	-- @arg key: One of h, j, k, l. A direction to move or create a split
+	vim.cmd("wincmd " .. key) -- attempt to move
 end
 
 local function moveOrCreateWindow(key)
-   -- Move to a window (one of hjkl) or create a split if none exist in the direction
-   -- @arg key: One of h, j, k, l. A direction to move or create a split
-   local currWin = vim.fn.winnr()
-   vim.cmd("wincmd " .. key) -- attempt to move
-   if (currWin == vim.fn.winnr()) then
-      if key == "h" or key == "l" then
-         vim.cmd("wincmd v")
-      else
-         vim.cmd("wincmd s")
-      end
+	-- Move to a window (one of hjkl) or create a split if none exist in the direction
+	-- @arg key: One of h, j, k, l. A direction to move or create a split
+	local currWin = vim.fn.winnr()
+	vim.cmd("wincmd " .. key) -- attempt to move
+	if (currWin == vim.fn.winnr()) then
+		if key == "h" or key == "l" then
+			vim.cmd("wincmd v")
+		else
+			vim.cmd("wincmd s")
+		end
 
-      vim.cmd("wincmd " .. key)
-   end
+		vim.cmd("wincmd " .. key)
+	end
 end
 
 local function newTerminal()
-   local currWin = vim.api.nvim_get_current_win()
+	local currWin = vim.api.nvim_get_current_win()
 
-   vim.cmd("wincmd v")
-   vim.api.nvim_tabpage_set_win(0, currWin)
+	vim.cmd("wincmd v")
+	vim.api.nvim_tabpage_set_win(0, currWin)
 
-   local termWin
-   local windows = vim.api.nvim_tabpage_list_wins(0)
-   for _, window in ipairs(windows) do
-      if window ~= currWin then
-         termWin = window
-         break
-      end
-   end
-   if not termWin then
-      return
-   end
-   local termBuf = vim.api.nvim_create_buf(false, false)
-   vim.api.nvim_win_set_buf(termWin, termBuf)
-   local chanId = vim.api.nvim_open_term(termBuf, {})
-   vim.api.nvim_win_set_var(currWin, "termChanId", chanId)
+	local termWin
+	local windows = vim.api.nvim_tabpage_list_wins(0)
+	for _, window in ipairs(windows) do
+		if window ~= currWin then
+			termWin = window
+			break
+		end
+	end
+	if not termWin then
+		return
+	end
+	local termBuf = vim.api.nvim_create_buf(false, false)
+	vim.api.nvim_win_set_buf(termWin, termBuf)
+	local chanId = vim.api.nvim_open_term(termBuf, {})
+	vim.api.nvim_win_set_var(currWin, "termChanId", chanId)
 end
 
 local function sendSmth()
-   local currWin = vim.api.nvim_get_current_win()
-   local chanId = vim.api.nvim_tabpage_get_var(currWin, "termChanId")
+	local currWin = vim.api.nvim_get_current_win()
+	local chanId = vim.api.nvim_tabpage_get_var(currWin, "termChanId")
 
-   vim.fn.jobstart('ls -al', {
-        cwd = '/home/onr/proj',
-        on_exit = function(j, d, e)  end,
-        on_stdout =
-           function(j, d, e)
-              for i, line in ipairs(d) do
-                 vim.api.nvim_chan_send(chanId, line .. "\n")
-              end
-           end,
-        on_stderr = someFunction
-   })
+	vim.fn.jobstart('ls -al', {
+		  cwd = '/home/onr/proj',
+		  on_exit = function(j, d, e)  end,
+		  on_stdout =
+			  function(j, d, e)
+				  for i, line in ipairs(d) do
+				     vim.api.nvim_chan_send(chanId, line .. "\n")
+				  end
+			  end,
+		  on_stderr = someFunction
+	})
 end
 
 
@@ -614,17 +617,17 @@ vim.keymap.set("n", "<M-l>", function() moveWindow("l") end, sil)
 --{{{ Floating select
 
 function floatingSelect(title, choiceLines, choiceCallbacks)
-   local width = 10;
-   for i, choice in ipairs(choiceLines) do
-      if #choice > width then
-         width = #choice
-      end
-   end
-   if width < 70 then
-      width = width + 10
-   else
-      width = 80
-   end
+	local width = 10;
+	for i, choice in ipairs(choiceLines) do
+		if #choice > width then
+			width = #choice
+		end
+	end
+	if width < 70 then
+		width = width + 10
+	else
+		width = 80
+	end
 
 	local winConfig = {
 		focusable = true,
@@ -640,13 +643,13 @@ function floatingSelect(title, choiceLines, choiceCallbacks)
 
 	-- Create floating window.
 	local selectBuffer = vim.api.nvim_create_buf(false, true)
-   vim.api.nvim_buf_set_lines(selectBuffer, 0, 0, false, choiceLines)
-   vim.api.nvim_set_option_value("readonly", true, {buf = selectBuffer, scope = "local"})
+	vim.api.nvim_buf_set_lines(selectBuffer, 0, 0, false, choiceLines)
+	vim.api.nvim_set_option_value("readonly", true, {buf = selectBuffer, scope = "local"})
 	local window = vim.api.nvim_open_win(selectBuffer, true, winConfig)
 
 	-- Enter to confirm
 	vim.keymap.set({ "n" }, "<cr>", function()
-      local lineN = vim.api.nvim_win_get_cursor(0)[1]
+		local lineN = vim.api.nvim_win_get_cursor(0)[1]
 		vim.api.nvim_win_close(window, true)
 		choiceCallbacks[lineN]()
 	end, { buffer = buffer })
@@ -663,32 +666,32 @@ end
 --}}}
 
 local function goToDef()
-   local currWord = vim.fn.expand("<cword>")
-   print(currWord)
-   vim.cmd("silent! vimgrep /:" .. currWord .. "/ **/*")
+	local currWord = vim.fn.expand("<cword>")
+	print(currWord)
+	vim.cmd("silent! vimgrep /:" .. currWord .. "/ **/*")
 end
 
 
 vim.keymap.set("n", "<leader>d", function() goToDef() end, sil)
 
 local function runProg(mode)
-   local wd = vim.fn.getcwd()
-   vim.cmd.write()
-   if mode == "debug" then
-      vim.system(
-         {"bash", "-c",
-         "swaymsg exec -- foot --app-id=scratch --hold -D " .. wd .. " -e ./dev/debug.sh"
-         },
-         {text = true}
-      )
-   else
-      vim.system(
-         {"bash", "-c",
-         "swaymsg exec -- foot --app-id=scratch --hold -D " .. wd .. " -e ./dev/run.sh"
-         },
-         {text = true}
-      )
-   end
+	local wd = vim.fn.getcwd()
+	vim.cmd.write()
+	if mode == "debug" then
+		vim.system(
+			{"bash", "-c",
+			"swaymsg exec -- foot --app-id=scratch --hold -D " .. wd .. " -e ./dev/debug.sh"
+			},
+			{text = true}
+		)
+	else
+		vim.system(
+			{"bash", "-c",
+			"swaymsg exec -- foot --app-id=scratch --hold -D " .. wd .. " -e ./dev/run.sh"
+			},
+			{text = true}
+		)
+	end
 end
 
 vim.keymap.set("n", "<F9>", function() runProg("debug") end, sil)
@@ -698,7 +701,7 @@ vim.keymap.set("i", "<F5>", function() vim.cmd('stopinsert') runProg("run") end,
 
 --map("n", "<C-m>", "vipk:'<,'>s/$/,/<CR>")
 map("n", "<C-,>",
-   [[ :normal vipk<CR> <bar> :s/$/,/<CR> ]]
+	[[ :normal vipk<CR> <bar> :s/$/,/<CR> ]]
  --  [[:normal! vipk<CR> <bar> :'<,'>s/$/,/<CR>]]
 )
 --//~vim.keymap.set("n", "<C-,>",
@@ -720,28 +723,28 @@ vim.keymap.set("i", "<C-l>", "<Esc>la<space>", sil) --Move beyond the adjacent "
 --{{{ Goto (for navigating to source lines from GDB)
 
 function gotoCb(fN, lineNum)
-    local cwd = vim.fn.getcwd()
-    local searchFor = cwd .. "/" .. fN
-    print(searchFor)
-    for i, buf in ipairs(vim.api.nvim_list_bufs()) do
-        if searchFor == vim.api.nvim_buf_get_name(buf) then
-            vim.api.nvim_win_set_buf(0, buf)
-            if vim.api.nvim_win_get_height(0) >= lineNum then
-                vim.api.nvim_win_set_cursor(0, {lineNum, 3})
-            else
-                vim.api.nvim_win_set_cursor(0, {1, 3})
-            end
-        end
-    end
+	 local cwd = vim.fn.getcwd()
+	 local searchFor = cwd .. "/" .. fN
+	 print(searchFor)
+	 for i, buf in ipairs(vim.api.nvim_list_bufs()) do
+		  if searchFor == vim.api.nvim_buf_get_name(buf) then
+				vim.api.nvim_win_set_buf(0, buf)
+				if vim.api.nvim_win_get_height(0) >= lineNum then
+				    vim.api.nvim_win_set_cursor(0, {lineNum, 3})
+				else
+				    vim.api.nvim_win_set_cursor(0, {1, 3})
+				end
+		  end
+	 end
 end
 
 --}}}
 --{{{ Running tests in the right tmux pane
 
 local function runTestShowOutput()
-    vim.cmd(":wa")
-    os.execute("tmux send-keys -t 1 'make all'")
-    os.execute("tmux send-keys -t 1 Enter")
+	 vim.cmd(":wa")
+	 os.execute("tmux send-keys -t 1 'make all'")
+	 os.execute("tmux send-keys -t 1 Enter")
 end
 
 
@@ -761,15 +764,15 @@ local function isVisualMode()
 end
 
 function runInNormal(cmdStr)
-    ---runs a command string in normal mode
-    vim.cmd.normal { cmdStr, bang = true }
+	 ---runs a command string in normal mode
+	 vim.cmd.normal { cmdStr, bang = true }
 end
 
 local function setSelection(startPos, endPos)
-    ---@alias pos {integer, integer}
-    ---sets the selection for the textobj (characterwise)
-    ---@param startPos pos
-    ---@param endPos pos
+	 ---@alias pos {integer, integer}
+	 ---sets the selection for the textobj (characterwise)
+	 ---@param startPos pos
+	 ---@param endPos pos
 	vim.api.nvim_win_set_cursor(0, startPos)
 	if isVisualMode() then
 	    runInNormal("o")
@@ -780,139 +783,139 @@ local function setSelection(startPos, endPos)
 end
 
 local function anyTextObjectFindLeftEnd(pos)
-    ---Goes rightward and properly handles opening+closing (), [] and {}, as well as `` and ""
-    ---Stops at the first space/newline outside of those delimiters. Is multiline
+	 ---Goes rightward and properly handles opening+closing (), [] and {}, as well as `` and ""
+	 ---Stops at the first space/newline outside of those delimiters. Is multiline
 
-    local levelPar = 0 -- ()
-    local levelBra = 0 -- []
-    local levelCurl = 0 -- {}
-    local inQuo = false -- "
-    local inBack = false -- `
+	 local levelPar = 0 -- ()
+	 local levelBra = 0 -- []
+	 local levelCurl = 0 -- {}
+	 local inQuo = false -- "
+	 local inBack = false -- `
 
-    local countLines = vim.api.nvim_buf_line_count(0)
-    local i = pos[1]
-    local startCol = pos[2]
-    while i >= 1 do
-        local currentLine = getLineContent(i)
-        for j = startCol, 1, -1 do
-            local char = currentLine:sub(j, j)
-            if inQuo == true then
-                if char == "\"" and j - 1 >= 1
-                        and currentLine:sub(j - 1, j - 1) == "\\" then
-                    j = j - 1
-                elseif char == "\"" then
-                    inQuo = false
-                end
-            elseif inBack == true then
-                if char == "`" then
-                    inBack = false
-                end
-            else
-                if char == "\"" then
-                    inQuo = true
-                elseif char == "`" then
-                    inBack = true
-                elseif char == "(" then
-                    if levelPar == 0 then
-                        return {i, j}
-                    end
-                    levelPar = levelPar - 1
-                elseif char == ")" then
-                    levelPar = levelPar + 1
-                elseif char == "{" then
-                    if levelCurl == 0 then
-                        return {i, j}
-                    end
-                    levelCurl = levelCurl - 1
-                elseif char == "}" then
-                    levelCurl = levelCurl + 1
-                elseif char == "[" then
-                    if levelBra == 0 then
-                        return {i, j}
-                    end
-                    levelBra = levelBra - 1
-                elseif char == "]" then
-                    levelBra = levelBra + 1
-                elseif char == " " then
-                    if levelPar == 0 and levelBra == 0 and levelCurl == 0 then
-                        return {i, j}
-                    end
-                end
-            end
-        end
-        startCol = #currentLine
-    end
-    return {1, 1}
+	 local countLines = vim.api.nvim_buf_line_count(0)
+	 local i = pos[1]
+	 local startCol = pos[2]
+	 while i >= 1 do
+		  local currentLine = getLineContent(i)
+		  for j = startCol, 1, -1 do
+				local char = currentLine:sub(j, j)
+				if inQuo == true then
+				    if char == "\"" and j - 1 >= 1
+				            and currentLine:sub(j - 1, j - 1) == "\\" then
+				        j = j - 1
+				    elseif char == "\"" then
+				        inQuo = false
+				    end
+				elseif inBack == true then
+				    if char == "`" then
+				        inBack = false
+				    end
+				else
+				    if char == "\"" then
+				        inQuo = true
+				    elseif char == "`" then
+				        inBack = true
+				    elseif char == "(" then
+				        if levelPar == 0 then
+				            return {i, j}
+				        end
+				        levelPar = levelPar - 1
+				    elseif char == ")" then
+				        levelPar = levelPar + 1
+				    elseif char == "{" then
+				        if levelCurl == 0 then
+				            return {i, j}
+				        end
+				        levelCurl = levelCurl - 1
+				    elseif char == "}" then
+				        levelCurl = levelCurl + 1
+				    elseif char == "[" then
+				        if levelBra == 0 then
+				            return {i, j}
+				        end
+				        levelBra = levelBra - 1
+				    elseif char == "]" then
+				        levelBra = levelBra + 1
+				    elseif char == " " then
+				        if levelPar == 0 and levelBra == 0 and levelCurl == 0 then
+				            return {i, j}
+				        end
+				    end
+				end
+		  end
+		  startCol = #currentLine
+	 end
+	 return {1, 1}
 end
 
 local function anyTextObjectFindRightEnd(pos)
-    ---Goes rightward and properly handles opening+closing (), [] and {}, as well as `` and ""
-    ---Stops at the first space/newline outside of those delimiters. Is multiline
+	 ---Goes rightward and properly handles opening+closing (), [] and {}, as well as `` and ""
+	 ---Stops at the first space/newline outside of those delimiters. Is multiline
 
-    local levelPar = 0 -- ()
-    local levelBra = 0 -- []
-    local levelCurl = 0 -- {}
-    local inQuo = false -- "
-    local inBack = false -- `
+	 local levelPar = 0 -- ()
+	 local levelBra = 0 -- []
+	 local levelCurl = 0 -- {}
+	 local inQuo = false -- "
+	 local inBack = false -- `
 
-    local countLines = vim.api.nvim_buf_line_count(0)
-    local i = pos[1]
-    local startCol = pos[2]
-    local currentLine
-    while i <= countLines do
-        currentLine = getLineContent(i)
-        for j = startCol, #currentLine do
-            local char = currentLine:sub(j, j)
-            if inQuo == true then
-                if char == "\\" and j + 1 <= #currentLine
-                        and currentLine:sub(j + 1, j + 1) == "\"" then
-                    j = j + 1
-                elseif char == "\"" then
-                    inQuo = false
-                end
-            elseif inBack == true then
-                if char == "`" then
-                    inBack = false
-                end
-            else
-                if char == "\"" then
-                    inQuo = true
-                elseif char == "`" then
-                    inBack = true
-                elseif char == "(" then
-                    levelPar = levelPar + 1
-                elseif char == ")" then
-                    if levelPar == 0 then
-                        return {i, j - 2}
-                    end
-                    levelPar = levelPar - 1
-                elseif char == "{" then
-                    levelCurl = levelCurl + 1
-                elseif char == "}" then
-                    if levelCurl == 0 then
-                        return {i, j - 2}
-                    end
-                    levelCurl = levelCurl - 1
-                elseif char == "[" then
-                    levelBra = levelBra + 1
-                elseif char == "]" then
-                    if levelBra == 0 then
-                        return {i, j - 2}
-                    end
-                    levelBra = levelBra - 1
-                elseif char == "/" and j + 1 <= currentLine
-                        and currentLine:sum(j + 1, j + 1) == "/" then
-                    break
-                elseif char == " " then
-                    if levelPar == 0 and levelBra == 0 and levelCurl == 0 then
-                        return {i, j - 2}
-                    end
-                end
-            end
-        end
-        startCol = 1
-    end
-    return {countLines, #currentLine}
+	 local countLines = vim.api.nvim_buf_line_count(0)
+	 local i = pos[1]
+	 local startCol = pos[2]
+	 local currentLine
+	 while i <= countLines do
+		  currentLine = getLineContent(i)
+		  for j = startCol, #currentLine do
+				local char = currentLine:sub(j, j)
+				if inQuo == true then
+				    if char == "\\" and j + 1 <= #currentLine
+				            and currentLine:sub(j + 1, j + 1) == "\"" then
+				        j = j + 1
+				    elseif char == "\"" then
+				        inQuo = false
+				    end
+				elseif inBack == true then
+				    if char == "`" then
+				        inBack = false
+				    end
+				else
+				    if char == "\"" then
+				        inQuo = true
+				    elseif char == "`" then
+				        inBack = true
+				    elseif char == "(" then
+				        levelPar = levelPar + 1
+				    elseif char == ")" then
+				        if levelPar == 0 then
+				            return {i, j - 2}
+				        end
+				        levelPar = levelPar - 1
+				    elseif char == "{" then
+				        levelCurl = levelCurl + 1
+				    elseif char == "}" then
+				        if levelCurl == 0 then
+				            return {i, j - 2}
+				        end
+				        levelCurl = levelCurl - 1
+				    elseif char == "[" then
+				        levelBra = levelBra + 1
+				    elseif char == "]" then
+				        if levelBra == 0 then
+				            return {i, j - 2}
+				        end
+				        levelBra = levelBra - 1
+				    elseif char == "/" and j + 1 <= currentLine
+				            and currentLine:sum(j + 1, j + 1) == "/" then
+				        break
+				    elseif char == " " then
+				        if levelPar == 0 and levelBra == 0 and levelCurl == 0 then
+				            return {i, j - 2}
+				        end
+				    end
+				end
+		  end
+		  startCol = 1
+	 end
+	 return {countLines, #currentLine}
 
 --//~    for i = j, #currentLine do
 --//~        local char = currentLine:sub(i, i)
@@ -924,14 +927,14 @@ local function anyTextObjectFindRightEnd(pos)
 end
 
 local function anyTextObject()
-    local currentLine = getCurrLineContent()
-    local lineN = vim.api.nvim_win_get_cursor(0)[1]
-    local j = vim.api.nvim_win_get_cursor(0)[2] + 1 -- +1 because the Neovim API is stupid
+	 local currentLine = getCurrLineContent()
+	 local lineN = vim.api.nvim_win_get_cursor(0)[1]
+	 local j = vim.api.nvim_win_get_cursor(0)[2] + 1 -- +1 because the Neovim API is stupid
 
-    local startPos = anyTextObjectFindLeftEnd({lineN, j})
-    local endPos = anyTextObjectFindRightEnd({lineN, j})
-    print("row = ", lineN, " col = ", startInd, "to  row = ", endPos[1], " col = ", endPos[2])
-    setSelection(startPos, endPos)
+	 local startPos = anyTextObjectFindLeftEnd({lineN, j})
+	 local endPos = anyTextObjectFindRightEnd({lineN, j})
+	 print("row = ", lineN, " col = ", startInd, "to  row = ", endPos[1], " col = ", endPos[2])
+	 setSelection(startPos, endPos)
 end
 
 vim.keymap.set("o", "iu", function() anyTextObject() end, sil)

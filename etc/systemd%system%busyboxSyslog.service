@@ -1,0 +1,11 @@
+[Unit]
+Description=BusyBox System Logging Service
+After=local-fs.target
+
+[Service]
+ExecStart=/usr/bin/busybox syslogd -n -O /var/log/messages
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

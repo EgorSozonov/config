@@ -1,0 +1,101 @@
+" You can edit this file by hand.
+" The " character at the beginning of a line comments out the line.
+" Blank lines are ignored.
+
+" The Default color scheme is used for any directory that does not have
+" a specified scheme and for parts of user interface like menus. A
+" color scheme set for a base directory will also
+" be used for the sub directories.
+
+" The standard ncurses colors are:
+" Default = -1 = None, can be used for transparency or default color
+" Black = 0
+" Red = 1
+" Green = 2
+" Yellow = 3
+" Blue = 4
+" Magenta = 5
+" Cyan = 6
+" White = 7
+
+" Light versions of colors are also available (they set bold
+" attribute in terminals with less than 16 colors):
+" LightBlack
+" LightRed
+" LightGreen
+" LightYellow
+" LightBlue
+" LightMagenta
+" LightCyan
+" LightWhite
+
+" Available attributes (some of them can be combined):
+" bold
+" underline
+" reverse or inverse
+" standout
+" italic (on unsupported systems becomes reverse)
+" combine
+" none
+
+" Vifm supports 256 colors you can use color numbers 0-255
+" (requires properly set up terminal: set your TERM environment variable
+" (directly or using resources) to some color terminal name (e.g.
+" xterm-256color) from /usr/lib/terminfo/; you can check current number
+" of colors in your terminal with tput colors command)
+
+" highlight group cterm=attrs ctermfg=foreground_color ctermbg=background_color
+
+highlight clear
+
+highlight Win cterm=none ctermfg=0 ctermbg=black
+highlight Directory cterm=bold ctermfg=248 ctermbg=default
+highlight Link cterm=italic ctermfg=white ctermbg=default
+highlight BrokenLink cterm=bold ctermfg=red ctermbg=default
+highlight HardLink cterm=none ctermfg=white ctermbg=default
+highlight Socket cterm=bold ctermfg=cyan ctermbg=default
+highlight Device cterm=bold ctermfg=white ctermbg=default
+highlight Fifo cterm=bold ctermfg=cyan ctermbg=default
+highlight Executable cterm=bold ctermfg=green ctermbg=default
+highlight Selected cterm=bold ctermfg=242 ctermbg=default
+highlight CurrLine cterm=reverse ctermfg=white ctermbg=default
+highlight TopLine cterm=none ctermfg=white ctermbg=green
+highlight TopLineSel cterm=bold ctermfg=white ctermbg=default
+highlight StatusLine cterm=bold ctermfg=black ctermbg=white
+highlight WildBox ctermfg=white ctermbg=default
+highlight WildMenu cterm=underline ctermfg=white ctermbg=black
+highlight CmdLine cterm=none ctermfg=214 ctermbg=black
+highlight ErrorMsg cterm=none ctermfg=red ctermbg=black
+highlight Border cterm=none ctermfg=black ctermbg=238
+highlight OtherLine ctermfg=white ctermbg=0
+highlight JobLine cterm=bold,reverse ctermfg=black ctermbg=white
+highlight SuggestBox cterm=bold ctermfg=default ctermbg=default
+highlight CmpMismatch cterm=bold ctermfg=white ctermbg=red
+highlight CmpUnmatched cterm=bold ctermfg=white ctermbg=green
+highlight CmpBlank ctermfg=default ctermbg=default
+highlight AuxWin ctermfg=white ctermbg=default
+highlight TabLine cterm=none ctermfg=white ctermbg=black
+highlight TabLineSel cterm=bold,reverse ctermfg=white ctermbg=default
+highlight User1 ctermfg=white ctermbg=default
+highlight User2 ctermfg=white ctermbg=default
+highlight User3 ctermfg=white ctermbg=default
+highlight User4 ctermfg=white ctermbg=default
+highlight User5 ctermfg=white ctermbg=default
+highlight User6 ctermfg=white ctermbg=default
+highlight User7 ctermfg=white ctermbg=default
+highlight User8 ctermfg=white ctermbg=default
+highlight User9 ctermfg=white ctermbg=default
+highlight User10 ctermfg=white ctermbg=default
+highlight User11 ctermfg=white ctermbg=default
+highlight User12 ctermfg=white ctermbg=default
+highlight User13 ctermfg=white ctermbg=default
+highlight User14 ctermfg=white ctermbg=default
+highlight User15 ctermfg=white ctermbg=default
+highlight User16 ctermfg=white ctermbg=default
+highlight User17 ctermfg=white ctermbg=default
+highlight User18 ctermfg=white ctermbg=default
+highlight User19 ctermfg=white ctermbg=default
+highlight User20 ctermfg=white ctermbg=default
+highlight OtherWin ctermfg=white ctermbg=default
+highlight LineNr ctermfg=white ctermbg=default
+highlight OddLine ctermfg=white ctermbg=default
