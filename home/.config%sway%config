@@ -162,7 +162,7 @@ bindsym $mod+l resize grow width 40px
 
 # Utilities:
 #
-bindsym --locked F2 exec amixer set Master 3dB-
+bindsym --locked F2 exec amixer set Speaker 3dB-
 bindsym --locked F3 exec "~/.config/sway/soundUp.sh"
 bindsym --locked F1 exec "amixer -q set Speaker off"
 # Special keys to adjust brightness via brightnessctl
