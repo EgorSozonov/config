@@ -1,7 +1,6 @@
 alias d="date +'%H:%M. %a'; acpi -b;cal"
 alias pls="doas"
 
-alias rm="rm -i"
 alias realRm="/usr/bin/rm"
 alias cp="cp -i"
 alias realCp="/usr/bin/cp"

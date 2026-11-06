@@ -1,3 +1,4 @@
+tabs -3
 export PS1="\[\e[38;5;46m\e[4m\]\W\[\e[0m\] "
 
 HISTCONTROL=ignoreboth
@@ -15,7 +16,6 @@ HISTFILESIZE=2000
 HISTTIMEFORMAT="%Y-%m-%d %T "
 
 stty -ixon # Disable XON/XOFF crap (terminal freezing)
-
 
 umask 077
 source ~/.config/utils
