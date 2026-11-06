@@ -23,7 +23,12 @@ for arg in "$@"; do
 	done
 	if [[ "$canDelete" == "1" ]]; then
 		if [[ -d "$arg" ]]; then
-			/usr/bin/rm -fr -i "$arg"
+
+			read -p "Are you sure about deleting this directory? (y/no)" -n 1 -r
+			echo
+			if [[ $REPLY =~ ^[Yy]$ ]] then
+				/usr/bin/rm -fr "$arg"
+			fi
 		elif [[ -f "$arg" ]]; then
 			/usr/bin/rm -i "$arg"
 		fi

@@ -28,7 +28,7 @@ function copyIfNotExistsOrAddToArray() {
 # $1 target (full file name), $2 source (full file name), $3 = are we copying to root dir?
 function installFile() {
    if (( $3 )); then
-      if [[ "$1" =~ \.sh$ || "$1" =~ \.lua$ || "$1" == "rm" ]]; then
+      if [[ "$1" =~ \.sh$ || "$1" =~ \.lua$ || "$1" =~ /rm$ ]]; then
          doas /usr/bin/install -D -m755 $2 $1
       else
          doas /usr/bin/install -D -m644 $2 $1
@@ -107,4 +107,5 @@ function updateFromDir() {
 updateFromDir ~ home 0
 updateFromDir /etc etc 1
 updateFromDir /etc/apparmor.d armor 1
+updateFromDir /opt opt 1
 
