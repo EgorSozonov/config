@@ -9,6 +9,7 @@ export PSQL_HISTORY="$HOME/.local/state/.psql_history"
 export GNUPGHOME="$HOME/.config/gnupg"
 export CGDB_DIR="$HOME/.config/cgdb"
 export PARALLEL_HOME="$HOME/.config/parallel"
+export XDG_CURRENT_DESKTOP="sway"
 
 if [[ -z "$WAYLAND_DISPLAY" ]] && [[ -n "$XDG_VTNR" ]] && [[ "$XDG_VTNR" -eq 1 ]] ; then
     exec sway

@@ -4,7 +4,7 @@ undeletable=("/bin" "/boot" "/dev" "/etc" "/home" "/lib" "/lib64" "/mnt" "/opt"
 	"/proc" "/root" "/run" "/sbin" "/srv" "/sys" "/tmp" "/usr" "/var" "/"
 )
 
-undeletableHome=("$HOME/.config" "$HOME/.local" "$HOME/ystem" "$HOME/docs")
+undeletableHome=(".config" ".local" "ystem" "docs")
 for arg in "$@"; do
 	canDelete=1
 	for un in "${undeletable[@]}"; do
@@ -15,7 +15,7 @@ for arg in "$@"; do
 		fi
 	done
 	for un in "${undeletableHome[@]}"; do
-		if [[ $(realpath "$arg") == $un ]]; then
+		if [[ $(realpath "$arg") == /home/*/$un ]]; then
 			echo "nono! $arg $un"
 			canDelete=0
 			break

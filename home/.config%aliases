@@ -24,7 +24,8 @@ alias makepkg="makepkg -c"
 
 
 alias sys="doas systemctl"
-alias running="systemctl --state=running --type=service"
+alias running="systemctl --state=running --type=service --no-legend --no-pager; \
+	systemctl --user --state=running --no-legend --no-pager"
 alias fixKb="setxkbmap -layout us,ru -option 'ctrl:nocaps,grp:lctrl_toggle'"
 alias cl="clear"
 alias up="cd .."
