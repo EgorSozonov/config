@@ -1,0 +1,53 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Exec=doas -u w /home/w/s/runFirefox.sh %u
+Terminal=false
+X-MultipleArgs=false
+Icon=firefox
+StartupWMClass=firefox
+DBusActivatable=false
+Categories=GNOME;GTK;Network;WebBrowser;
+MimeType=application/json;application/pdf;application/rdf+xml;application/rss+xml;application/x-xpinstall;application/xhtml+xml;application/xml;audio/flac;audio/ogg;audio/webm;image/avif;image/gif;image/jpeg;image/png;image/svg+xml;image/webp;text/html;text/xml;video/ogg;video/webm;x-scheme-handler/chrome;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/mailto;
+StartupNotify=true
+Actions=new-window;new-private-window;open-profile-manager;
+Name[ru]=Firefox
+Comment=Fast and private browser
+Comment[is]=Hraður og persónulegur vafri
+Comment[ru]=Быстрый и приватный браузер
+GenericName=Web Browser
+GenericName[en_CA]=Web Browser
+GenericName[en_GB]=Web Browser
+GenericName[ru]=Веб-браузер
+Keywords=Internet;WWW;Browser;Web;Explorer;
+Keywords[en_CA]=Internet;WWW;Browser;Web;Explorer;
+Keywords[en_GB]=Internet;WWW;Browser;Web;Explorer;
+Keywords[ru]=Сеть;Интернет;Браузер;Доступ в Интернет;
+X-GNOME-FullName=Mozilla Firefox
+X-GNOME-FullName[en_CA]=Mozilla Firefox
+X-GNOME-FullName[en_GB]=Mozilla Firefox
+X-GNOME-FullName[ru]=Mozilla Firefox
+
+[Desktop Action new-window]
+Exec=/usr/lib/firefox/firefox --new-window %u
+Name=New Window
+Name[de]=Neues Fenster
+Name[en_CA]=New Window
+Name[en_GB]=New Window
+Name[ru]=Новое окно
+
+[Desktop Action new-private-window]
+Exec=/usr/lib/firefox/firefox --private-window %u
+Name=New Private Window
+Name[de]=Neues privates Fenster
+Name[en_CA]=New Private Window
+Name[en_GB]=New Private Window
+Name[ru]=Новое приватное окно
+
+[Desktop Action open-profile-manager]
+Exec=/usr/lib/firefox/firefox --ProfileManager
+Name=Open Profile Manager
+Name[de]=Profilverwaltung öffnen
+Name[en_CA]=Open Profile Manager
+Name[en_GB]=Open Profile Manager
+Name[ru]=Открыть менеджер профилей

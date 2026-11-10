@@ -16,6 +16,7 @@ HISTFILESIZE=2000
 HISTTIMEFORMAT="%Y-%m-%d %T "
 
 stty -ixon # Disable XON/XOFF crap (terminal freezing)
+stty intr ^C
 
 umask 077
 source ~/.config/utils
