@@ -8,6 +8,7 @@ alias mv="mv -i"
 alias realMv="/usr/bin/mv"
 
 alias pinstall="doas pacman -S --needed"
+alias psearch="pacman -Ss"
 alias preinstall="doas pacman -Syu"
 alias premove="doas pacman -Rn"
 #Hard remove = doas pacman -Rdd
