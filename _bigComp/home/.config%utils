@@ -1,0 +1,499 @@
+function e() {
+   if [[ -f "$1" ]]; then
+      nvim "$@"
+   elif [[ -d "$1" ]]; then
+      cd "$1"
+   fi
+}
+
+function unflash() {
+   local mountDir="/mnt/flash"
+
+   i=0
+   while [ -d "$mountDir$i" ]; do
+      local backupDir="$mountDir$i"
+      doas umount -q $backupDir
+      ((i++))
+   done
+}
+
+# mount USB flash sticks into /mnt/flash0, 1, 2 etc
+function flash() {
+   unflash
+
+   declare -a usbSticks
+
+   # get the list of USB stick partitions
+   local theCommand="lsblk -lntbo NAME,SIZE,MOUNTPOINT | tr -s ' '"
+   readarray -t partitions < <(eval $theCommand)
+
+   #filter out unmounted, small partitions starting with "sd" like "sdb1"
+   local currPrefix=""
+   local currName=""
+   local newName=""
+   local isNew="false"
+   for partition in "${partitions[@]}"; do
+      if (( "${#partition}" == 0 )); then
+         continue
+      fi
+      readarray -d " " -t spl <<< $partition
+      if [[ "${spl[0]}" =~ ^sd.* ]] && ((spl[1] < 67000000000)); then
+         newName="${spl[0]}"
+         local newPrefix="${newName//[0-9]/}"
+         if [[ $newPrefix != $currPrefix ]]; then
+            if [[ $isNew == "true" ]]; then
+               usbSticks+=("/dev/$currName")
+            fi
+
+            currPrefix=$newPrefix
+            currName="${spl[0]}"
+            isNew="true"
+         elif [[ $isNew == "true" ]]; then
+            if (( "${#spl[2]}" <= 1 )); then
+               usbSticks+=("/dev/$newName")
+            fi
+            isNew="false"
+         fi
+      fi
+   done
+   if [[ $isNew == "true" ]]; then
+      usbSticks+=("/dev/$newName")
+   fi
+
+   declare -a mountCommands
+   local i=0
+   for stick in "${usbSticks[@]}"; do
+      mountCommands+=("doas mount -o uid=$(id -u),gid=$(id -g),umask=000 -t vfat --mkdir \
+         $stick /mnt/flash$i")
+      ((i++))
+   done
+
+   #mount the partitions
+   for cm in "${mountCommands[@]}"; do
+      eval $cm
+   done
+}
+
+
+function help() {
+   echo "Generate code projects from templates: projer"
+   echo "Back stuff up to mounted flash sticks: closha"
+   echo "Mount all flash sticks: flasher"
+   echo "See default bash help: command help"
+   echo "Postgres doesn't work: ~/s/pgInstall.sh"
+   echo "Top subdirectories by size on disk: spaceHogs"
+   echo "Install package: pinstall"
+   echo "Remove package: pRemove"
+   echo "Top packages by size on disk: psize"
+   echo "All installed packages: pall"
+   echo "Search Man pages: mans tar extract"
+   echo "Find files: ff .pdf"
+   echo "Find directories: fdi"
+   echo "Update fonts: updateFonts, update boot loader: updateBoot"
+   echo ""
+   echo "All these useful functions are defined in ~/.config/utils"
+}
+
+# Back a file up onto all flash sticks mounted by flasher
+function bup() {
+   local mountDir="/mnt/flash"
+   local today
+   printf -v today '%(%Y-%m-%d)T' -1
+
+   i=0
+   while [ -d "$mountDir$i" ]; do
+      local backupDir="$mountDir$i/backup/$today"
+      mkdir -p "$backupDir"
+
+      echo "Backing up to $backupDir"
+      cp $1 "$backupDir"
+      ((i++))
+   done
+}
+
+
+
+# replace text in this dir and subdirs
+# Examples:
+# replaceText 's/ddd/eee/g' '*.txt'
+# replaceText 's/ddd/eee/g'
+function replaceText() {
+   local nameFilter="${2:-'*.*'}"
+   local command="find . -type f -name '${nameFilter}' -exec sed -i '$1' {} +"
+   eval "$command"
+}
+
+#`countLoc` or `countLoc c rs`
+function countLoc() {
+   if (( $# == 0 )); then
+      flt="-name '*.[ch]'"
+   else
+      flt="-name '*.$1'"
+      for ((i=2; i<=$#; i++)); do
+         flt+=" -o -name '*.${!i}'"
+      done
+   fi
+   eval "find . -type f \( $flt \) -exec ~/s/countLoc.lua {} +"
+}
+
+function mkcd() {
+   mkdir -p "$1"
+   cd "$1"
+}
+
+function hist() {
+   history | grep -i "$1"
+}
+
+function ff() {
+   find . \( -name ".git" -prune \) -o \( -type f -iname "*$1*" -print \) 2>/dev/null
+}
+
+function fdi() {
+   find . -type d -iname "*$1*" 2>/dev/null
+}
+
+function mans() {
+   man "$1" | grep -iC 5 "$2"
+}
+
+function tre() {
+   tree -aC -I '.git|vendor' --dirsfirst "$@" | less -FRNX
+}
+
+# Custom "rm" command that moves files to trash instead of deleting them
+function trash() {
+   #mv "$@" ~/.local/share/trash/
+   #echo "Moved to ~/.local/share/trash/"
+
+   # Get the current date and time for uniqueness
+   local DATE=$(date +%Y%m%d_%H%M%S)
+
+   # Process command line arguments
+   local force=false
+   local recursive=false
+   local verbose=false
+   local files=()
+
+   # Parse arguments
+   for arg in "$@"; do
+      case $arg in
+         -f|--force)
+            force=true
+            ;;
+         -r|-R|--recursive)
+            recursive=true
+            ;;
+         -v|--verbose)
+            verbose=true
+            ;;
+         -*)
+            # For other options, pass them to the real rm command if needed
+            ;;
+         *)
+            files+=("$arg")
+         ;;
+      esac
+   done
+
+   # Check if no files were specified
+   if [ ${#files[@]} -eq 0 ]; then
+      echo "rm: missing operand"
+      echo "Try 'rm --help' for more information."
+      return 1
+   fi
+
+   # Process each file
+   for file in "${files[@]}"; do
+      # Check if file exists
+      if [ ! -e "$file" ] && [ ! -L "$file" ]; then
+         if [ "$force" = true ]; then
+            # If force option is used, silently ignore non-existent files
+            continue
+         else
+            echo "rm: cannot remove '$file': No such file or directory"
+            return 1
+         fi
+      fi
+
+      # Get the filename without path
+      filename=$(basename "$file")
+
+      # Create a unique name in case of duplicates in trash
+      trashName="${filename}_${DATE}"
+
+      # Actually move the file to trash
+      if mv "$file" "~/.local/share/trash/$trashName"; then
+         if [ "$verbose" = true ]; then
+             echo "Moved '$file' to trash as '$trashName'"
+         fi
+      else
+         echo "Failed to move '$file' to trash"
+         return 1
+      fi
+   done
+
+   exit 0
+}
+
+# Trash restore script
+function unTrash() {
+   if [ $# -eq 0 ]; then
+      echo "Usage: unTrash FILENAME"
+      return 1
+   fi
+
+   ls -l ~/.local/share/trash | grep $1
+   echo "Enter the exact filename to restore: "
+   read filename
+
+   if [ -f "~/.local/share/trash/$filename" ]; then
+      # Extract original filename before the timestamp
+      original=$(echo $filename | sed 's/_[0-9]\{8\}_[0-9]\{6\}$//')
+      mv "~/.local/share/trash/$filename" "./$original"
+      echo "Restored $filename as $original"
+   else
+      echo "File not found in trash"
+   fi
+}
+
+#Remove files older than 7 days from trash
+function takeOutTheTrash() {
+   find ~/.local/share/trash -type f -mtime +7 -exec /usr/bin/rm -f {} \;
+}
+
+function listening() {
+   lsof -iTCP -sTCP:LISTEN -P -n
+}
+
+#Top 10 directories by size on disk
+function spaceHogs() {
+   du -hs * | sort -rh | head -10
+}
+
+function serve() {
+   busybox httpd -f
+}
+
+function psize() {
+   pacman -Qi | awk 'BEGIN {OFS=","} /^Name/{name=$3} /^Installed Size/{print $4$5,name}' \
+      | sort -h | awk 'BEGIN {FS=","; OFS=" : "} {print $2, $1}'
+}
+
+function pall() {
+   pacman -Qq \
+      | fzf --preview 'pacman -Qil {} | grep -v "/$"' --layout=reverse \
+         --bind 'enter:execute(pacman -Qil {} | grep -v "/$" | less)'
+}
+
+# `exciseBlock marker file` outputs the lines between `{``{{marker` and `}}``}` from the file
+function exciseBlock() {
+   awk "/^{{{$1/{f=1;next} /^}}}\$/{f=0} f" $2
+}
+
+# Shared library dependencies of a binary. Use like `libraryDeps $(which nvim)`
+function libraryDeps() {
+   echo "Executable: $1"
+   echo ""
+   echo "Dynamically linked to library dependencies:"
+   readelf -d $1 | grep NEEDED | grep -o --color=never '\[.*\]'
+   readelf -h $1 | grep Type
+}
+
+function plsEdit() {
+  if [ -z "$1" ]; then
+     echo "Usage: plsEdit /etc/file"
+     return 1
+  fi
+  TEMP=$(mktemp)
+  doas cp "$1" "$TEMP"
+  ${EDITOR:-nvim} "$TEMP"
+  doas cp "$TEMP" "$1"
+  /usr/bin/rm "$TEMP"
+}
+
+function plocalAdd {
+   if [[ -z $1 ]]; then
+      echo 'Nothing to add'
+      return 1
+   fi
+   doas repo-add /opt/craft/craft.db.tar.gz $1
+   doas mv $1 /opt/craft
+}
+
+function plocalRemove {
+   if [[ -z $1 ]]; then
+      echo 'Nothing to remove'
+      return 1
+   fi
+   doas repo-remove /opt/craft/craft.db.tar.gz $1
+}
+
+# Go up n directory levels. Example: .. 3
+function ..() {
+   local arg=${1:-1};
+   local dir=""
+   while [ $arg -gt 0 ]; do
+      dir="../$dir"
+      arg=$(($arg - 1));
+   done
+   cd $dir
+}
+
+function newFiles() {
+   ls -lt ${1+"$@"} | head -20;
+}
+
+function cdl {
+   cd $1 && LC_COLLATE=C ls --color=always --group-directories-first -agohA
+}
+
+function lanReceive {
+   mkdir -p $HOME/.local/state/rsync
+   pkill rsync
+   RSYNC_USERNAME=$(whoami) rsync --daemon --config=$HOME/.config/rsync/rsync.conf\
+      && echo $(ip -4 a show wlan0 | sed -En 's|^.*\.([0-9]+)/.*$|\1|p')
+}
+
+function lanSetIp {
+   export LAN_TARGET_IP="192.168.1.$1"
+}
+
+#`lanSend directory` to send a dir to ~/incoming/rsync on the target computer over LAN
+function lanSend {
+   if [[ -z $1 ]]; then
+      echo "Input a directory to send via LAN"
+      return 1
+   fi
+   if [[ -z "$LAN_TARGET_IP" ]]; then
+      echo "Target IP address is not set. On the receiving computer, run `lanReceive`"
+      echo "Then on this machine, run `lanSetIp 12` (replacing 12 with that number)."
+      echo "Then repeat this command"
+      return 1
+   fi
+   rsync -ar --port=8730 --progress --ignore-existing -- $1 "$LAN_TARGET_IP::m/"
+}
+
+
+function stick() {
+   if [[ -z $1 ]]; then
+      declare -a unmounted
+      readarray -t unmounted < <(lsblk -J | jq -r '[.blockdevices.[] | select (.rm == true)]
+         | select(.[].children[0].mountpoints | length == 0) | map("/dev/" + .children[0].name).[]')
+
+      if (( "${#unmounted}" > 0 )) then
+         local um="${unmounted[0]}"
+         echo "mounting $um"
+         doas /usr/bin/mount -o noatime,sync --mkdir "$um" /mnt/stick
+      fi
+   else
+      doas /usr/bin/mount -o noatime,sync --mkdir "$1" /mnt/stick
+   fi
+}
+
+function safeRm() {
+   local undeletable=("/bin" "/boot" "/dev" "/etc" "/home" "/lib" "/lib64" "/mnt" "/opt"
+      "/proc" "/root" "/run" "/sbin" "/srv" "/sys" "/tmp" "/usr" "/var" "/"
+   )
+   for arg in "$@"; do
+      local canDelete=1
+      for un in "${undeletable[@]}"; do
+         if [[ "$arg" == "$un" || "$arg" == "$un/" ]]; then
+            echo "nono! $arg $un"
+            canDelete=0
+            break
+         fi
+      done
+      if [[ "$canDelete" == "1" ]]; then
+         echo "$arg" # /usr/bin/rm "$arg"
+      fi
+   done
+}
+
+# `unpdf a.pdf` => `a.pdf.webp`
+# Requires poppler, libwebp-utils, and GEGL
+# View the resulting file with swayimg, press "f" to stop animagion and use a,d keys
+function unpdf() {
+   tempDir=$(mktemp -d)
+
+   cleanup() {
+      /usr/bin/rm -r "$tempDir"
+   }
+   trap cleanup EXIT
+
+
+   pdftoppm -png -r 150 $1 "$tempDir/a"
+   for png in "$tempDir"/*.png; do
+      gegl -i "$png" -o "$png" -- invert
+   done
+
+   img2webp -o "$1.webp" "$tempDir"/*.png
+
+}
+
+function premove() {
+   if [[ -z "$1" ]]; then
+      echo "Remove what?"
+      return 1
+   fi
+   if (( "$#" == 1 )); then
+      declare -a whoDepends
+      readarray -d '' -t whoDepends < \
+         <(apt-cache rdepends --installed --no-recommends --no-suggests $1 | tail -n +3)
+
+      if [[ ${#whoDepends[@]} -gt 0 ]]; then
+         echo "I refuse to remove $1, for it is needed by:"
+         for needer in "${whoDepends[@]}"; do
+            echo "$needer"
+         done
+         return 1
+      fi
+
+      declare -a whoRecommends
+      readarray -d '' -t whoRecommends < \
+         <(apt-cache rdepends --installed --no-depends --no-suggests $1 | tail -n +3)
+
+      if [[ ${#whoRecommends[@]} -gt 0 ]]; then
+
+         read -p "$1 is recommended by some packages (use pwhoNeeds to find out). \
+                  Still want to remove it?" -n 1 -r
+         echo
+
+         if ! [[ $REPLY =~ ^[Yy]$ ]]; then
+            return 1
+         fi
+      fi
+
+      doas apt purge $1
+   else
+      declare -a whoDepends
+      declare -a whoRecommends
+
+      for arg in "$@"; do
+         readarray -d '' -t whoDepends < \
+            <(apt-cache rdepends --installed --no-recommends --no-suggests $arg | tail -n +3)
+
+         if [[ ${#whoDepends[@]} -gt 0 ]]; then
+            echo "Package $arg is depended upon by another (use pwhoNeeds to find out), \
+                  so I refuse to delete anything"
+            return 1
+         fi
+
+         readarray -d '' -t whoRecommends < \
+            <(apt-cache rdepends --installed --no-depends --no-suggests $arg | tail -n +3)
+         if [[ ${#whoRecommends[@]} -gt 0 ]]; then
+            echo "Package $arg is recommended by something (use pwhoNeeds to find out), \
+                  so I refuse to delete anything"
+            return 1
+         fi
+      done
+
+      doas apt purge "$@"
+   fi
+}
+
+function newVersion() {
+	if ! [[ -z "$1" ]]; then
+		git tag -a $1 -m "v$1"
+	fi
+}
