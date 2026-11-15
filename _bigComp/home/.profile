@@ -10,15 +10,6 @@ export GNUPGHOME="$HOME/.config/gnupg"
 export CGDB_DIR="$HOME/.config/cgdb"
 export PARALLEL_HOME="$HOME/.config/parallel"
 
-if [[ $XDG_RUNTIME_DIR == "" ]]; then
-   export XDG_RUNTIME_DIR=/tmp/user/$(id -u)
-   if ! [[ -d $XDG_RUNTIME_DIR ]]; then
-      mkdir -p "$XDG_RUNTIME_DIR"
-      chmod 0700 "$XDG_RUNTIME_DIR"
-   fi
-fi
-
-
 export XDG_SESSION_TYPE=wayland
 export XDG_CURRENT_DESKTOP=sway
 
