@@ -7,11 +7,12 @@ doas /usr/bin/usermod -aG w $(id -nu)
 doas /usr/bin/chown w:w /home/w
 doas /usr/bin/chmod 770 /home/w
 
-setfacl -m u:w:rwx $XDG_RUNTIME_DIR
-setfacl -m u:w:rw $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY
-setfacl -m u:w:rw $XDG_RUNTIME_DIR/pipewire-0
-setfacl -m u:w:rwx $XDG_RUNTIME_DIR/pulse
-setfacl -m u:w:rw $XDG_RUNTIME_DIR/pulse/native
+doas xbps-install acl-progs \
+	&& setfacl -m u:w:rwx $XDG_RUNTIME_DIR \
+	&& setfacl -m u:w:rw $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY \
+	&& setfacl -m u:w:rw $XDG_RUNTIME_DIR/pipewire-0 \
+	&& setfacl -m u:w:rwx $XDG_RUNTIME_DIR/pulse \
+	&& setfacl -m u:w:rw $XDG_RUNTIME_DIR/pulse/native
 
 doas /usr/bin/mkdir -p /home/w/.config
 doas chmod 700 /home/w/.config
