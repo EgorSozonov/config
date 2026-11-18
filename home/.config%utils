@@ -80,7 +80,7 @@ function help() {
    echo "Back stuff up to mounted flash sticks: closha"
    echo "Mount all flash sticks: flasher"
    echo "See default bash help: command help"
-   echo "Postgres doesn't work: ~/s/pgInstall.sh"
+   echo "Postgres: ~/s/pgInstall.sh, or startPg, then dml"
    echo "Top subdirectories by size on disk: spaceHogs"
    echo "Install package: pinstall"
    echo "Remove package: pRemove"
